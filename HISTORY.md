@@ -6,3 +6,4 @@ _Dibuat otomatis dari git log._
 
 - feat: setup project, auth, event, pendaftaran peserta, komunitas (langkah 1-6)
 - feat: calendar notes - model dan form
+- feat: calendar notes (catatan per tanggal, foto, penanda kalender)

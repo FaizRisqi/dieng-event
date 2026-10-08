@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Catatan Kalender{% endblock %}
+{% block main_class %}max-w-3xl{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+  <h1 class="text-xl font-bold">Catatan Kalender</h1>
+  {% if bisa_tulis %}
+    <a href="{{ url_for('notes.new') }}" class="bg-blue-600 text-white rounded px-4 py-2">+ Catatan</a>
+  {% endif %}
+</div>
+
+<div class="space-y-3">
+  {% for n in daftar %}
+  <a href="{{ url_for('notes.detail', note_id=n.id) }}"
+     class="flex gap-3 bg-white rounded shadow p-4 hover:bg-gray-50">
+    {% if n.foto %}
+      <img src="{{ url_for('static', filename='uploads/notes/' ~ n.foto) }}"
+           class="w-20 h-20 object-cover rounded" alt="">
+    {% endif %}
+    <div>
+      <p class="text-xs text-gray-500">{{ n.tanggal.strftime('%d/%m/%Y') }}
+        {% if n.event %} &middot; {{ n.event.judul }}{% endif %}</p>
+      <p class="mt-1">{{ n.isi|truncate(160) }}</p>
+    </div>
+  </a>
+  {% else %}
+  <p class="text-sm text-gray-500">Belum ada catatan.</p>
+  {% endfor %}
+</div>
+
+<div class="mt-6">
+  <a href="{{ url_for('events.calendar') }}" class="text-blue-600">&larr; Kalender</a>
+</div>
+{% endblock %}

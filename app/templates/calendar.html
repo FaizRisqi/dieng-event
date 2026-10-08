@@ -2,20 +2,33 @@
 {% block title %}Kalender{% endblock %}
 {% block main_class %}max-w-5xl{% endblock %}
 {% block content %}
-<div class="flex justify-between items-center mb-4">
+<div class="flex justify-between items-center mb-2">
   <h1 class="text-xl font-bold">Kalender Event</h1>
-  {% if bisa_buat %}
-    <a href="{{ url_for('events.new') }}" class="bg-blue-600 text-white rounded px-4 py-2">+ Event</a>
-  {% endif %}
+  <div class="flex items-center gap-4">
+    <a href="{{ url_for('notes.index') }}" class="text-blue-600">Semua catatan</a>
+    {% if bisa_buat %}
+      <a href="{{ url_for('events.new') }}" class="bg-blue-600 text-white rounded px-4 py-2">+ Event</a>
+    {% endif %}
+  </div>
 </div>
+<p class="text-xs text-gray-500 mb-4">
+  Biru: event &middot; Oranye: catatan
+  {% if bisa_buat %}&middot; Klik tanggal kosong untuk menambah catatan{% endif %}
+</p>
 
-<div id="calendar" class="bg-white p-4 rounded shadow"></div>
+<div id="calendar" class="bg-white p-4 rounded shadow"
+     data-events-url="{{ url_for('events.api') }}"
+     data-notes-url="{{ url_for('notes.api') }}"
+     data-new-note-url="{{ url_for('notes.new') }}"
+     data-bisa-buat="{{ '1' if bisa_buat else '' }}"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/locales-all.global.min.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const cal = new FullCalendar.Calendar(document.getElementById("calendar"), {
+    const el = document.getElementById("calendar");
+
+    const options = {
       initialView: "dayGridMonth",
       locale: "id",
       height: "auto",
@@ -24,9 +37,16 @@
         center: "title",
         right: "dayGridMonth,timeGridWeek,listWeek"
       },
-      events: "{{ url_for('events.api') }}"
-    });
-    cal.render();
+      eventSources: [el.dataset.eventsUrl, el.dataset.notesUrl]
+    };
+
+    if (el.dataset.bisaBuat) {
+      options.dateClick = (info) => {
+        window.location = el.dataset.newNoteUrl + "?tanggal=" + info.dateStr.slice(0, 10);
+      };
+    }
+
+    new FullCalendar.Calendar(el, options).render();
   });
 </script>
 {% endblock %}

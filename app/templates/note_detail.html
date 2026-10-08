@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Catatan {{ note.tanggal.strftime('%d/%m/%Y') }}{% endblock %}
+{% block main_class %}max-w-2xl{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-bold">Catatan {{ note.tanggal.strftime('%d/%m/%Y') }}</h1>
+<div class="mt-3 text-sm space-y-1">
+  {% if note.event %}
+    <p><b>Event:</b>
+      <a href="{{ url_for('events.detail', event_id=note.event.id) }}" class="text-blue-600">{{ note.event.judul }}</a></p>
+  {% endif %}
+  {% if komunitas %}
+    <p><b>Komunitas:</b>
+      <a href="{{ url_for('communities.detail', community_id=komunitas.id) }}" class="text-blue-600">{{ komunitas.nama }}</a></p>
+  {% endif %}
+  <p><b>Ditulis oleh:</b> {{ penulis.nama if penulis else '-' }}</p>
+</div>
+
+<p class="mt-4 whitespace-pre-line">{{ note.isi }}</p>
+
+{% if note.foto %}
+  <img src="{{ url_for('static', filename='uploads/notes/' ~ note.foto) }}"
+       class="mt-4 rounded shadow max-w-full" alt="Dokumentasi">
+{% endif %}
+
+<div class="mt-8 flex gap-3">
+  <a href="{{ url_for('notes.index') }}" class="text-blue-600">&larr; Semua catatan</a>
+  {% if bisa %}
+    <a href="{{ url_for('notes.edit', note_id=note.id) }}" class="text-yellow-600">Edit</a>
+    <form method="post" action="{{ url_for('notes.delete', note_id=note.id) }}"
+          onsubmit="return confirm('Hapus catatan ini?')">
+      <button class="text-red-600">Hapus</button>
+    </form>
+  {% endif %}
+</div>
+{% endblock %}

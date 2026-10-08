@@ -40,6 +40,24 @@
   {% endif %}
 </div>
 
+<div class="mt-8">
+  <div class="flex justify-between items-center mb-2">
+    <h2 class="font-bold">Catatan Kegiatan</h2>
+    {% if bisa %}
+      <a href="{{ url_for('notes.new', event_id=event.id, tanggal=event.mulai.strftime('%Y-%m-%d')) }}"
+         class="text-blue-600">+ Catatan</a>
+    {% endif %}
+  </div>
+  {% for n in event.notes|sort(attribute='tanggal') %}
+    <a href="{{ url_for('notes.detail', note_id=n.id) }}" class="block bg-white rounded shadow p-3 mb-2 hover:bg-gray-50">
+      <span class="text-xs text-gray-500">{{ n.tanggal.strftime('%d/%m/%Y') }}</span>
+      <p>{{ n.isi|truncate(120) }}</p>
+    </a>
+  {% else %}
+    <p class="text-sm text-gray-500">Belum ada catatan.</p>
+  {% endfor %}
+</div>
+
 {% if bisa %}
 <div class="mt-8">
   <h2 class="font-bold mb-2">Daftar Peserta</h2>

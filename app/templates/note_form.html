@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if note else 'Tambah' }} Catatan{% endblock %}
+{% block content %}
+{% set f = request.form %}
+{% set sel_ev = f.get('event_id', (note.event_id|string) if note and note.event_id else request.args.get('event_id', '')) %}
+{% set sel_kom = f.get('community_id', (note.community_id|string) if note and note.community_id else request.args.get('community_id', '')) %}
+<h1 class="text-xl font-bold mb-4">{{ 'Edit' if note else 'Tambah' }} Catatan</h1>
+<form method="post" enctype="multipart/form-data" class="space-y-3">
+  <label class="block text-sm">Tanggal</label>
+  <input name="tanggal" type="date" required
+         value="{{ f.get('tanggal', note.tanggal.isoformat() if note else request.args.get('tanggal', '')) }}"
+         class="w-full border rounded p-2">
+
+  <label class="block text-sm">Event (opsional)</label>
+  <select name="event_id" class="w-full border rounded p-2">
+    <option value="">Tidak terkait event</option>
+    {% for e in events %}
+      <option value="{{ e.id }}" {% if sel_ev == e.id|string %}selected{% endif %}>
+        {{ e.judul }} ({{ e.mulai.strftime('%d/%m/%Y') }})
+      </option>
+    {% endfor %}
+  </select>
+
+  <label class="block text-sm">Komunitas (diabaikan jika event dipilih)</label>
+  <select name="community_id" class="w-full border rounded p-2">
+    {% if current_user.role == 'admin' %}
+      <option value="">Umum (tanpa komunitas)</option>
+    {% else %}
+      <option value="">Pilih komunitas</option>
+    {% endif %}
+    {% for k in komunitas %}
+      <option value="{{ k.id }}" {% if sel_kom == k.id|string %}selected{% endif %}>{{ k.nama }}</option>
+    {% endfor %}
+  </select>
+
+  <label class="block text-sm">Apa yang terjadi hari itu</label>
+  <textarea name="isi" rows="6" required placeholder="Tulis catatan / recap kegiatan..."
+            class="w-full border rounded p-2">{{ f.get('isi', note.isi if note else '') }}</textarea>
+
+  <label class="block text-sm">Foto dokumentasi (PNG/JPG/WEBP, maks. 5 MB)</label>
+  <input name="foto" type="file" accept=".png,.jpg,.jpeg,.webp" class="w-full text-sm">
+  {% if note and note.foto %}
+    <img src="{{ url_for('static', filename='uploads/notes/' ~ note.foto) }}" class="w-40 rounded" alt="">
+    <label class="text-sm"><input type="checkbox" name="hapus_foto" value="1"> Hapus foto ini</label>
+  {% endif %}
+
+  <button class="w-full bg-blue-600 text-white rounded p-2">Simpan</button>
+</form>
+{% endblock %}
