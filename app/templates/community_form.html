@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if c else 'Tambah' }} Komunitas{% endblock %}
+{% block content %}
+<h1 class="text-xl font-bold mb-4">{{ 'Edit' if c else 'Tambah' }} Komunitas</h1>
+<form method="post" class="space-y-3">
+  <input name="nama" placeholder="Nama komunitas" required
+         value="{{ request.form.get('nama', c.nama if c else '') }}"
+         class="w-full border rounded p-2">
+  <textarea name="deskripsi" rows="4" placeholder="Deskripsi"
+            class="w-full border rounded p-2">{{ request.form.get('deskripsi', c.deskripsi if c and c.deskripsi else '') }}</textarea>
+  <button class="w-full bg-blue-600 text-white rounded p-2">Simpan</button>
+</form>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Daftar{% endblock %}
+{% block content %}
+<h1 class="text-xl font-bold mb-4">Daftar Akun</h1>
+<form method="post" class="space-y-3">
+  <input name="nama" placeholder="Nama lengkap" required class="w-full border rounded p-2">
+  <input name="email" type="email" placeholder="Email" required class="w-full border rounded p-2">
+  <input name="no_wa" placeholder="No. WhatsApp (628xxx)" class="w-full border rounded p-2">
+  <input name="password" type="password" placeholder="Password (min. 6 karakter)" required class="w-full border rounded p-2">
+  <button class="w-full bg-blue-600 text-white rounded p-2">Daftar</button>
+</form>
+{% endblock %}

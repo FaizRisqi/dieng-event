@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if event else 'Tambah' }} Event{% endblock %}
+{% block content %}
+{% set f = request.form %}
+{% set sel = f.get('community_id', (event.community_id|string) if event and event.community_id else request.args.get('community_id', '')) %}
+<h1 class="text-xl font-bold mb-4">{{ 'Edit' if event else 'Tambah' }} Event</h1>
+<form method="post" class="space-y-3">
+  <input name="judul" placeholder="Judul event" required
+         value="{{ f.get('judul', event.judul if event else '') }}"
+         class="w-full border rounded p-2">
+  <input name="lokasi" placeholder="Lokasi / ruangan" required
+         value="{{ f.get('lokasi', event.lokasi if event else '') }}"
+         class="w-full border rounded p-2">
+
+  <label class="block text-sm">Komunitas</label>
+  <select name="community_id" {% if current_user.role != 'admin' %}required{% endif %}
+          class="w-full border rounded p-2">
+    {% if current_user.role == 'admin' %}
+      <option value="">Umum (tanpa komunitas)</option>
+    {% else %}
+      <option value="">Pilih komunitas</option>
+    {% endif %}
+    {% for k in komunitas %}
+      <option value="{{ k.id }}" {% if sel == k.id|string %}selected{% endif %}>{{ k.nama }}</option>
+    {% endfor %}
+  </select>
+
+  <label class="block text-sm">Mulai</label>
+  <input name="mulai" type="datetime-local" required
+         value="{{ f.get('mulai', event.mulai.strftime('%Y-%m-%dT%H:%M') if event else '') }}"
+         class="w-full border rounded p-2">
+  <label class="block text-sm">Selesai</label>
+  <input name="selesai" type="datetime-local" required
+         value="{{ f.get('selesai', event.selesai.strftime('%Y-%m-%dT%H:%M') if event else '') }}"
+         class="w-full border rounded p-2">
+  <input name="kuota" type="number" min="1" placeholder="Kuota (kosongkan jika tanpa batas)"
+         value="{{ f.get('kuota', event.kuota if event and event.kuota else '') }}"
+         class="w-full border rounded p-2">
+  <textarea name="deskripsi" rows="4" placeholder="Deskripsi"
+            class="w-full border rounded p-2">{{ f.get('deskripsi', event.deskripsi if event and event.deskripsi else '') }}</textarea>
+  <button class="w-full bg-blue-600 text-white rounded p-2">Simpan</button>
+</form>
+{% endblock %}

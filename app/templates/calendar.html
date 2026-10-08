@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Kalender{% endblock %}
+{% block main_class %}max-w-5xl{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+  <h1 class="text-xl font-bold">Kalender Event</h1>
+  {% if bisa_buat %}
+    <a href="{{ url_for('events.new') }}" class="bg-blue-600 text-white rounded px-4 py-2">+ Event</a>
+  {% endif %}
+</div>
+
+<div id="calendar" class="bg-white p-4 rounded shadow"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/locales-all.global.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const cal = new FullCalendar.Calendar(document.getElementById("calendar"), {
+      initialView: "dayGridMonth",
+      locale: "id",
+      height: "auto",
+      headerToolbar: {
+        left: "prev,next today",
+        center: "title",
+        right: "dayGridMonth,timeGridWeek,listWeek"
+      },
+      events: "{{ url_for('events.api') }}"
+    });
+    cal.render();
+  });
+</script>
+{% endblock %}

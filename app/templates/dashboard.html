@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-xl font-bold">Halo, {{ current_user.nama }}</h1>
+<p class="mt-2">Role kamu: {{ current_user.role }}</p>
+{% endblock %}

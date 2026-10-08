@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<h1 class="text-xl font-bold mb-4">Login</h1>
+<form method="post" class="space-y-3">
+  <input name="email" type="email" placeholder="Email" required class="w-full border rounded p-2">
+  <input name="password" type="password" placeholder="Password" required class="w-full border rounded p-2">
+  <button class="w-full bg-blue-600 text-white rounded p-2">Masuk</button>
+</form>
+{% endblock %}

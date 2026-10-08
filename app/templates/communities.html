@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Komunitas{% endblock %}
+{% block main_class %}max-w-3xl{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+  <h1 class="text-xl font-bold">Komunitas</h1>
+  {% if current_user.is_authenticated and current_user.role == 'admin' %}
+    <a href="{{ url_for('communities.new') }}" class="bg-blue-600 text-white rounded px-4 py-2">+ Komunitas</a>
+  {% endif %}
+</div>
+
+<div class="space-y-3">
+  {% for c in daftar %}
+  <a href="{{ url_for('communities.detail', community_id=c.id) }}"
+     class="block bg-white rounded shadow p-4 hover:bg-gray-50">
+    <div class="flex justify-between items-center">
+      <span class="font-semibold">{{ c.nama }}</span>
+      {% if c.id in diikuti %}
+        <span class="text-xs bg-green-100 text-green-700 rounded px-2 py-1">Anggota</span>
+      {% endif %}
+    </div>
+    <p class="text-sm text-gray-600 mt-1">{{ c.deskripsi or 'Belum ada deskripsi.' }}</p>
+    <p class="text-xs text-gray-500 mt-2">{{ c.members|length }} anggota</p>
+  </a>
+  {% else %}
+  <p class="text-sm text-gray-500">Belum ada komunitas.</p>
+  {% endfor %}
+</div>
+{% endblock %}
