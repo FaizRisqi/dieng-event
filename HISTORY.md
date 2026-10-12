@@ -5,6 +5,7 @@ _Dibuat otomatis dari git log._
 ## 2026-10-12
 
 - feat: sesi materi zoom, rekaman, materi, role mentor
+- feat: tugas dengan tenggat, pengumpulan, dan penilaian
 
 ## 2026-10-08
 

@@ -41,4 +41,7 @@ def create_app():
     from app.routes.admin import bp as admin_bp
     app.register_blueprint(admin_bp)
 
+    from app.routes.tugas import bp as tugas_bp
+    app.register_blueprint(tugas_bp)
+
     return app

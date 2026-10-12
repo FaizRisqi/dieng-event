@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if tugas else 'Tambah' }} Tugas{% endblock %}
+{% block content %}
+{% set f = request.form %}
+{% set sel_sesi = f.get('sesi_id', (tugas.sesi_id|string) if tugas and tugas.sesi_id else request.args.get('sesi_id', '')) %}
+{% set sel_kom = f.get('community_id', (tugas.community_id|string) if tugas and tugas.community_id else '') %}
+{% set terima = f.get('terima_terlambat') if request.method == 'POST' else (tugas.terima_terlambat if tugas else True) %}
+<h1 class="text-xl font-bold mb-4">{{ 'Edit' if tugas else 'Tambah' }} Tugas</h1>
+<form method="post" class="space-y-3">
+  <input name="judul" placeholder="Judul tugas" required
+         value="{{ f.get('judul', tugas.judul if tugas else '') }}"
+         class="w-full border rounded p-2">
+
+  <textarea name="deskripsi" rows="5" placeholder="Instruksi / deskripsi tugas"
+            class="w-full border rounded p-2">{{ f.get('deskripsi', tugas.deskripsi if tugas and tugas.deskripsi else '') }}</textarea>
+
+  <label class="block text-sm">Tenggat</label>
+  <input name="tenggat" type="datetime-local" required
+         value="{{ f.get('tenggat', tugas.tenggat.strftime('%Y-%m-%dT%H:%M') if tugas else '') }}"
+         class="w-full border rounded p-2">
+
+  <label class="block text-sm">Sesi materi (opsional)</label>
+  <select name="sesi_id" class="w-full border rounded p-2">
+    <option value="">Tidak terkait sesi</option>
+    {% for s in daftar_sesi %}
+      <option value="{{ s.id }}" {% if sel_sesi == s.id|string %}selected{% endif %}>
+        {{ s.tanggal.strftime('%d/%m/%Y') }} - {{ s.judul }}
+      </option>
+    {% endfor %}
+  </select>
+
+  <label class="block text-sm">Komunitas (opsional, ikut komunitas sesi jika dikosongkan)</label>
+  <select name="community_id" class="w-full border rounded p-2">
+    <option value="">Semua anggota</option>
+    {% for k in komunitas %}
+      <option value="{{ k.id }}" {% if sel_kom == k.id|string %}selected{% endif %}>{{ k.nama }}</option>
+    {% endfor %}
+  </select>
+
+  <label class="block text-sm">
+    <input type="checkbox" name="terima_terlambat" value="1" {% if terima %}checked{% endif %}>
+    Terima pengumpulan setelah tenggat (ditandai terlambat)
+  </label>
+
+  <button class="w-full bg-blue-600 text-white rounded p-2">Simpan</button>
+</form>
+{% endblock %}

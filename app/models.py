@@ -121,3 +121,49 @@ class SesiFile(db.Model):
     nama_simpan = db.Column(db.String(255), nullable=False)
     uploaded_by = db.Column(db.Integer, db.ForeignKey("users.id"))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Tugas(db.Model):
+    __tablename__ = "tugas"
+
+    id = db.Column(db.Integer, primary_key=True)
+    judul = db.Column(db.String(150), nullable=False)
+    deskripsi = db.Column(db.Text)
+    tenggat = db.Column(db.DateTime, nullable=False)
+    terima_terlambat = db.Column(db.Boolean, default=True, nullable=False)
+    sesi_id = db.Column(
+        db.Integer, db.ForeignKey("sesi.id", ondelete="SET NULL"), nullable=True
+    )
+    community_id = db.Column(
+        db.Integer, db.ForeignKey("communities.id", ondelete="SET NULL"), nullable=True
+    )
+    created_by = db.Column(db.Integer, db.ForeignKey("users.id"))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    sesi = db.relationship("Sesi", backref="tugas")
+    community = db.relationship("Community")
+    pengumpulan = db.relationship(
+        "Pengumpulan", backref="tugas", cascade="all, delete-orphan"
+    )
+
+
+class Pengumpulan(db.Model):
+    __tablename__ = "pengumpulan"
+    __table_args__ = (
+        db.UniqueConstraint("tugas_id", "user_id", name="uq_tugas_user"),
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    tugas_id = db.Column(db.Integer, db.ForeignKey("tugas.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    teks = db.Column(db.Text)
+    link = db.Column(db.String(255))
+    nama_asli = db.Column(db.String(255))
+    nama_simpan = db.Column(db.String(255))
+    dikumpulkan_at = db.Column(db.DateTime, nullable=False)
+    terlambat = db.Column(db.Boolean, default=False, nullable=False)
+    nilai = db.Column(db.Integer)
+    feedback = db.Column(db.Text)
+    dinilai_by = db.Column(db.Integer, db.ForeignKey("users.id"))
+    dinilai_at = db.Column(db.DateTime)
+
+    user = db.relationship("User", foreign_keys=[user_id])

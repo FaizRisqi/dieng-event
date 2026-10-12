@@ -72,6 +72,23 @@
     <p class="text-xs text-gray-500 mt-1">PDF, PPT, DOC, XLS, atau ZIP. Maks. 20 MB.</p>
     {% endif %}
   </div>
+
+  <div class="mt-8">
+    <div class="flex justify-between items-center mb-2">
+      <h2 class="font-bold">Tugas</h2>
+      {% if staff %}
+        <a href="{{ url_for('tugas.new', sesi_id=s.id) }}" class="text-blue-600">+ Tugas</a>
+      {% endif %}
+    </div>
+    {% for t in s.tugas|sort(attribute='tenggat') %}
+      <a href="{{ url_for('tugas.detail', tugas_id=t.id) }}" class="block bg-white rounded shadow p-3 mb-2 hover:bg-gray-50">
+        <span class="font-semibold">{{ t.judul }}</span>
+        <span class="text-xs text-gray-500 block">Tenggat {{ t.tenggat.strftime('%d/%m/%Y %H:%M') }}</span>
+      </a>
+    {% else %}
+      <p class="text-sm text-gray-500">Belum ada tugas.</p>
+    {% endfor %}
+  </div>
 {% endif %}
 
 <div class="mt-8 flex gap-3">

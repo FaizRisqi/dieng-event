@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}{{ t.judul }}{% endblock %}
+{% block main_class %}max-w-2xl{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-bold">{{ t.judul }}</h1>
+<div class="mt-3 space-y-1 text-sm">
+  <p><b>Tenggat:</b> {{ t.tenggat.strftime('%d/%m/%Y %H:%M') }}
+    {% if lewat %}<span class="ml-1 bg-red-100 text-red-700 rounded px-2 py-0.5">lewat tenggat</span>{% endif %}</p>
+  <p><b>Pengumpulan terlambat:</b> {{ 'diterima (ditandai terlambat)' if t.terima_terlambat else 'tidak diterima' }}</p>
+  {% if t.sesi %}
+  <p><b>Sesi:</b>
+    <a href="{{ url_for('sesi.detail', sesi_id=t.sesi.id) }}" class="text-blue-600">{{ t.sesi.judul }}</a></p>
+  {% endif %}
+  {% if t.community %}
+  <p><b>Komunitas:</b>
+    <a href="{{ url_for('communities.detail', community_id=t.community.id) }}" class="text-blue-600">{{ t.community.nama }}</a></p>
+  {% endif %}
+</div>
+
+<p class="mt-4 whitespace-pre-line">{{ t.deskripsi or 'Tidak ada instruksi tambahan.' }}</p>
+
+{% if not staff %}
+  {% set tutup = lewat and not t.terima_terlambat %}
+
+  {% if mine %}
+  <div class="mt-6 bg-white rounded shadow p-4 text-sm">
+    <p class="font-semibold">
+      Pengumpulanmu
+      {% if mine.terlambat %}<span class="ml-1 bg-red-100 text-red-700 rounded px-2 py-0.5">terlambat</span>{% endif %}
+    </p>
+    <p class="text-xs text-gray-500">Dikirim {{ mine.dikumpulkan_at.strftime('%d/%m/%Y %H:%M') }}</p>
+    {% if mine.teks %}<p class="mt-2 whitespace-pre-line">{{ mine.teks }}</p>{% endif %}
+    {% if mine.link %}<p class="mt-1"><a href="{{ mine.link }}" target="_blank" rel="noopener" class="text-blue-600 break-all">{{ mine.link }}</a></p>{% endif %}
+    {% if mine.nama_simpan %}<p class="mt-1"><a href="{{ url_for('tugas.unduh', pid=mine.id) }}" class="text-blue-600">{{ mine.nama_asli }}</a></p>{% endif %}
+    {% if mine.nilai is not none %}
+      <div class="mt-3 border-t pt-3">
+        <p class="text-lg font-bold">Nilai: {{ mine.nilai }}</p>
+        {% if mine.feedback %}<p class="whitespace-pre-line">{{ mine.feedback }}</p>{% endif %}
+      </div>
+    {% elif mine.feedback %}
+      <div class="mt-3 border-t pt-3"><p class="whitespace-pre-line">{{ mine.feedback }}</p></div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <div class="mt-6">
+    {% if mine and mine.nilai is not none %}
+      <p class="text-sm text-gray-500">Tugas sudah dinilai, tidak bisa dikirim ulang.</p>
+    {% elif tutup %}
+      <p class="text-sm text-red-600">Tenggat sudah lewat dan pengumpulan ditutup.</p>
+    {% else %}
+      {% if lewat %}
+        <p class="mb-2 text-sm text-yellow-700">Tenggat sudah lewat, pengumpulanmu akan ditandai terlambat.</p>
+      {% endif %}
+      <h2 class="font-bold mb-2">{{ 'Kirim ulang' if mine else 'Kumpulkan tugas' }}</h2>
+      <form method="post" action="{{ url_for('tugas.kumpul', tugas_id=t.id) }}" enctype="multipart/form-data" class="space-y-3">
+        <textarea name="teks" rows="4" placeholder="Jawaban / catatan (opsional)"
+                  class="w-full border rounded p-2">{{ mine.teks if mine and mine.teks else '' }}</textarea>
+        <input name="link" placeholder="Link hasil kerja (GitHub, Drive, dll.)"
+               value="{{ mine.link if mine and mine.link else '' }}" class="w-full border rounded p-2">
+        <input type="file" name="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.png,.jpg,.jpeg,.txt" class="text-sm">
+        <p class="text-xs text-gray-500">Isi minimal salah satu: teks, link, atau file (maks. 20 MB). Kirim ulang mengganti teks dan link, file lama dipertahankan kecuali kamu unggah file baru.</p>
+        <button class="w-full bg-blue-600 text-white rounded p-2">{{ 'Kirim ulang' if mine else 'Kumpulkan' }}</button>
+      </form>
+    {% endif %}
+  </div>
+
+{% else %}
+  <div class="mt-8">
+    <h2 class="font-bold mb-2">Pengumpulan ({{ daftar|length }} dari {{ total }} peserta)</h2>
+
+    {% for p in daftar %}
+    <div class="bg-white rounded shadow p-4 mb-3">
+      <div class="flex justify-between items-start">
+        <div>
+          <p class="font-semibold">{{ p.user.nama }}</p>
+          <p class="text-xs text-gray-500">
+            {{ p.dikumpulkan_at.strftime('%d/%m/%Y %H:%M') }}
+            {% if p.terlambat %}<span class="ml-1 bg-red-100 text-red-700 rounded px-2 py-0.5">terlambat</span>{% endif %}
+          </p>
+        </div>
+        {% if p.nilai is not none %}<span class="text-lg font-bold">{{ p.nilai }}</span>{% endif %}
+      </div>
+      {% if p.teks %}<p class="mt-2 text-sm whitespace-pre-line">{{ p.teks }}</p>{% endif %}
+      {% if p.link %}<p class="mt-1 text-sm"><a href="{{ p.link }}" target="_blank" rel="noopener" class="text-blue-600 break-all">{{ p.link }}</a></p>{% endif %}
+      {% if p.nama_simpan %}<p class="mt-1 text-sm"><a href="{{ url_for('tugas.unduh', pid=p.id) }}" class="text-blue-600">{{ p.nama_asli }}</a></p>{% endif %}
+
+      <form method="post" action="{{ url_for('tugas.nilai', pid=p.id) }}" class="mt-3 flex flex-wrap gap-2">
+        <input name="nilai" type="number" min="0" max="100" placeholder="Nilai"
+               value="{{ p.nilai if p.nilai is not none else '' }}" class="border rounded p-1 w-24">
+        <input name="feedback" placeholder="Feedback" value="{{ p.feedback or '' }}"
+               class="border rounded p-1 flex-1 min-w-[10rem]">
+        <button class="bg-gray-800 text-white rounded px-3 py-1">Simpan</button>
+      </form>
+    </div>
+    {% else %}
+    <p class="text-sm text-gray-500">Belum ada yang mengumpulkan.</p>
+    {% endfor %}
+  </div>
+
+  <div class="mt-6">
+    <h2 class="font-bold mb-2">Belum mengumpulkan ({{ belum|length }})</h2>
+    {% if belum %}
+      <p class="text-sm">{{ belum|map(attribute='nama')|join(', ') }}</p>
+    {% else %}
+      <p class="text-sm text-gray-500">Semua peserta sudah mengumpulkan.</p>
+    {% endif %}
+  </div>
+{% endif %}
+
+<div class="mt-8 flex gap-3">
+  <a href="{{ url_for('tugas.index') }}" class="text-blue-600">&larr; Semua tugas</a>
+  {% if staff %}
+    <a href="{{ url_for('tugas.edit', tugas_id=t.id) }}" class="text-yellow-600">Edit</a>
+    <form method="post" action="{{ url_for('tugas.delete', tugas_id=t.id) }}"
+          onsubmit="return confirm('Hapus tugas ini beserta semua pengumpulannya?')">
+      <button class="text-red-600">Hapus</button>
+    </form>
+  {% endif %}
+</div>
+{% endblock %}

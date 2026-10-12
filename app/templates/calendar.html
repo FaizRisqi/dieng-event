@@ -12,7 +12,7 @@
   </div>
 </div>
 <p class="text-xs text-gray-500 mb-4">
-  Biru: event &middot; Hijau: sesi Zoom &middot; Oranye: catatan
+  Biru: event &middot; Hijau: sesi Zoom &middot; Merah: tenggat tugas &middot; Oranye: catatan
   {% if bisa_buat %}&middot; Klik tanggal kosong untuk menambah catatan{% endif %}
 </p>
 
@@ -20,6 +20,7 @@
      data-events-url="{{ url_for('events.api') }}"
      data-notes-url="{{ url_for('notes.api') }}"
      data-sesi-url="{{ url_for('sesi.api') }}"
+     data-tugas-url="{{ url_for('tugas.api') }}"
      data-new-note-url="{{ url_for('notes.new') }}"
      data-bisa-buat="{{ '1' if bisa_buat else '' }}"></div>
 
@@ -38,7 +39,12 @@
         center: "title",
         right: "dayGridMonth,timeGridWeek,listWeek"
       },
-      eventSources: [el.dataset.eventsUrl, el.dataset.notesUrl, el.dataset.sesiUrl]
+      eventSources: [
+        el.dataset.eventsUrl,
+        el.dataset.notesUrl,
+        el.dataset.sesiUrl,
+        el.dataset.tugasUrl
+      ]
     };
 
     if (el.dataset.bisaBuat) {
