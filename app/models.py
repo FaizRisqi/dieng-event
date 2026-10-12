@@ -88,3 +88,36 @@ class CalendarNote(db.Model):
     foto = db.Column(db.String(255))
     created_by = db.Column(db.Integer, db.ForeignKey("users.id"))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Sesi(db.Model):
+    __tablename__ = "sesi"
+
+    id = db.Column(db.Integer, primary_key=True)
+    judul = db.Column(db.String(150), nullable=False)
+    deskripsi = db.Column(db.Text)
+    tanggal = db.Column(db.Date, nullable=False)
+    jam_mulai = db.Column(db.Time, nullable=False)
+    jam_selesai = db.Column(db.Time, nullable=False)
+    link_zoom = db.Column(db.String(255))
+    link_rekaman = db.Column(db.String(255))
+    ringkasan = db.Column(db.Text)
+    community_id = db.Column(
+        db.Integer, db.ForeignKey("communities.id", ondelete="SET NULL"), nullable=True
+    )
+    mentor_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    community = db.relationship("Community")
+    mentor = db.relationship("User")
+    files = db.relationship("SesiFile", backref="sesi", cascade="all, delete-orphan")
+
+
+class SesiFile(db.Model):
+    __tablename__ = "sesi_files"
+
+    id = db.Column(db.Integer, primary_key=True)
+    sesi_id = db.Column(db.Integer, db.ForeignKey("sesi.id"), nullable=False)
+    nama_asli = db.Column(db.String(255), nullable=False)
+    nama_simpan = db.Column(db.String(255), nullable=False)
+    uploaded_by = db.Column(db.Integer, db.ForeignKey("users.id"))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)

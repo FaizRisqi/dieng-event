@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if sesi else 'Tambah' }} Sesi{% endblock %}
+{% block content %}
+{% set f = request.form %}
+{% set sel = f.get('community_id', (sesi.community_id|string) if sesi and sesi.community_id else '') %}
+<h1 class="text-xl font-bold mb-4">{{ 'Edit' if sesi else 'Tambah' }} Sesi Materi</h1>
+<form method="post" class="space-y-3">
+  <input name="judul" placeholder="Judul / topik materi" required
+         value="{{ f.get('judul', sesi.judul if sesi else '') }}"
+         class="w-full border rounded p-2">
+
+  <label class="block text-sm">Tanggal</label>
+  <input name="tanggal" type="date" required
+         value="{{ f.get('tanggal', sesi.tanggal.isoformat() if sesi else request.args.get('tanggal', '')) }}"
+         class="w-full border rounded p-2">
+
+  <div class="flex gap-3">
+    <div class="flex-1">
+      <label class="block text-sm">Jam mulai</label>
+      <input name="jam_mulai" type="time" required
+             value="{{ f.get('jam_mulai', sesi.jam_mulai.strftime('%H:%M') if sesi else '09:00') }}"
+             class="w-full border rounded p-2">
+    </div>
+    <div class="flex-1">
+      <label class="block text-sm">Jam selesai</label>
+      <input name="jam_selesai" type="time" required
+             value="{{ f.get('jam_selesai', sesi.jam_selesai.strftime('%H:%M') if sesi else '11:00') }}"
+             class="w-full border rounded p-2">
+    </div>
+  </div>
+
+  <label class="block text-sm">Komunitas (opsional, jika diisi hanya anggotanya yang bisa akses)</label>
+  <select name="community_id" class="w-full border rounded p-2">
+    <option value="">Semua anggota (wajib login)</option>
+    {% for k in komunitas %}
+      <option value="{{ k.id }}" {% if sel == k.id|string %}selected{% endif %}>{{ k.nama }}</option>
+    {% endfor %}
+  </select>
+
+  <input name="link_zoom" placeholder="Link Zoom (https://...)"
+         value="{{ f.get('link_zoom', sesi.link_zoom if sesi and sesi.link_zoom else '') }}"
+         class="w-full border rounded p-2">
+  <input name="link_rekaman" placeholder="Link rekaman (Zoom cloud / Google Drive / YouTube)"
+         value="{{ f.get('link_rekaman', sesi.link_rekaman if sesi and sesi.link_rekaman else '') }}"
+         class="w-full border rounded p-2">
+
+  <textarea name="deskripsi" rows="3" placeholder="Deskripsi singkat materi"
+            class="w-full border rounded p-2">{{ f.get('deskripsi', sesi.deskripsi if sesi and sesi.deskripsi else '') }}</textarea>
+  <textarea name="ringkasan" rows="5" placeholder="Ringkasan isi Zoom (opsional, bisa ditulis manual)"
+            class="w-full border rounded p-2">{{ f.get('ringkasan', sesi.ringkasan if sesi and sesi.ringkasan else '') }}</textarea>
+
+  {% if not sesi %}
+  <div class="border rounded p-3 bg-white">
+    <label class="text-sm">
+      <input type="checkbox" name="ulangi" value="1" {% if f.get('ulangi') %}checked{% endif %}>
+      Ulangi tiap hari kerja (Senin-Jumat) sampai tanggal:
+    </label>
+    <input name="sampai" type="date" value="{{ f.get('sampai', '') }}" class="w-full border rounded p-2 mt-2">
+  </div>
+  {% endif %}
+
+  <button class="w-full bg-blue-600 text-white rounded p-2">Simpan</button>
+</form>
+{% endblock %}

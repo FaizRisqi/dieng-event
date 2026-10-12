@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Sesi Materi{% endblock %}
+{% block main_class %}max-w-3xl{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+  <h1 class="text-xl font-bold">Sesi Materi</h1>
+  {% if staff %}
+    <a href="{{ url_for('sesi.new') }}" class="bg-blue-600 text-white rounded px-4 py-2">+ Sesi</a>
+  {% endif %}
+</div>
+
+<div class="space-y-3">
+  {% for s in daftar %}
+  <a href="{{ url_for('sesi.detail', sesi_id=s.id) }}" class="block bg-white rounded shadow p-4 hover:bg-gray-50">
+    <p class="text-xs text-gray-500">
+      {{ s.tanggal.strftime('%d/%m/%Y') }} &middot;
+      {{ s.jam_mulai.strftime('%H:%M') }} - {{ s.jam_selesai.strftime('%H:%M') }}
+      {% if s.community %}&middot; {{ s.community.nama }}{% endif %}
+    </p>
+    <p class="font-semibold mt-1">{{ s.judul }}</p>
+    <p class="text-xs text-gray-500 mt-1">
+      {% if s.link_rekaman %}Ada rekaman{% endif %}
+      {% if s.files %} {{ s.files|length }} materi{% endif %}
+      {% if s.ringkasan %} Ada ringkasan{% endif %}
+    </p>
+  </a>
+  {% else %}
+  <p class="text-sm text-gray-500">Belum ada sesi.</p>
+  {% endfor %}
+</div>
+
+<div class="mt-6">
+  <a href="{{ url_for('events.calendar') }}" class="text-blue-600">&larr; Kalender</a>
+</div>
+{% endblock %}

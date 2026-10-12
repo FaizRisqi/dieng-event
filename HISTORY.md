@@ -2,6 +2,10 @@
 
 _Dibuat otomatis dari git log._
 
+## 2026-10-12
+
+- feat: sesi materi zoom, rekaman, materi, role mentor
+
 ## 2026-10-08
 
 - feat: setup project, auth, event, pendaftaran peserta, komunitas (langkah 1-6)

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Pengguna{% endblock %}
+{% block main_class %}max-w-3xl{% endblock %}
+{% block content %}
+<h1 class="text-xl font-bold mb-4">Pengguna</h1>
+<table class="w-full text-sm bg-white rounded shadow">
+  <thead class="text-left border-b">
+    <tr><th class="p-2">Nama</th><th class="p-2">Email</th><th class="p-2">Role</th><th class="p-2"></th></tr>
+  </thead>
+  <tbody>
+    {% for u in daftar %}
+    <tr class="border-b last:border-0">
+      <td class="p-2">{{ u.nama }}</td>
+      <td class="p-2">{{ u.email }}</td>
+      {% if u.role == 'admin' %}
+        <td class="p-2" colspan="2">admin</td>
+      {% else %}
+      <form method="post" action="{{ url_for('admin.ubah_role', user_id=u.id) }}">
+        <td class="p-2">
+          <select name="role" class="border rounded p-1">
+            <option value="anggota" {% if u.role == 'anggota' %}selected{% endif %}>anggota</option>
+            <option value="mentor" {% if u.role == 'mentor' %}selected{% endif %}>mentor</option>
+          </select>
+        </td>
+        <td class="p-2"><button class="text-blue-600">Simpan</button></td>
+      </form>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

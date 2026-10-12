@@ -3,7 +3,7 @@
 {% block main_class %}max-w-5xl{% endblock %}
 {% block content %}
 <div class="flex justify-between items-center mb-2">
-  <h1 class="text-xl font-bold">Kalender Event</h1>
+  <h1 class="text-xl font-bold">Kalender</h1>
   <div class="flex items-center gap-4">
     <a href="{{ url_for('notes.index') }}" class="text-blue-600">Semua catatan</a>
     {% if bisa_buat %}
@@ -12,13 +12,14 @@
   </div>
 </div>
 <p class="text-xs text-gray-500 mb-4">
-  Biru: event &middot; Oranye: catatan
+  Biru: event &middot; Hijau: sesi Zoom &middot; Oranye: catatan
   {% if bisa_buat %}&middot; Klik tanggal kosong untuk menambah catatan{% endif %}
 </p>
 
 <div id="calendar" class="bg-white p-4 rounded shadow"
      data-events-url="{{ url_for('events.api') }}"
      data-notes-url="{{ url_for('notes.api') }}"
+     data-sesi-url="{{ url_for('sesi.api') }}"
      data-new-note-url="{{ url_for('notes.new') }}"
      data-bisa-buat="{{ '1' if bisa_buat else '' }}"></div>
 
@@ -37,7 +38,7 @@
         center: "title",
         right: "dayGridMonth,timeGridWeek,listWeek"
       },
-      eventSources: [el.dataset.eventsUrl, el.dataset.notesUrl]
+      eventSources: [el.dataset.eventsUrl, el.dataset.notesUrl, el.dataset.sesiUrl]
     };
 
     if (el.dataset.bisaBuat) {

@@ -35,4 +35,10 @@ def create_app():
     from app.routes.notes import bp as notes_bp
     app.register_blueprint(notes_bp)
 
+    from app.routes.sesi import bp as sesi_bp
+    app.register_blueprint(sesi_bp)
+
+    from app.routes.admin import bp as admin_bp
+    app.register_blueprint(admin_bp)
+
     return app

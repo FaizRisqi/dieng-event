@@ -7,12 +7,17 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 text-gray-800">
-  <nav class="bg-white shadow px-6 py-3 flex justify-between items-center">
+  <nav class="bg-white shadow px-6 py-3 flex flex-wrap justify-between items-center gap-2">
     <a href="{{ url_for('main.index') }}" class="font-bold">Dieng Cyber Event</a>
     <div class="space-x-4">
       <a href="{{ url_for('events.calendar') }}">Kalender</a>
+      <a href="{{ url_for('sesi.index') }}">Sesi</a>
       <a href="{{ url_for('communities.index') }}">Komunitas</a>
+      <a href="{{ url_for('notes.index') }}">Catatan</a>
       {% if current_user.is_authenticated %}
+        {% if current_user.role == 'admin' %}
+          <a href="{{ url_for('admin.users') }}">Pengguna</a>
+        {% endif %}
         <span class="text-sm">{{ current_user.nama }} ({{ current_user.role }})</span>
         <a href="{{ url_for('main.dashboard') }}">Dashboard</a>
         <a href="{{ url_for('auth.logout') }}" class="text-red-600">Logout</a>
