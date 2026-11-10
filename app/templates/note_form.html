@@ -6,6 +6,7 @@
 {% set sel_kom = f.get('community_id', (note.community_id|string) if note and note.community_id else request.args.get('community_id', '')) %}
 <h1 class="text-xl font-bold mb-4">{{ 'Edit' if note else 'Tambah' }} Catatan</h1>
 <form method="post" enctype="multipart/form-data" class="space-y-3">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <label class="block text-sm">Tanggal</label>
   <input name="tanggal" type="date" required
          value="{{ f.get('tanggal', note.tanggal.isoformat() if note else request.args.get('tanggal', '')) }}"

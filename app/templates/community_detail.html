@@ -12,10 +12,12 @@
     <span class="text-green-700">Kamu {{ 'pengurus' if m.role == 'pengurus' else 'anggota' }} komunitas ini</span>
     <form method="post" action="{{ url_for('communities.keluar', community_id=c.id) }}"
           onsubmit="return confirm('Keluar dari komunitas?')">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <button class="text-red-600">Keluar</button>
     </form>
   {% else %}
     <form method="post" action="{{ url_for('communities.gabung', community_id=c.id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <button class="bg-blue-600 text-white rounded px-4 py-2">Gabung</button>
     </form>
   {% endif %}
@@ -28,6 +30,7 @@
   {% if current_user.is_authenticated and current_user.role == 'admin' %}
     <form method="post" action="{{ url_for('communities.delete', community_id=c.id) }}"
           onsubmit="return confirm('Hapus komunitas ini?')">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <button class="text-red-600">Hapus</button>
     </form>
   {% endif %}
@@ -77,10 +80,12 @@
       {% if kelola %}
       <td class="p-2 flex gap-3">
         <form method="post" action="{{ url_for('communities.peran', community_id=c.id, user_id=mem.user_id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           <button class="text-blue-600">{{ 'Jadikan anggota' if mem.role == 'pengurus' else 'Jadikan pengurus' }}</button>
         </form>
         <form method="post" action="{{ url_for('communities.hapus_anggota', community_id=c.id, user_id=mem.user_id) }}"
               onsubmit="return confirm('Keluarkan anggota ini?')">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           <button class="text-red-600">Keluarkan</button>
         </form>
       </td>

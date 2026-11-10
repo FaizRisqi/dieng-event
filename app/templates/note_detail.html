@@ -28,6 +28,7 @@
     <a href="{{ url_for('notes.edit', note_id=note.id) }}" class="text-yellow-600">Edit</a>
     <form method="post" action="{{ url_for('notes.delete', note_id=note.id) }}"
           onsubmit="return confirm('Hapus catatan ini?')">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <button class="text-red-600">Hapus</button>
     </form>
   {% endif %}

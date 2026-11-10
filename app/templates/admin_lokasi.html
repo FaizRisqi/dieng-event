@@ -16,6 +16,7 @@
   <div class="bg-white rounded shadow p-4 h-fit">
     <h2 class="font-bold mb-3 text-base">Tambah Lokasi Baru</h2>
     <form method="post" class="space-y-3">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div>
         <label class="block text-xs font-medium text-gray-700 mb-1">Nama Lokasi / Ruangan *</label>
         <input name="nama" required placeholder="Contoh: Lab Komputer 1" class="w-full border rounded p-2 text-sm">
@@ -64,6 +65,7 @@
           <a href="{{ url_for('admin.edit_lokasi', lid=lok.id) }}" class="text-yellow-600 hover:underline">Edit</a>
           <form method="post" action="{{ url_for('admin.delete_lokasi', lid=lok.id) }}" class="inline"
                 onsubmit="return confirm('Hapus lokasi ini?')">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button class="text-red-600 hover:underline">Hapus</button>
           </form>
         </div>

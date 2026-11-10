@@ -7,6 +7,7 @@
 {% set terima = f.get('terima_terlambat') if request.method == 'POST' else (tugas.terima_terlambat if tugas else True) %}
 <h1 class="text-xl font-bold mb-4">{{ 'Edit' if tugas else 'Tambah' }} Tugas</h1>
 <form method="post" class="space-y-3">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <input name="judul" placeholder="Judul tugas" required
          value="{{ f.get('judul', tugas.judul if tugas else '') }}"
          class="w-full border rounded p-2">

@@ -6,6 +6,7 @@
 {% set sel_lok = f.get('lokasi_id', (event.lokasi_id|string) if event and event.lokasi_id else '') %}
 <h1 class="text-xl font-bold mb-4">{{ 'Edit' if event else 'Tambah' }} Event</h1>
 <form method="post" class="space-y-4">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <div>
     <label class="block text-sm font-medium mb-1">Judul Event *</label>
     <input name="judul" placeholder="Contoh: Workshop Python untuk Pemula" required

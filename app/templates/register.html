@@ -3,6 +3,7 @@
 {% block content %}
 <h1 class="text-xl font-bold mb-4">Daftar Akun</h1>
 <form method="post" class="space-y-3">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <input name="nama" placeholder="Nama lengkap" required class="w-full border rounded p-2">
   <input name="email" type="email" placeholder="Email" required class="w-full border rounded p-2">
   <input name="no_wa" placeholder="No. WhatsApp (628xxx)" class="w-full border rounded p-2">

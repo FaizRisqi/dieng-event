@@ -5,6 +5,7 @@
 <h1 class="text-xl font-bold mb-4">{{ 'Edit' if p else 'Tambah' }} Pengumuman</h1>
 
 <form method="post" class="space-y-4 bg-white rounded shadow p-5">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <div>
     <label class="block text-sm font-medium mb-1">Judul Pengumuman</label>
     <input name="judul" required placeholder="Contoh: Jadwal Libur Sesi Materi"

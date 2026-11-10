@@ -3,6 +3,7 @@
 {% block content %}
 <h1 class="text-xl font-bold mb-4">{{ 'Edit' if c else 'Tambah' }} Komunitas</h1>
 <form method="post" class="space-y-3">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <input name="nama" placeholder="Nama komunitas" required
          value="{{ request.form.get('nama', c.nama if c else '') }}"
          class="w-full border rounded p-2">

@@ -24,6 +24,7 @@
         <td class="p-2" colspan="2">admin</td>
       {% else %}
       <form method="post" action="{{ url_for('admin.ubah_role', user_id=u.id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <td class="p-2">
           <select name="role" class="border rounded p-1">
             <option value="anggota" {% if u.role == 'anggota' %}selected{% endif %}>anggota</option>

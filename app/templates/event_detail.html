@@ -35,6 +35,7 @@
     {% if reg.status != 'hadir' %}
     <form method="post" action="{{ url_for('events.batal', event_id=event.id) }}" class="inline"
           onsubmit="return confirm('Batalkan pendaftaran?')">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <button class="text-red-600">Batalkan</button>
     </form>
     {% endif %}
@@ -42,6 +43,7 @@
     <span class="text-red-600">Kuota penuh.</span>
   {% else %}
     <form method="post" action="{{ url_for('events.daftar', event_id=event.id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <button class="bg-blue-600 text-white rounded px-4 py-2">Daftar Event</button>
     </form>
   {% endif %}
@@ -81,6 +83,7 @@
         <td class="p-2">{{ r.status }}</td>
         <td class="p-2">
           <form method="post" action="{{ url_for('events.absen', event_id=event.id, user_id=r.user_id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button class="text-blue-600">{{ 'Batal hadir' if r.status == 'hadir' else 'Tandai hadir' }}</button>
           </form>
         </td>
@@ -100,6 +103,7 @@
     <a href="{{ url_for('events.edit', event_id=event.id) }}" class="text-yellow-600">Edit</a>
     <form method="post" action="{{ url_for('events.delete', event_id=event.id) }}"
           onsubmit="return confirm('Hapus event ini?')">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <button class="text-red-600">Hapus</button>
     </form>
   {% endif %}

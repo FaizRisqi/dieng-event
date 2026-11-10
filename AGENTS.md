@@ -3,16 +3,16 @@
 Sistem penjadwalan event dan pengelolaan komunitas berbasis web untuk Dieng Cyber, Wonosobo (proyek skripsi).
 
 ## Stack
-- Flask, Flask-SQLAlchemy, Flask-Migrate, Flask-Login
+- Flask, Flask-SQLAlchemy, Flask-Migrate, Flask-Login, Flask-WTF
 - MySQL (driver pymysql), konfigurasi lewat `.env`
 - Jinja2 + Tailwind (CDN) + FullCalendar 6.1.15 (CDN)
 - Semua teks antarmuka berbahasa Indonesia
 
 ## Struktur
-- `app/__init__.py`: `create_app()`, objek `db`, `migrate`, `login_manager`, registrasi blueprint
+- `app/__init__.py`: `create_app()`, objek `db`, `migrate`, `login_manager`, `csrf`, registrasi blueprint
 - `app/models.py`: semua model
 - `app/decorators.py`: `role_required(*roles)`
-- `app/routes/`: `main`, `auth`, `events`, `communities`, `notes`, `sesi`, `tugas`, `admin` (satu blueprint per fitur)
+- `app/routes/`: `main`, `auth`, `events`, `communities`, `notes`, `sesi`, `tugas`, `admin`, `rekap`, `profil`, `pengumuman`
 - `app/templates/`: semua template extend `base.html`
 - `config.py`, `run.py`, `create_admin.py`, `log_harian.py`, `migrations/`
 
@@ -23,7 +23,7 @@ Sistem penjadwalan event dan pengelolaan komunitas berbasis web untuk Dieng Cybe
 - Perbarui riwayat: `python log_harian.py`
 
 ## Model
-User (role: admin / mentor / anggota), Community, CommunityMember (role: pengurus / anggota), Event, EventRegistration (status: terdaftar / hadir / batal), CalendarNote, Sesi, SesiFile, Tugas, Pengumpulan.
+User (role: admin / mentor / anggota), Community, CommunityMember (role: pengurus / anggota), Lokasi, Event, EventRegistration (status: terdaftar / hadir / batal), CalendarNote, Sesi, SesiFile, SesiAbsensi, Tugas, Pengumpulan, Pengumuman.
 
 ## Hak akses
 - admin: semua, termasuk menunjuk mentor di `/admin/users`
@@ -42,12 +42,12 @@ User (role: admin / mentor / anggota), Community, CommunityMember (role: penguru
 - Jangan pernah commit `.env`, token, atau API key
 
 ## Status
-Selesai: setup, auth + role, event + kalender + deteksi bentrok, pendaftaran + absensi event, komunitas, calendar notes, sesi Zoom + materi, tugas + penilaian, absensi sesi + rekap peserta, dashboard informatif, profil pengguna, filter & pencarian, halaman error 403/404/413, pengumuman (umum dan per komunitas), master lokasi event & deteksi bentrok akurat, pagination & event list view.
+Selesai: setup, auth + role, event + kalender + deteksi bentrok, pendaftaran + absensi event, komunitas, calendar notes, sesi Zoom + materi, tugas + penilaian, absensi sesi + rekap peserta, dashboard informatif, profil pengguna, filter & pencarian, halaman error 403/404/413, pengumuman (umum dan per komunitas), master lokasi event & deteksi bentrok akurat, pagination & event list view, proteksi CSRF (Flask-WTF).
 
 Belum:
 - Pengingat WhatsApp (rencana via workflow n8n)
 - Ringkasan Zoom dengan AI (butuh API key, opsional)
-- Perapian: proteksi CSRF (Flask-WTF), deploy
+- Deploy ke server / VPS
 
 ## Cara kerja dengan pemilik proyek
 - Jawab dalam bahasa Indonesia yang santai dan ringkas

@@ -8,6 +8,7 @@
 <div class="mt-6 bg-white rounded shadow p-4">
   <h2 class="font-bold mb-3">Edit Profil</h2>
   <form method="post" class="space-y-3">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="aksi" value="profil">
     <div>
       <label class="block text-sm font-medium mb-1">Nama</label>
@@ -24,6 +25,7 @@
 <div class="mt-6 bg-white rounded shadow p-4">
   <h2 class="font-bold mb-3">Ganti Password</h2>
   <form method="post" class="space-y-3">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="aksi" value="password">
     <div>
       <label class="block text-sm font-medium mb-1">Password Lama</label>

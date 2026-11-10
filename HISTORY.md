@@ -9,6 +9,7 @@ _Dibuat otomatis dari git log._
 - feat: pengumuman umum dan per komunitas, pin, filter, dashboard
 - feat: master data lokasi dan ruangan, dropdown, deteksi bentrok lokasi akurat
 - feat: pagination di sesi, tugas, pengumuman, catatan, dan daftar event list view
+- feat: proteksi csrf dengan flask-wtf di semua form
 
 ## 2026-10-12
 

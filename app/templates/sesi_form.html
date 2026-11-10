@@ -5,6 +5,7 @@
 {% set sel = f.get('community_id', (sesi.community_id|string) if sesi and sesi.community_id else '') %}
 <h1 class="text-xl font-bold mb-4">{{ 'Edit' if sesi else 'Tambah' }} Sesi Materi</h1>
 <form method="post" class="space-y-3">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <input name="judul" placeholder="Judul / topik materi" required
          value="{{ f.get('judul', sesi.judul if sesi else '') }}"
          class="w-full border rounded p-2">
