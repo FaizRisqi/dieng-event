@@ -17,6 +17,7 @@
       {% endif %}
       <a href="{{ url_for('communities.index') }}">Komunitas</a>
       <a href="{{ url_for('notes.index') }}">Catatan</a>
+      <a href="{{ url_for('pengumuman.index') }}">Pengumuman</a>
       {% if current_user.is_authenticated %}
         {% if current_user.role in ('admin', 'mentor') %}
           <a href="{{ url_for('rekap.index') }}">Rekap</a>

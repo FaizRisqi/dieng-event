@@ -18,10 +18,10 @@
 - [x] Profil pengguna (edit nama, no. WhatsApp, ganti password, riwayat event)
 - [x] Pencarian & filter (pencarian kata kunci & filter komunitas di sesi, tugas, dan komunitas)
 - [x] Halaman error khusus (403 Akses Ditolak, 404 Tidak Ditemukan, 413 File Terlalu Besar)
+- [x] Pengumuman: umum dan per komunitas (pin/sematkan, filter komunitas, dashboard & detail komunitas)
 
 ## Belum / Sisa Pekerjaan 🔲
 
-- [ ] Pengumuman: umum dan per komunitas
 - [ ] Pengingat WhatsApp (via n8n atau Fonnte)
 - [ ] Ringkasan Zoom dengan AI (opsional, butuh API key)
 - [ ] Lokasi event jadi tabel/dropdown agar bisa deteksi bentrok lebih akurat

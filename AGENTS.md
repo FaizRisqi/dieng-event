@@ -42,10 +42,9 @@ User (role: admin / mentor / anggota), Community, CommunityMember (role: penguru
 - Jangan pernah commit `.env`, token, atau API key
 
 ## Status
-Selesai: setup, auth + role, event + kalender + deteksi bentrok, pendaftaran + absensi event, komunitas, calendar notes, sesi Zoom + materi, tugas + penilaian, absensi sesi + rekap peserta, dashboard informatif, profil pengguna, filter & pencarian, halaman error 403/404/413.
+Selesai: setup, auth + role, event + kalender + deteksi bentrok, pendaftaran + absensi event, komunitas, calendar notes, sesi Zoom + materi, tugas + penilaian, absensi sesi + rekap peserta, dashboard informatif, profil pengguna, filter & pencarian, halaman error 403/404/413, pengumuman (umum dan per komunitas).
 
 Belum:
-- Pengumuman (umum dan per komunitas)
 - Pengingat WhatsApp (rencana via workflow n8n)
 - Ringkasan Zoom dengan AI (butuh API key, opsional)
 - Perapian: lokasi jadi tabel/dropdown, halaman error 403/404/413, pagination, proteksi CSRF (Flask-WTF), deploy

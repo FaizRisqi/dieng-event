@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if p else 'Tambah' }} Pengumuman{% endblock %}
+{% block main_class %}max-w-2xl{% endblock %}
+{% block content %}
+<h1 class="text-xl font-bold mb-4">{{ 'Edit' if p else 'Tambah' }} Pengumuman</h1>
+
+<form method="post" class="space-y-4 bg-white rounded shadow p-5">
+  <div>
+    <label class="block text-sm font-medium mb-1">Judul Pengumuman</label>
+    <input name="judul" required placeholder="Contoh: Jadwal Libur Sesi Materi"
+           value="{{ p.judul if p else '' }}" class="w-full border rounded p-2 text-sm">
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium mb-1">Target Pengumuman</label>
+    <select name="community_id" class="w-full border rounded p-2 text-sm">
+      {% if staff %}
+        <option value="">Semua Anggota (Pengumuman Umum)</option>
+      {% endif %}
+      {% for k in komunitas %}
+        <option value="{{ k.id }}" {% if p and p.community_id == k.id %}selected{% endif %}>
+          Komunitas: {{ k.nama }}
+        </option>
+      {% endfor %}
+    </select>
+    {% if not staff %}
+      <p class="text-xs text-gray-500 mt-1">Pilih komunitas yang kamu kelola.</p>
+    {% endif %}
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium mb-1">Isi Pengumuman</label>
+    <textarea name="isi" rows="6" required placeholder="Tulis pengumuman di sini..."
+              class="w-full border rounded p-2 text-sm">{{ p.isi if p else '' }}</textarea>
+  </div>
+
+  <div class="flex items-center gap-2">
+    <input type="checkbox" id="pin" name="pin" value="1" {% if p and p.pin %}checked{% endif %} class="rounded">
+    <label for="pin" class="text-sm font-medium">Sematkan di atas (Pin)</label>
+  </div>
+
+  <div class="flex gap-3 pt-2">
+    <button class="bg-blue-600 text-white rounded px-5 py-2 text-sm font-medium">Simpan Pengumuman</button>
+    <a href="{{ url_for('pengumuman.index') }}" class="bg-gray-100 text-gray-700 rounded px-4 py-2 text-sm">Batal</a>
+  </div>
+</form>
+{% endblock %}

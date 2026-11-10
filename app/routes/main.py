@@ -15,7 +15,7 @@ def index():
 @login_required
 def dashboard():
     from datetime import datetime, timedelta
-    from app.models import Event, EventRegistration, Tugas, Pengumpulan, Sesi, CommunityMember
+    from app.models import Event, EventRegistration, Tugas, Pengumpulan, Sesi, CommunityMember, Pengumuman
 
     sekarang = datetime.now()
     minggu_depan = sekarang + timedelta(days=7)
@@ -42,10 +42,19 @@ def dashboard():
     # Sesi mendatang
     sesi_mendatang = Sesi.query.filter(Sesi.tanggal >= sekarang.date()).order_by(Sesi.tanggal, Sesi.jam_mulai).limit(3).all()
 
+    # Pengumuman terbaru
+    if current_user.role in ("admin", "mentor"):
+        pengumuman_terbaru = Pengumuman.query.order_by(Pengumuman.pin.desc(), Pengumuman.created_at.desc()).limit(3).all()
+    else:
+        pengumuman_terbaru = Pengumuman.query.filter(
+            db.or_(Pengumuman.community_id.is_(None), Pengumuman.community_id.in_(community_ids))
+        ).order_by(Pengumuman.pin.desc(), Pengumuman.created_at.desc()).limit(3).all()
+
     return render_template("dashboard.html",
                            upcoming_events=upcoming_events,
                            tugas_mendatang=tugas_mendatang,
                            sesi_mendatang=sesi_mendatang,
+                           pengumuman_terbaru=pengumuman_terbaru,
                            sekarang=sekarang)
 
 

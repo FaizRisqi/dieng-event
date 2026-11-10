@@ -184,3 +184,20 @@ class SesiAbsensi(db.Model):
     dicatat_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     user = db.relationship("User", foreign_keys=[user_id])
+
+
+class Pengumuman(db.Model):
+    __tablename__ = "pengumuman"
+
+    id = db.Column(db.Integer, primary_key=True)
+    judul = db.Column(db.String(150), nullable=False)
+    isi = db.Column(db.Text, nullable=False)
+    pin = db.Column(db.Boolean, default=False, nullable=False)
+    community_id = db.Column(
+        db.Integer, db.ForeignKey("communities.id", ondelete="CASCADE"), nullable=True
+    )
+    created_by = db.Column(db.Integer, db.ForeignKey("users.id"))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    community = db.relationship("Community", backref=db.backref("pengumuman_list", cascade="all, delete-orphan"))
+    penulis = db.relationship("User", foreign_keys=[created_by])

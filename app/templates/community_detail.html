@@ -23,6 +23,7 @@
   {% if kelola %}
     <a href="{{ url_for('communities.edit', community_id=c.id) }}" class="text-yellow-600">Edit</a>
     <a href="{{ url_for('events.new', community_id=c.id) }}" class="text-blue-600">+ Event</a>
+    <a href="{{ url_for('pengumuman.new') }}" class="text-green-600">+ Pengumuman</a>
   {% endif %}
   {% if current_user.is_authenticated and current_user.role == 'admin' %}
     <form method="post" action="{{ url_for('communities.delete', community_id=c.id) }}"
@@ -42,6 +43,28 @@
   {% else %}
     <p class="text-sm text-gray-500">Belum ada event.</p>
   {% endfor %}
+</div>
+
+<div class="mt-8">
+  <div class="flex justify-between items-center mb-2">
+    <h2 class="font-bold">Pengumuman Komunitas</h2>
+    <a href="{{ url_for('pengumuman.index', community_id=c.id) }}" class="text-blue-600 text-xs">Lihat semua &rarr;</a>
+  </div>
+  {% if c.pengumuman_list %}
+    <div class="space-y-2">
+      {% for p in c.pengumuman_list|sort(attribute='created_at', reverse=true) %}
+        <div class="bg-white rounded shadow p-3 text-sm">
+          <div class="flex justify-between items-start">
+            <h3 class="font-semibold">{{ p.judul }}</h3>
+            <span class="text-xs text-gray-400">{{ p.created_at.strftime('%d/%m/%Y') }}</span>
+          </div>
+          <p class="text-gray-600 mt-1 whitespace-pre-line text-xs">{{ p.isi }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-sm text-gray-500">Belum ada pengumuman.</p>
+  {% endif %}
 </div>
 
 <h2 class="font-bold mt-8 mb-2">Anggota ({{ c.members|length }})</h2>

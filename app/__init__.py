@@ -62,4 +62,7 @@ def create_app():
     from app.routes.profil import bp as profil_bp
     app.register_blueprint(profil_bp)
 
+    from app.routes.pengumuman import bp as pengumuman_bp
+    app.register_blueprint(pengumuman_bp)
+
     return app
