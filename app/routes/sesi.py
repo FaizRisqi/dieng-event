@@ -8,7 +8,7 @@ from flask import (
 from flask_login import current_user
 from werkzeug.utils import secure_filename
 from app import db
-from app.models import Sesi, SesiFile, Community, CommunityMember
+from app.models import Sesi, SesiFile, SesiAbsensi, Community, CommunityMember, User
 from app.decorators import role_required
 
 bp = Blueprint("sesi", __name__, url_prefix="/sesi")
@@ -129,8 +129,22 @@ def _form(sesi=None):
 
 @bp.route("/")
 def index():
-    daftar = Sesi.query.order_by(Sesi.tanggal.desc(), Sesi.jam_mulai.desc()).all()
-    return render_template("sesi.html", daftar=daftar, staff=staff())
+    q = request.args.get("q", "").strip()
+    cid = request.args.get("community_id", type=int)
+
+    query = Sesi.query
+    if q:
+        query = query.filter(
+            db.or_(Sesi.judul.ilike(f"%{q}%"), Sesi.deskripsi.ilike(f"%{q}%"))
+        )
+    if cid:
+        query = query.filter_by(community_id=cid)
+
+    daftar = query.order_by(Sesi.tanggal.desc(), Sesi.jam_mulai.desc()).all()
+    komunitas = Community.query.order_by(Community.nama).all()
+    return render_template(
+        "sesi.html", daftar=daftar, staff=staff(), q=q, cid=cid, komunitas=komunitas
+    )
 
 
 @bp.route("/api")
@@ -152,7 +166,16 @@ def api():
 @bp.route("/<int:sesi_id>")
 def detail(sesi_id):
     s = db.get_or_404(Sesi, sesi_id)
-    return render_template("sesi_detail.html", s=s, akses=bisa_akses(s), staff=staff())
+    # Hitung peserta target dan absensi
+    absensi_map = {a.user_id: a for a in s.absensi}
+    target = []
+    if staff() and s.community_id:
+        anggota = CommunityMember.query.filter_by(community_id=s.community_id).all()
+        target = sorted([m.user for m in anggota if m.user.role == "anggota"], key=lambda u: u.nama)
+    elif staff():
+        target = User.query.filter_by(role="anggota").order_by(User.nama).all()
+    return render_template("sesi_detail.html", s=s, akses=bisa_akses(s), staff=staff(),
+                           target=target, absensi_map=absensi_map)
 
 
 @bp.route("/new", methods=["GET", "POST"])
@@ -228,4 +251,19 @@ def hapus_file(file_id):
     db.session.delete(f)
     db.session.commit()
     flash("Materi dihapus.", "success")
+    return redirect(url_for("sesi.detail", sesi_id=sesi_id))
+
+
+@bp.route("/<int:sesi_id>/absen/<int:user_id>", methods=["POST"])
+@role_required("admin", "mentor")
+def absen(sesi_id, user_id):
+    s = db.get_or_404(Sesi, sesi_id)
+    a = SesiAbsensi.query.filter_by(sesi_id=sesi_id, user_id=user_id).first()
+    if a is None:
+        a = SesiAbsensi(sesi_id=sesi_id, user_id=user_id, hadir=True)
+        db.session.add(a)
+    else:
+        a.hadir = not a.hadir
+    a.dicatat_at = datetime.now()
+    db.session.commit()
     return redirect(url_for("sesi.detail", sesi_id=sesi_id))

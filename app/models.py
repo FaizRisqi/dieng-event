@@ -110,6 +110,7 @@ class Sesi(db.Model):
     community = db.relationship("Community")
     mentor = db.relationship("User")
     files = db.relationship("SesiFile", backref="sesi", cascade="all, delete-orphan")
+    absensi = db.relationship("SesiAbsensi", backref="sesi", cascade="all, delete-orphan")
 
 
 class SesiFile(db.Model):
@@ -165,5 +166,21 @@ class Pengumpulan(db.Model):
     feedback = db.Column(db.Text)
     dinilai_by = db.Column(db.Integer, db.ForeignKey("users.id"))
     dinilai_at = db.Column(db.DateTime)
+
+    user = db.relationship("User", foreign_keys=[user_id])
+
+
+class SesiAbsensi(db.Model):
+    __tablename__ = "sesi_absensi"
+    __table_args__ = (
+        db.UniqueConstraint("sesi_id", "user_id", name="uq_sesi_user"),
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    sesi_id = db.Column(db.Integer, db.ForeignKey("sesi.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    hadir = db.Column(db.Boolean, default=False, nullable=False)
+    catatan = db.Column(db.String(255))
+    dicatat_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     user = db.relationship("User", foreign_keys=[user_id])

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Rekap Peserta{% endblock %}
+{% block main_class %}max-w-lg{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-bold">Rekap Peserta</h1>
+<p class="mt-1 text-sm text-gray-500">Pilih komunitas untuk melihat rekap kehadiran dan tugas.</p>
+
+<div class="mt-6 space-y-2">
+  {% for k in komunitas %}
+    <a href="{{ url_for('rekap.komunitas', community_id=k.id) }}"
+       class="block bg-white rounded shadow p-4 hover:bg-gray-50">
+      <span class="font-semibold">{{ k.nama }}</span>
+      <span class="text-sm text-gray-500 block">{{ k.members|length }} anggota</span>
+    </a>
+  {% else %}
+    <p class="text-gray-500">Tidak ada komunitas yang bisa dikelola.</p>
+  {% endfor %}
+</div>
+
+<div class="mt-6">
+  <a href="{{ url_for('main.index') }}" class="text-blue-600">&larr; Beranda</a>
+</div>
+{% endblock %}

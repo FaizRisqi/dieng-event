@@ -24,11 +24,17 @@ def bisa_kelola_komunitas(c):
 
 @bp.route("/")
 def index():
-    daftar = Community.query.order_by(Community.nama).all()
+    q = request.args.get("q", "").strip()
+    query = Community.query
+    if q:
+        query = query.filter(
+            db.or_(Community.nama.ilike(f"%{q}%"), Community.deskripsi.ilike(f"%{q}%"))
+        )
+    daftar = query.order_by(Community.nama).all()
     diikuti = set()
     if current_user.is_authenticated:
         diikuti = {m.community_id for m in current_user.memberships}
-    return render_template("communities.html", daftar=daftar, diikuti=diikuti)
+    return render_template("communities.html", daftar=daftar, diikuti=diikuti, q=q)
 
 
 @bp.route("/<int:community_id>")

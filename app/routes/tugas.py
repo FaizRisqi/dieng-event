@@ -119,7 +119,18 @@ def _form(tugas=None):
 @bp.route("/")
 @login_required
 def index():
-    semua = Tugas.query.order_by(Tugas.tenggat.desc()).all()
+    q = request.args.get("q", "").strip()
+    cid = request.args.get("community_id", type=int)
+
+    query = Tugas.query
+    if q:
+        query = query.filter(
+            db.or_(Tugas.judul.ilike(f"%{q}%"), Tugas.deskripsi.ilike(f"%{q}%"))
+        )
+    if cid:
+        query = query.filter_by(community_id=cid)
+
+    semua = query.order_by(Tugas.tenggat.desc()).all()
     daftar = [t for t in semua if bisa_akses(t)]
     mine, jumlah = {}, {}
     if staff():
@@ -129,9 +140,11 @@ def index():
             p.tugas_id: p
             for p in Pengumpulan.query.filter_by(user_id=current_user.id).all()
         }
+    komunitas = Community.query.order_by(Community.nama).all()
     return render_template(
         "tugas.html", daftar=daftar, staff=staff(),
         mine=mine, jumlah=jumlah, sekarang=datetime.now(),
+        q=q, cid=cid, komunitas=komunitas,
     )
 
 

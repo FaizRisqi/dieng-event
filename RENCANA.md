@@ -13,15 +13,18 @@
 - [x] Sesi Zoom: jadwal, link rekaman, materi upload, pengulangan
 - [x] Role mentor: bisa kelola sesi dan tugas
 - [x] Tugas: buat, tenggat, pengumpulan (teks/link/file), penilaian + feedback
+- [x] Absensi sesi + rekap peserta (kehadiran dan nilai tugas per anggota)
+- [x] Dashboard informatif (peringatan tenggat tugas < 7 hari, event & sesi mendatang, shortcut menu)
+- [x] Profil pengguna (edit nama, no. WhatsApp, ganti password, riwayat event)
+- [x] Pencarian & filter (pencarian kata kunci & filter komunitas di sesi, tugas, dan komunitas)
+- [x] Halaman error khusus (403 Akses Ditolak, 404 Tidak Ditemukan, 413 File Terlalu Besar)
 
 ## Belum / Sisa Pekerjaan 🔲
 
-- [ ] Absensi sesi + rekap peserta (kehadiran dan nilai tugas per anggota)
 - [ ] Pengumuman: umum dan per komunitas
 - [ ] Pengingat WhatsApp (via n8n atau Fonnte)
 - [ ] Ringkasan Zoom dengan AI (opsional, butuh API key)
 - [ ] Lokasi event jadi tabel/dropdown agar bisa deteksi bentrok lebih akurat
-- [ ] Halaman error khusus: 403, 404, 413
 - [ ] Pagination di halaman list (sesi, tugas, event)
 - [ ] Proteksi CSRF dengan Flask-WTF (wajib sebelum produksi)
 - [ ] Deploy ke server / VPS

@@ -9,6 +9,15 @@
   {% endif %}
 </div>
 
+<form method="get" class="mb-4 flex gap-2">
+  <input name="q" placeholder="Cari komunitas..." value="{{ q or '' }}"
+         class="border rounded p-2 flex-1 text-sm">
+  <button class="bg-gray-800 text-white rounded px-4 py-2 text-sm">Cari</button>
+  {% if q %}
+    <a href="{{ url_for('communities.index') }}" class="bg-gray-200 text-gray-700 rounded px-3 py-2 text-sm">Reset</a>
+  {% endif %}
+</form>
+
 <div class="space-y-3">
   {% for c in daftar %}
   <a href="{{ url_for('communities.detail', community_id=c.id) }}"
@@ -23,7 +32,7 @@
     <p class="text-xs text-gray-500 mt-2">{{ c.members|length }} anggota</p>
   </a>
   {% else %}
-  <p class="text-sm text-gray-500">Belum ada komunitas.</p>
+  <p class="text-sm text-gray-500">Belum ada komunitas{% if q %} yang cocok dengan pencarian{% endif %}.</p>
   {% endfor %}
 </div>
 {% endblock %}

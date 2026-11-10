@@ -5,6 +5,7 @@ _Dibuat otomatis dari git log._
 ## 2026-11-10
 
 - docs: tambah AGENTS.md, README.md, RENCANA.md untuk konteks agent
+- feat: absensi sesi, rekap peserta, profil, dashboard informatif, pencarian filter, error pages
 
 ## 2026-10-12
 

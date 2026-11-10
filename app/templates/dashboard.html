@@ -1,5 +1,68 @@
 {% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block main_class %}max-w-3xl{% endblock %}
 {% block content %}
-<h1 class="text-xl font-bold">Halo, {{ current_user.nama }}</h1>
-<p class="mt-2">Role kamu: {{ current_user.role }}</p>
+<h1 class="text-2xl font-bold">Halo, {{ current_user.nama }} 👋</h1>
+<p class="text-sm text-gray-500 mt-1">{{ sekarang.strftime('%A, %d %B %Y') }} &bull; {{ current_user.role }}</p>
+
+{% if tugas_mendatang %}
+<div class="mt-6 bg-red-50 border border-red-200 rounded p-4">
+  <h2 class="font-bold text-red-700 mb-2">⚠ Tugas mendekati tenggat (7 hari ke depan)</h2>
+  {% for t in tugas_mendatang %}
+    <a href="{{ url_for('tugas.detail', tugas_id=t.id) }}"
+       class="block py-1 text-sm text-red-600 hover:underline">
+      {{ t.judul }} — tenggat {{ t.tenggat.strftime('%d/%m %H:%M') }}
+    </a>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="bg-white rounded shadow p-4">
+    <h2 class="font-bold mb-3">📅 Event Mendatang</h2>
+    {% for e in upcoming_events %}
+      <a href="{{ url_for('events.detail', event_id=e.id) }}"
+         class="block py-1 text-sm border-b last:border-0 hover:text-blue-600">
+        <span class="font-medium">{{ e.judul }}</span>
+        <span class="text-gray-500 block text-xs">{{ e.mulai.strftime('%d/%m/%Y %H:%M') }} — {{ e.lokasi }}</span>
+      </a>
+    {% else %}
+      <p class="text-sm text-gray-500">Tidak ada event mendatang.</p>
+    {% endfor %}
+    <a href="{{ url_for('events.calendar') }}" class="text-blue-600 text-xs mt-2 block">Lihat kalender &rarr;</a>
+  </div>
+
+  <div class="bg-white rounded shadow p-4">
+    <h2 class="font-bold mb-3">🎓 Sesi Mendatang</h2>
+    {% for s in sesi_mendatang %}
+      <a href="{{ url_for('sesi.detail', sesi_id=s.id) }}"
+         class="block py-1 text-sm border-b last:border-0 hover:text-blue-600">
+        <span class="font-medium">{{ s.judul }}</span>
+        <span class="text-gray-500 block text-xs">{{ s.tanggal.strftime('%d/%m/%Y') }}, {{ s.jam_mulai.strftime('%H:%M') }}</span>
+      </a>
+    {% else %}
+      <p class="text-sm text-gray-500">Tidak ada sesi mendatang.</p>
+    {% endfor %}
+    <a href="{{ url_for('sesi.index') }}" class="text-blue-600 text-xs mt-2 block">Semua sesi &rarr;</a>
+  </div>
+</div>
+
+<div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+  <a href="{{ url_for('events.calendar') }}" class="bg-blue-50 hover:bg-blue-100 rounded p-3 text-center">
+    <span class="block text-2xl">📅</span>
+    <span class="text-sm font-medium">Kalender</span>
+  </a>
+  <a href="{{ url_for('sesi.index') }}" class="bg-green-50 hover:bg-green-100 rounded p-3 text-center">
+    <span class="block text-2xl">🎓</span>
+    <span class="text-sm font-medium">Sesi</span>
+  </a>
+  <a href="{{ url_for('tugas.index') }}" class="bg-yellow-50 hover:bg-yellow-100 rounded p-3 text-center">
+    <span class="block text-2xl">📝</span>
+    <span class="text-sm font-medium">Tugas</span>
+  </a>
+  <a href="{{ url_for('communities.index') }}" class="bg-purple-50 hover:bg-purple-100 rounded p-3 text-center">
+    <span class="block text-2xl">👥</span>
+    <span class="text-sm font-medium">Komunitas</span>
+  </a>
+</div>
 {% endblock %}

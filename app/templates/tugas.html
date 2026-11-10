@@ -9,6 +9,21 @@
   {% endif %}
 </div>
 
+<form method="get" class="mb-4 flex flex-wrap gap-2">
+  <input name="q" placeholder="Cari tugas..." value="{{ q or '' }}"
+         class="border rounded p-2 flex-1 min-w-[12rem] text-sm">
+  <select name="community_id" class="border rounded p-2 text-sm">
+    <option value="">Semua Komunitas</option>
+    {% for k in komunitas %}
+      <option value="{{ k.id }}" {% if cid == k.id %}selected{% endif %}>{{ k.nama }}</option>
+    {% endfor %}
+  </select>
+  <button class="bg-gray-800 text-white rounded px-4 py-2 text-sm">Cari</button>
+  {% if q or cid %}
+    <a href="{{ url_for('tugas.index') }}" class="bg-gray-200 text-gray-700 rounded px-3 py-2 text-sm">Reset</a>
+  {% endif %}
+</form>
+
 <div class="space-y-3">
   {% for t in daftar %}
   {% set p = mine.get(t.id) %}
@@ -42,7 +57,7 @@
     </div>
   </a>
   {% else %}
-  <p class="text-sm text-gray-500">Belum ada tugas.</p>
+  <p class="text-sm text-gray-500">Belum ada tugas{% if q or cid %} yang cocok dengan pencarian{% endif %}.</p>
   {% endfor %}
 </div>
 

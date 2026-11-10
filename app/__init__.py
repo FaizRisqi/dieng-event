@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
@@ -17,6 +17,18 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
+
+    @app.errorhandler(403)
+    def forbidden(e):
+        return render_template("403.html"), 403
+
+    @app.errorhandler(404)
+    def not_found(e):
+        return render_template("404.html"), 404
+
+    @app.errorhandler(413)
+    def too_large(e):
+        return render_template("413.html"), 413
 
     from app import models  # noqa: F401
 
@@ -43,5 +55,11 @@ def create_app():
 
     from app.routes.tugas import bp as tugas_bp
     app.register_blueprint(tugas_bp)
+
+    from app.routes.rekap import bp as rekap_bp
+    app.register_blueprint(rekap_bp)
+
+    from app.routes.profil import bp as profil_bp
+    app.register_blueprint(profil_bp)
 
     return app

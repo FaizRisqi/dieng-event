@@ -89,6 +89,57 @@
       <p class="text-sm text-gray-500">Belum ada tugas.</p>
     {% endfor %}
   </div>
+
+  <div class="mt-8">
+    <div class="flex justify-between items-center mb-2">
+      <h2 class="font-bold">Absensi ({{ s.absensi|selectattr('hadir')|list|length }} hadir)</h2>
+      {% if staff and s.community %}
+        <a href="{{ url_for('rekap.komunitas', community_id=s.community.id) }}" class="text-blue-600 text-sm">Rekap komunitas &rarr;</a>
+      {% endif %}
+    </div>
+    {% if staff %}
+      <table class="w-full text-sm bg-white rounded shadow">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="p-2 text-left">Nama</th>
+            <th class="p-2 text-center">Status</th>
+            <th class="p-2 text-center">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in target %}
+          {% set ab = absensi_map.get(u.id) %}
+          <tr class="border-t">
+            <td class="p-2">{{ u.nama }}</td>
+            <td class="p-2 text-center">
+              {% if ab and ab.hadir %}
+                <span class="bg-green-100 text-green-700 rounded px-2 py-0.5">Hadir</span>
+              {% else %}
+                <span class="bg-gray-100 text-gray-500 rounded px-2 py-0.5">Belum</span>
+              {% endif %}
+            </td>
+            <td class="p-2 text-center">
+              <form method="post" action="{{ url_for('sesi.absen', sesi_id=s.id, user_id=u.id) }}">
+                <button class="text-sm {{ 'text-red-600' if ab and ab.hadir else 'text-green-600' }}">
+                  {{ 'Batalkan' if ab and ab.hadir else 'Tandai Hadir' }}
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="3" class="p-2 text-gray-500">Tidak ada peserta terdaftar di komunitas ini.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      {% set my_ab = absensi_map.get(current_user.id) if current_user.is_authenticated else None %}
+      {% if my_ab and my_ab.hadir %}
+        <p class="text-sm text-green-700">✓ Kehadiranmu tercatat.</p>
+      {% else %}
+        <p class="text-sm text-gray-500">Kehadiranmu belum tercatat.</p>
+      {% endif %}
+    {% endif %}
+  </div>
 {% endif %}
 
 <div class="mt-8 flex gap-3">
