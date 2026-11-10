@@ -10,6 +10,7 @@ _Dibuat otomatis dari git log._
 - feat: master data lokasi dan ruangan, dropdown, deteksi bentrok lokasi akurat
 - feat: pagination di sesi, tugas, pengumuman, catatan, dan daftar event list view
 - feat: proteksi csrf dengan flask-wtf di semua form
+- feat: pengingat whatsapp, ekspor rekap ke csv, dan halaman error 500
 
 ## 2026-10-12
 

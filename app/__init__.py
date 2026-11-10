@@ -33,6 +33,10 @@ def create_app():
     def too_large(e):
         return render_template("413.html"), 413
 
+    @app.errorhandler(500)
+    def server_error(e):
+        return render_template("500.html"), 500
+
     from app import models  # noqa: F401
 
     from app.routes.main import bp as main_bp

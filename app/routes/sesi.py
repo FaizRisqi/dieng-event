@@ -10,6 +10,7 @@ from werkzeug.utils import secure_filename
 from app import db
 from app.models import Sesi, SesiFile, SesiAbsensi, Community, CommunityMember, User
 from app.decorators import role_required
+from app.services.whatsapp import send_wa_message
 
 bp = Blueprint("sesi", __name__, url_prefix="/sesi")
 
@@ -284,3 +285,44 @@ def absen(sesi_id, user_id):
     a.dicatat_at = datetime.now()
     db.session.commit()
     return redirect(url_for("sesi.detail", sesi_id=sesi_id))
+
+
+@bp.route("/<int:sesi_id>/remind-wa", methods=["POST"])
+@role_required("admin", "mentor")
+def remind_wa(sesi_id):
+    s = db.get_or_404(Sesi, sesi_id)
+    if s.community_id:
+        anggota = CommunityMember.query.filter_by(community_id=s.community_id).all()
+        target = [m.user for m in anggota if m.user.role == "anggota"]
+    else:
+        target = User.query.filter_by(role="anggota").all()
+
+    if not target:
+        flash("Belum ada anggota sasaran untuk dikirimi pengingat.", "error")
+        return redirect(url_for("sesi.detail", sesi_id=s.id))
+
+    berhasil = 0
+    tanpa_wa = 0
+    for user in target:
+        if not user.no_wa:
+            tanpa_wa += 1
+            continue
+
+        link_txt = f"\n🔗 Link: {s.link_zoom}" if s.link_zoom else ""
+        pesan = (
+            f"Halo {user.nama}! 👋\n\n"
+            f"Pengingat Sesi Materi Dieng Cyber:\n"
+            f"💻 *{s.judul}*\n"
+            f"📅 Tanggal: {s.tanggal.strftime('%d/%m/%Y')}\n"
+            f"⏰ Waktu: {s.jam_mulai.strftime('%H:%M')} - {s.jam_selesai.strftime('%H:%M')} WIB{link_txt}\n\n"
+            f"Mohon hadir tepat waktu. Terima kasih!"
+        )
+        ok, _ = send_wa_message(user.no_wa, pesan)
+        if ok:
+            berhasil += 1
+
+    pesan_flash = f"Pengingat WhatsApp terkirim ke {berhasil} anggota."
+    if tanpa_wa > 0:
+        pesan_flash += f" ({tanpa_wa} anggota belum memiliki nomor WhatsApp di profil)."
+    flash(pesan_flash, "success")
+    return redirect(url_for("sesi.detail", sesi_id=s.id))

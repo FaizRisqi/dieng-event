@@ -32,7 +32,16 @@
       <a href="{{ s.link_rekaman }}" target="_blank" rel="noopener" class="bg-green-600 text-white rounded px-4 py-2">Tonton Rekaman</a>
     {% endif %}
     {% if not s.link_zoom and not s.link_rekaman %}
-      <span class="text-sm text-gray-500">Link Zoom/rekaman belum ditambahkan.</span>
+      <span class="text-sm text-gray-500 self-center">Link Zoom/rekaman belum ditambahkan.</span>
+    {% endif %}
+    {% if staff and target %}
+    <form method="post" action="{{ url_for('sesi.remind_wa', sesi_id=s.id) }}"
+          onsubmit="return confirm('Kirim pengingat WhatsApp ke {{ target|length }} peserta?')">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="bg-emerald-600 hover:bg-emerald-700 text-white rounded px-4 py-2 text-sm font-medium inline-flex items-center gap-1 transition">
+        <span>📲 Kirim Pengingat WA</span>
+      </button>
+    </form>
     {% endif %}
   </div>
 

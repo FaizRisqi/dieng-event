@@ -10,6 +10,7 @@ from werkzeug.utils import secure_filename
 from app import db
 from app.models import Tugas, Pengumpulan, Sesi, Community, CommunityMember, User
 from app.decorators import role_required
+from app.services.whatsapp import send_wa_message
 
 bp = Blueprint("tugas", __name__, url_prefix="/tugas")
 
@@ -332,3 +333,40 @@ def unduh(pid):
         as_attachment=not p.nama_simpan.endswith((".pdf", ".png", ".jpg", ".jpeg")),
         download_name=p.nama_asli,
     )
+
+
+@bp.route("/<int:tugas_id>/remind-wa", methods=["POST"])
+@role_required("admin", "mentor")
+def remind_wa(tugas_id):
+    t = db.get_or_404(Tugas, tugas_id)
+    target = peserta_target(t)
+    sudah_ids = {p.user_id for p in t.pengumpulan}
+    belum = [u for u in target if u.id not in sudah_ids]
+
+    if not belum:
+        flash("Semua peserta target sudah mengumpulkan tugas ini.", "info")
+        return redirect(url_for("tugas.detail", tugas_id=t.id))
+
+    berhasil = 0
+    tanpa_wa = 0
+    for user in belum:
+        if not user.no_wa:
+            tanpa_wa += 1
+            continue
+
+        pesan = (
+            f"Halo {user.nama}! 👋\n\n"
+            f"Pengingat Tugas Dieng Cyber:\n"
+            f"📝 *{t.judul}*\n"
+            f"⏰ Tenggat: {t.tenggat.strftime('%d/%m/%Y %H:%M')} WIB\n\n"
+            f"Tugas ini belum kamu kumpulkan. Segera selesaikan dan kumpulkan melalui aplikasi Dieng Event ya!"
+        )
+        ok, _ = send_wa_message(user.no_wa, pesan)
+        if ok:
+            berhasil += 1
+
+    pesan_flash = f"Pengingat WhatsApp terkirim ke {berhasil} peserta yang belum mengumpulkan."
+    if tanpa_wa > 0:
+        pesan_flash += f" ({tanpa_wa} peserta belum memiliki nomor WhatsApp di profil)."
+    flash(pesan_flash, "success")
+    return redirect(url_for("tugas.detail", tugas_id=t.id))

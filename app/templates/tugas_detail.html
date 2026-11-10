@@ -101,7 +101,18 @@
   </div>
 
   <div class="mt-6">
-    <h2 class="font-bold mb-2">Belum mengumpulkan ({{ belum|length }})</h2>
+    <div class="flex items-center justify-between mb-2">
+      <h2 class="font-bold">Belum mengumpulkan ({{ belum|length }})</h2>
+      {% if belum %}
+      <form method="post" action="{{ url_for('tugas.remind_wa', tugas_id=t.id) }}"
+            onsubmit="return confirm('Kirim pengingat WhatsApp ke {{ belum|length }} peserta yang belum mengumpulkan?')">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1.5 rounded inline-flex items-center gap-1 transition">
+          <span>📲 Kirim Pengingat WA</span>
+        </button>
+      </form>
+      {% endif %}
+    </div>
     {% if belum %}
       <p class="text-sm">{{ belum|map(attribute='nama')|join(', ') }}</p>
     {% else %}

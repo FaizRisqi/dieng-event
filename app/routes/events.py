@@ -2,7 +2,8 @@ from datetime import datetime
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, abort
 from flask_login import current_user, login_required
 from app import db
-from app.models import Event, EventRegistration, Community, CommunityMember, Lokasi
+from app.models import Event, EventRegistration, Community, CommunityMember, Lokasi, User
+from app.services.whatsapp import send_wa_message
 
 bp = Blueprint("events", __name__, url_prefix="/events")
 
@@ -282,3 +283,42 @@ def absen(event_id, user_id):
         reg.status = "terdaftar" if reg.status == "hadir" else "hadir"
         db.session.commit()
     return redirect(url_for("events.detail", event_id=event_id))
+
+
+@bp.route("/<int:event_id>/remind-wa", methods=["POST"])
+@login_required
+def remind_wa(event_id):
+    event = db.get_or_404(Event, event_id)
+    if not bisa_kelola(event):
+        abort(403)
+
+    registrasi_aktif = [r for r in event.registrations if r.status in ("terdaftar", "hadir")]
+    if not registrasi_aktif:
+        flash("Belum ada peserta terdaftar untuk dikirimi pengingat.", "error")
+        return redirect(url_for("events.detail", event_id=event.id))
+
+    berhasil = 0
+    tanpa_wa = 0
+    for r in registrasi_aktif:
+        user = r.user
+        if not user.no_wa:
+            tanpa_wa += 1
+            continue
+
+        pesan = (
+            f"Halo {user.nama}! 👋\n\n"
+            f"Pengingat event Dieng Cyber:\n"
+            f"📌 *{event.judul}*\n"
+            f"📅 Tanggal: {event.mulai.strftime('%d/%m/%Y %H:%M')} - {event.selesai.strftime('%H:%M')} WIB\n"
+            f"📍 Lokasi: {event.nama_lokasi}\n\n"
+            f"Pastikan hadir tepat waktu ya! Terima kasih."
+        )
+        ok, _ = send_wa_message(user.no_wa, pesan)
+        if ok:
+            berhasil += 1
+
+    pesan_flash = f"Pengingat WhatsApp terkirim ke {berhasil} peserta."
+    if tanpa_wa > 0:
+        pesan_flash += f" ({tanpa_wa} peserta belum mengisi nomor WhatsApp di profil)."
+    flash(pesan_flash, "success")
+    return redirect(url_for("events.detail", event_id=event.id))

@@ -69,7 +69,18 @@
 
 {% if bisa %}
 <div class="mt-8">
-  <h2 class="font-bold mb-2">Daftar Peserta</h2>
+  <div class="flex items-center justify-between mb-2">
+    <h2 class="font-bold">Daftar Peserta</h2>
+    {% if aktif and not selesai %}
+    <form method="post" action="{{ url_for('events.remind_wa', event_id=event.id) }}"
+          onsubmit="return confirm('Kirim notifikasi pengingat WhatsApp ke {{ aktif|length }} peserta?')">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1.5 rounded inline-flex items-center gap-1 transition">
+        <span>📲 Kirim Pengingat WA</span>
+      </button>
+    </form>
+    {% endif %}
+  </div>
   {% if aktif %}
   <table class="w-full text-sm bg-white rounded shadow">
     <thead class="text-left border-b">

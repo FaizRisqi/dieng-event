@@ -22,9 +22,11 @@
 - [x] Lokasi event jadi tabel/dropdown agar bisa deteksi bentrok lebih akurat (master data lokasi, kapasitas ruangan, deteksi bentrok ID & teks)
 - [x] Pagination di halaman list (sesi, tugas, event daftar, pengumuman, catatan dengan navigasi halaman)
 - [x] Proteksi CSRF dengan Flask-WTF (wajib sebelum produksi)
+- [x] Ekspor rekap kehadiran & nilai tugas ke CSV untuk arsip/laporan
+- [x] Pengingat WhatsApp (dukungan Fonnte & webhook n8n dengan tombol broadcast per event/sesi/tugas)
+- [x] Halaman error 500 (Internal Server Error)
 
 ## Belum / Sisa Pekerjaan 🔲
 
-- [ ] Pengingat WhatsApp (via n8n atau Fonnte)
 - [ ] Ringkasan Zoom dengan AI (opsional, butuh API key)
 - [ ] Deploy ke server / VPS
