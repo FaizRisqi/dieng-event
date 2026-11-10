@@ -2,12 +2,18 @@
 {% block title %}Kalender{% endblock %}
 {% block main_class %}max-w-5xl{% endblock %}
 {% block content %}
-<div class="flex justify-between items-center mb-2">
-  <h1 class="text-xl font-bold">Kalender</h1>
+<div class="flex flex-wrap justify-between items-center gap-3 mb-2">
+  <div class="flex items-center gap-3">
+    <h1 class="text-xl font-bold">Kalender</h1>
+    <div class="text-xs bg-gray-200 rounded p-1 flex">
+      <span class="px-2.5 py-1 bg-white rounded font-medium shadow-sm text-blue-600">📅 Kalender</span>
+      <a href="{{ url_for('events.daftar') }}" class="px-2.5 py-1 text-gray-700 hover:text-black">📋 Daftar Event</a>
+    </div>
+  </div>
   <div class="flex items-center gap-4">
-    <a href="{{ url_for('notes.index') }}" class="text-blue-600">Semua catatan</a>
+    <a href="{{ url_for('notes.index') }}" class="text-sm text-blue-600">Semua catatan</a>
     {% if bisa_buat %}
-      <a href="{{ url_for('events.new') }}" class="bg-blue-600 text-white rounded px-4 py-2">+ Event</a>
+      <a href="{{ url_for('events.new') }}" class="bg-blue-600 text-white rounded px-4 py-2 text-sm">+ Event</a>
     {% endif %}
   </div>
 </div>

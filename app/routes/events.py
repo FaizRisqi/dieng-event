@@ -121,6 +121,54 @@ def calendar():
     return render_template("calendar.html", bisa_buat=bool(komunitas_dikelola()))
 
 
+@bp.route("/daftar")
+def daftar():
+    q = request.args.get("q", "").strip()
+    cid = request.args.get("community_id", type=int)
+    status = request.args.get("status", "")
+    page = request.args.get("page", 1, type=int)
+
+    query = Event.query
+    if q:
+        query = query.filter(
+            db.or_(Event.judul.ilike(f"%{q}%"), Event.lokasi.ilike(f"%{q}%"))
+        )
+    if cid:
+        query = query.filter_by(community_id=cid)
+
+    sekarang = datetime.now()
+    if status == "mendatang":
+        query = query.filter(Event.selesai >= sekarang).order_by(Event.mulai.asc())
+    elif status == "selesai":
+        query = query.filter(Event.selesai < sekarang).order_by(Event.mulai.desc())
+    else:
+        query = query.order_by(Event.mulai.desc())
+
+    pagination = query.paginate(page=page, per_page=10, error_out=False)
+    events = pagination.items
+    komunitas = Community.query.order_by(Community.nama).all()
+    extra_args = {}
+    if q:
+        extra_args["q"] = q
+    if cid:
+        extra_args["community_id"] = cid
+    if status:
+        extra_args["status"] = status
+
+    return render_template(
+        "events_list.html",
+        events=events,
+        pagination=pagination,
+        extra_args=extra_args,
+        komunitas=komunitas,
+        q=q,
+        cid=cid,
+        status=status,
+        bisa_buat=bool(komunitas_dikelola()),
+        sekarang=sekarang,
+    )
+
+
 @bp.route("/api")
 def api():
     data = [

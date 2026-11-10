@@ -131,6 +131,7 @@ def _form(sesi=None):
 def index():
     q = request.args.get("q", "").strip()
     cid = request.args.get("community_id", type=int)
+    page = request.args.get("page", 1, type=int)
 
     query = Sesi.query
     if q:
@@ -140,10 +141,26 @@ def index():
     if cid:
         query = query.filter_by(community_id=cid)
 
-    daftar = query.order_by(Sesi.tanggal.desc(), Sesi.jam_mulai.desc()).all()
+    pagination = query.order_by(Sesi.tanggal.desc(), Sesi.jam_mulai.desc()).paginate(
+        page=page, per_page=10, error_out=False
+    )
+    daftar = pagination.items
     komunitas = Community.query.order_by(Community.nama).all()
+    extra_args = {}
+    if q:
+        extra_args["q"] = q
+    if cid:
+        extra_args["community_id"] = cid
+
     return render_template(
-        "sesi.html", daftar=daftar, staff=staff(), q=q, cid=cid, komunitas=komunitas
+        "sesi.html",
+        daftar=daftar,
+        pagination=pagination,
+        extra_args=extra_args,
+        staff=staff(),
+        q=q,
+        cid=cid,
+        komunitas=komunitas,
     )
 
 

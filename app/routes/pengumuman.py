@@ -48,6 +48,7 @@ def bisa_kelola(p):
 def index():
     q = request.args.get("q", "").strip()
     cid = request.args.get("community_id", type=int)
+    page = request.args.get("page", 1, type=int)
 
     query = Pengumuman.query
     if q:
@@ -57,16 +58,33 @@ def index():
     if cid:
         query = query.filter_by(community_id=cid)
 
-    # Urutkan: pin terlebih dahulu (desc), lalu created_at (desc)
-    semua = query.order_by(Pengumuman.pin.desc(), Pengumuman.created_at.desc()).all()
-    daftar = [p for p in semua if bisa_baca(p)]
+    if not staff():
+        if current_user.is_authenticated:
+            community_ids = [m.community_id for m in current_user.memberships]
+            query = query.filter(
+                db.or_(Pengumuman.community_id.is_(None), Pengumuman.community_id.in_(community_ids))
+            )
+        else:
+            query = query.filter(Pengumuman.community_id.is_(None))
+
+    pagination = query.order_by(Pengumuman.pin.desc(), Pengumuman.created_at.desc()).paginate(
+        page=page, per_page=10, error_out=False
+    )
+    daftar = pagination.items
 
     bisa_buat = bool(staff() or komunitas_dikelola())
     komunitas = Community.query.order_by(Community.nama).all()
+    extra_args = {}
+    if q:
+        extra_args["q"] = q
+    if cid:
+        extra_args["community_id"] = cid
 
     return render_template(
         "pengumuman.html",
         daftar=daftar,
+        pagination=pagination,
+        extra_args=extra_args,
         bisa_buat=bisa_buat,
         komunitas=komunitas,
         q=q,

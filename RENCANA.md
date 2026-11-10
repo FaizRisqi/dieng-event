@@ -20,11 +20,11 @@
 - [x] Halaman error khusus (403 Akses Ditolak, 404 Tidak Ditemukan, 413 File Terlalu Besar)
 - [x] Pengumuman: umum dan per komunitas (pin/sematkan, filter komunitas, dashboard & detail komunitas)
 - [x] Lokasi event jadi tabel/dropdown agar bisa deteksi bentrok lebih akurat (master data lokasi, kapasitas ruangan, deteksi bentrok ID & teks)
+- [x] Pagination di halaman list (sesi, tugas, event daftar, pengumuman, catatan dengan navigasi halaman)
 
 ## Belum / Sisa Pekerjaan 🔲
 
 - [ ] Pengingat WhatsApp (via n8n atau Fonnte)
 - [ ] Ringkasan Zoom dengan AI (opsional, butuh API key)
-- [ ] Pagination di halaman list (sesi, tugas, event)
 - [ ] Proteksi CSRF dengan Flask-WTF (wajib sebelum produksi)
 - [ ] Deploy ke server / VPS

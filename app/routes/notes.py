@@ -115,11 +115,21 @@ def _handle_form(note=None):
 
 @bp.route("/")
 def index():
-    daftar = CalendarNote.query.order_by(CalendarNote.tanggal.desc(), CalendarNote.id.desc()).all()
+    page = request.args.get("page", 1, type=int)
+    pagination = CalendarNote.query.order_by(
+        CalendarNote.tanggal.desc(), CalendarNote.id.desc()
+    ).paginate(page=page, per_page=10, error_out=False)
+    daftar = pagination.items
     bisa_tulis = current_user.is_authenticated and (
         current_user.role == "admin" or bool(komunitas_dikelola())
     )
-    return render_template("notes.html", daftar=daftar, bisa_tulis=bisa_tulis)
+    return render_template(
+        "notes.html",
+        daftar=daftar,
+        pagination=pagination,
+        extra_args={},
+        bisa_tulis=bisa_tulis,
+    )
 
 
 @bp.route("/api")

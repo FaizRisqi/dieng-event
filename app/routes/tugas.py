@@ -121,6 +121,7 @@ def _form(tugas=None):
 def index():
     q = request.args.get("q", "").strip()
     cid = request.args.get("community_id", type=int)
+    page = request.args.get("page", 1, type=int)
 
     query = Tugas.query
     if q:
@@ -130,8 +131,16 @@ def index():
     if cid:
         query = query.filter_by(community_id=cid)
 
-    semua = query.order_by(Tugas.tenggat.desc()).all()
-    daftar = [t for t in semua if bisa_akses(t)]
+    if not staff():
+        community_ids = [m.community_id for m in current_user.memberships]
+        query = query.filter(
+            db.or_(Tugas.community_id.is_(None), Tugas.community_id.in_(community_ids))
+        )
+
+    pagination = query.order_by(Tugas.tenggat.desc()).paginate(
+        page=page, per_page=10, error_out=False
+    )
+    daftar = pagination.items
     mine, jumlah = {}, {}
     if staff():
         jumlah = {t.id: len(t.pengumpulan) for t in daftar}
@@ -141,10 +150,24 @@ def index():
             for p in Pengumpulan.query.filter_by(user_id=current_user.id).all()
         }
     komunitas = Community.query.order_by(Community.nama).all()
+    extra_args = {}
+    if q:
+        extra_args["q"] = q
+    if cid:
+        extra_args["community_id"] = cid
+
     return render_template(
-        "tugas.html", daftar=daftar, staff=staff(),
-        mine=mine, jumlah=jumlah, sekarang=datetime.now(),
-        q=q, cid=cid, komunitas=komunitas,
+        "tugas.html",
+        daftar=daftar,
+        pagination=pagination,
+        extra_args=extra_args,
+        staff=staff(),
+        mine=mine,
+        jumlah=jumlah,
+        sekarang=datetime.now(),
+        q=q,
+        cid=cid,
+        komunitas=komunitas,
     )
 
 
