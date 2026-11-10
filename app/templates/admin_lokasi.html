@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Kelola Lokasi & Ruangan{% endblock %}
+{% block main_class %}max-w-4xl{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+  <h1 class="text-xl font-bold">Kelola Lokasi & Ruangan</h1>
+  <div class="space-x-3 text-sm">
+    <a href="{{ url_for('admin.users') }}" class="text-blue-600">Pengguna</a>
+    <span class="text-gray-400">|</span>
+    <span class="font-semibold text-gray-800">Lokasi</span>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <!-- Form Tambah Lokasi -->
+  <div class="bg-white rounded shadow p-4 h-fit">
+    <h2 class="font-bold mb-3 text-base">Tambah Lokasi Baru</h2>
+    <form method="post" class="space-y-3">
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1">Nama Lokasi / Ruangan *</label>
+        <input name="nama" required placeholder="Contoh: Lab Komputer 1" class="w-full border rounded p-2 text-sm">
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1">Alamat / Gedung</label>
+        <input name="alamat" placeholder="Contoh: Gedung A Lt. 2" class="w-full border rounded p-2 text-sm">
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1">Kapasitas Maksimal (orang)</label>
+        <input name="kapasitas" type="number" min="1" placeholder="Contoh: 40" class="w-full border rounded p-2 text-sm">
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1">Keterangan / Fasilitas</label>
+        <textarea name="keterangan" rows="3" placeholder="Contoh: Proyektor, AC, 30 PC" class="w-full border rounded p-2 text-sm"></textarea>
+      </div>
+      <button class="w-full bg-blue-600 text-white rounded p-2 text-sm font-medium">Simpan Lokasi</button>
+    </form>
+  </div>
+
+  <!-- Daftar Lokasi -->
+  <div class="md:col-span-2 space-y-3">
+    {% for lok in daftar %}
+    <div class="bg-white rounded shadow p-4">
+      <div class="flex justify-between items-start">
+        <div>
+          <h3 class="font-bold text-base text-gray-900">{{ lok.nama }}</h3>
+          {% if lok.alamat %}
+            <p class="text-xs text-gray-500 mt-0.5">📍 {{ lok.alamat }}</p>
+          {% endif %}
+        </div>
+        {% if lok.kapasitas %}
+          <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
+            Kapasitas: {{ lok.kapasitas }} orang
+          </span>
+        {% endif %}
+      </div>
+
+      {% if lok.keterangan %}
+        <p class="text-sm text-gray-600 mt-2 whitespace-pre-line">{{ lok.keterangan }}</p>
+      {% endif %}
+
+      <div class="mt-3 pt-3 border-t flex justify-between items-center text-xs text-gray-500">
+        <span>{{ lok.events|length }} event terdaftar di lokasi ini</span>
+        <div class="space-x-3">
+          <a href="{{ url_for('admin.edit_lokasi', lid=lok.id) }}" class="text-yellow-600 hover:underline">Edit</a>
+          <form method="post" action="{{ url_for('admin.delete_lokasi', lid=lok.id) }}" class="inline"
+                onsubmit="return confirm('Hapus lokasi ini?')">
+            <button class="text-red-600 hover:underline">Hapus</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="bg-white rounded shadow p-6 text-center text-gray-500 text-sm">
+      Belum ada data lokasi tersimpan. Tambahkan lokasi pertama lewat formulir di samping.
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

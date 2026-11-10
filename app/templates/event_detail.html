@@ -4,7 +4,14 @@
 {% block content %}
 <h1 class="text-2xl font-bold">{{ event.judul }}</h1>
 <div class="mt-3 space-y-1 text-sm">
-  <p><b>Lokasi:</b> {{ event.lokasi }}</p>
+  <p><b>Lokasi:</b> {{ event.nama_lokasi }}
+    {% if event.tempat and event.tempat.alamat %}
+      <span class="text-xs text-gray-500">({{ event.tempat.alamat }})</span>
+    {% endif %}
+  </p>
+  {% if event.tempat and event.tempat.keterangan %}
+    <p class="text-xs text-gray-500">Fasilitas: {{ event.tempat.keterangan }}</p>
+  {% endif %}
   {% if event.community %}
   <p><b>Komunitas:</b>
     <a href="{{ url_for('communities.detail', community_id=event.community.id) }}" class="text-blue-600">{{ event.community.nama }}</a>

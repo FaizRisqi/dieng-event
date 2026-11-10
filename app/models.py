@@ -50,11 +50,26 @@ class CommunityMember(db.Model):
     user = db.relationship("User", backref="memberships")
 
 
+class Lokasi(db.Model):
+    __tablename__ = "lokasi"
+
+    id = db.Column(db.Integer, primary_key=True)
+    nama = db.Column(db.String(100), nullable=False, unique=True)
+    alamat = db.Column(db.String(255))
+    kapasitas = db.Column(db.Integer)
+    keterangan = db.Column(db.Text)
+
+    events = db.relationship("Event", backref="tempat")
+
+
 class Event(db.Model):
     __tablename__ = "events"
 
     id = db.Column(db.Integer, primary_key=True)
     community_id = db.Column(db.Integer, db.ForeignKey("communities.id"), nullable=True)
+    lokasi_id = db.Column(
+        db.Integer, db.ForeignKey("lokasi.id", ondelete="SET NULL"), nullable=True
+    )
     judul = db.Column(db.String(150), nullable=False)
     deskripsi = db.Column(db.Text)
     lokasi = db.Column(db.String(100))
@@ -65,6 +80,12 @@ class Event(db.Model):
 
     registrations = db.relationship("EventRegistration", backref="event", cascade="all, delete-orphan")
     notes = db.relationship("CalendarNote", backref="event")
+
+    @property
+    def nama_lokasi(self):
+        if self.tempat:
+            return self.tempat.nama
+        return self.lokasi or "-"
 
 
 class EventRegistration(db.Model):

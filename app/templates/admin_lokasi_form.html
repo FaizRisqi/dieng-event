@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Edit Lokasi{% endblock %}
+{% block main_class %}max-w-md{% endblock %}
+{% block content %}
+<h1 class="text-xl font-bold mb-4">Edit Lokasi</h1>
+
+<form method="post" class="space-y-4 bg-white rounded shadow p-5">
+  <div>
+    <label class="block text-xs font-medium text-gray-700 mb-1">Nama Lokasi / Ruangan *</label>
+    <input name="nama" value="{{ lok.nama }}" required class="w-full border rounded p-2 text-sm">
+  </div>
+  <div>
+    <label class="block text-xs font-medium text-gray-700 mb-1">Alamat / Gedung</label>
+    <input name="alamat" value="{{ lok.alamat or '' }}" class="w-full border rounded p-2 text-sm">
+  </div>
+  <div>
+    <label class="block text-xs font-medium text-gray-700 mb-1">Kapasitas Maksimal (orang)</label>
+    <input name="kapasitas" type="number" min="1" value="{{ lok.kapasitas or '' }}" class="w-full border rounded p-2 text-sm">
+  </div>
+  <div>
+    <label class="block text-xs font-medium text-gray-700 mb-1">Keterangan / Fasilitas</label>
+    <textarea name="keterangan" rows="4" class="w-full border rounded p-2 text-sm">{{ lok.keterangan or '' }}</textarea>
+  </div>
+  <div class="flex gap-2">
+    <button class="bg-blue-600 text-white rounded px-4 py-2 text-sm font-medium">Simpan Perubahan</button>
+    <a href="{{ url_for('admin.lokasi') }}" class="bg-gray-100 text-gray-700 rounded px-4 py-2 text-sm">Batal</a>
+  </div>
+</form>
+{% endblock %}

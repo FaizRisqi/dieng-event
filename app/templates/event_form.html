@@ -3,41 +3,82 @@
 {% block content %}
 {% set f = request.form %}
 {% set sel = f.get('community_id', (event.community_id|string) if event and event.community_id else request.args.get('community_id', '')) %}
+{% set sel_lok = f.get('lokasi_id', (event.lokasi_id|string) if event and event.lokasi_id else '') %}
 <h1 class="text-xl font-bold mb-4">{{ 'Edit' if event else 'Tambah' }} Event</h1>
-<form method="post" class="space-y-3">
-  <input name="judul" placeholder="Judul event" required
-         value="{{ f.get('judul', event.judul if event else '') }}"
-         class="w-full border rounded p-2">
-  <input name="lokasi" placeholder="Lokasi / ruangan" required
-         value="{{ f.get('lokasi', event.lokasi if event else '') }}"
-         class="w-full border rounded p-2">
+<form method="post" class="space-y-4">
+  <div>
+    <label class="block text-sm font-medium mb-1">Judul Event *</label>
+    <input name="judul" placeholder="Contoh: Workshop Python untuk Pemula" required
+           value="{{ f.get('judul', event.judul if event else '') }}"
+           class="w-full border rounded p-2">
+  </div>
 
-  <label class="block text-sm">Komunitas</label>
-  <select name="community_id" {% if current_user.role != 'admin' %}required{% endif %}
-          class="w-full border rounded p-2">
-    {% if current_user.role == 'admin' %}
-      <option value="">Umum (tanpa komunitas)</option>
-    {% else %}
-      <option value="">Pilih komunitas</option>
-    {% endif %}
-    {% for k in komunitas %}
-      <option value="{{ k.id }}" {% if sel == k.id|string %}selected{% endif %}>{{ k.nama }}</option>
-    {% endfor %}
-  </select>
+  <div>
+    <div class="flex justify-between items-center mb-1">
+      <label class="block text-sm font-medium">Lokasi / Ruangan *</label>
+      {% if current_user.role == 'admin' %}
+        <a href="{{ url_for('admin.lokasi') }}" target="_blank" class="text-xs text-blue-600 hover:underline">+ Kelola Master Lokasi</a>
+      {% endif %}
+    </div>
+    <select name="lokasi_id" id="lokasi_id" class="w-full border rounded p-2 text-sm mb-2">
+      <option value="">-- Pilih Lokasi Tersimpan (atau isi manual di bawah) --</option>
+      {% for l in daftar_lokasi %}
+        <option value="{{ l.id }}" {% if sel_lok == l.id|string %}selected{% endif %}>
+          {{ l.nama }}{% if l.kapasitas %} (kapasitas {{ l.kapasitas }} orang){% endif %}
+        </option>
+      {% endfor %}
+    </select>
+    <input name="lokasi_manual" placeholder="Ketik lokasi manual jika tidak ada di daftar tersimpan"
+           value="{{ f.get('lokasi_manual', event.lokasi if event and not event.lokasi_id else '') }}"
+           class="w-full border rounded p-2 text-sm">
+  </div>
 
-  <label class="block text-sm">Mulai</label>
-  <input name="mulai" type="datetime-local" required
-         value="{{ f.get('mulai', event.mulai.strftime('%Y-%m-%dT%H:%M') if event else '') }}"
-         class="w-full border rounded p-2">
-  <label class="block text-sm">Selesai</label>
-  <input name="selesai" type="datetime-local" required
-         value="{{ f.get('selesai', event.selesai.strftime('%Y-%m-%dT%H:%M') if event else '') }}"
-         class="w-full border rounded p-2">
-  <input name="kuota" type="number" min="1" placeholder="Kuota (kosongkan jika tanpa batas)"
-         value="{{ f.get('kuota', event.kuota if event and event.kuota else '') }}"
-         class="w-full border rounded p-2">
-  <textarea name="deskripsi" rows="4" placeholder="Deskripsi"
-            class="w-full border rounded p-2">{{ f.get('deskripsi', event.deskripsi if event and event.deskripsi else '') }}</textarea>
-  <button class="w-full bg-blue-600 text-white rounded p-2">Simpan</button>
+  <div>
+    <label class="block text-sm font-medium mb-1">Komunitas</label>
+    <select name="community_id" {% if current_user.role != 'admin' %}required{% endif %}
+            class="w-full border rounded p-2 text-sm">
+      {% if current_user.role == 'admin' %}
+        <option value="">Umum (tanpa komunitas)</option>
+      {% else %}
+        <option value="">Pilih komunitas</option>
+      {% endif %}
+      {% for k in komunitas %}
+        <option value="{{ k.id }}" {% if sel == k.id|string %}selected{% endif %}>{{ k.nama }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <div>
+      <label class="block text-sm font-medium mb-1">Waktu Mulai *</label>
+      <input name="mulai" type="datetime-local" required
+             value="{{ f.get('mulai', event.mulai.strftime('%Y-%m-%dT%H:%M') if event else '') }}"
+             class="w-full border rounded p-2 text-sm">
+    </div>
+    <div>
+      <label class="block text-sm font-medium mb-1">Waktu Selesai *</label>
+      <input name="selesai" type="datetime-local" required
+             value="{{ f.get('selesai', event.selesai.strftime('%Y-%m-%dT%H:%M') if event else '') }}"
+             class="w-full border rounded p-2 text-sm">
+    </div>
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium mb-1">Kuota Peserta (orang)</label>
+    <input name="kuota" type="number" min="1" placeholder="Kosongkan jika tanpa batas (otomatis ikut kapasitas ruangan jika dipilih)"
+           value="{{ f.get('kuota', event.kuota if event and event.kuota else '') }}"
+           class="w-full border rounded p-2 text-sm">
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium mb-1">Deskripsi Event</label>
+    <textarea name="deskripsi" rows="4" placeholder="Jelaskan detail event, agenda, atau syarat peserta..."
+              class="w-full border rounded p-2 text-sm">{{ f.get('deskripsi', event.deskripsi if event and event.deskripsi else '') }}</textarea>
+  </div>
+
+  <div class="flex gap-3">
+    <button class="flex-1 bg-blue-600 text-white rounded p-2 font-medium">Simpan Event</button>
+    <a href="{{ url_for('events.calendar') }}" class="bg-gray-100 text-gray-700 rounded px-4 py-2 text-center">Batal</a>
+  </div>
 </form>
 {% endblock %}

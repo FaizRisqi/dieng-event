@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, abort
 from flask_login import current_user, login_required
 from app import db
-from app.models import Event, EventRegistration, Community, CommunityMember
+from app.models import Event, EventRegistration, Community, CommunityMember, Lokasi
 
 bp = Blueprint("events", __name__, url_prefix="/events")
 
@@ -33,12 +33,21 @@ def bisa_kelola(event):
     return bool(m and m.role == "pengurus")
 
 
-def cari_bentrok(lokasi, mulai, selesai, abaikan_id=None):
-    q = Event.query.filter(
-        Event.lokasi == lokasi,
-        Event.mulai < selesai,
-        Event.selesai > mulai,
-    )
+def cari_bentrok(lokasi_id, lokasi_teks, mulai, selesai, abaikan_id=None):
+    if lokasi_id:
+        q = Event.query.filter(
+            Event.lokasi_id == lokasi_id,
+            Event.mulai < selesai,
+            Event.selesai > mulai,
+        )
+    elif lokasi_teks:
+        q = Event.query.filter(
+            Event.lokasi == lokasi_teks,
+            Event.mulai < selesai,
+            Event.selesai > mulai,
+        )
+    else:
+        return []
     if abaikan_id:
         q = q.filter(Event.id != abaikan_id)
     return q.all()
@@ -53,10 +62,17 @@ def hitung_aktif(event_id):
 
 def _handle_form(event=None):
     pilihan = komunitas_dikelola()
+    daftar_lokasi = Lokasi.query.order_by(Lokasi.nama).all()
 
     if request.method == "POST":
         judul = request.form["judul"].strip()
-        lokasi = request.form["lokasi"].strip()
+        lid = request.form.get("lokasi_id") or None
+        lid = int(lid) if lid else None
+        lokasi_manual = request.form.get("lokasi_manual", "").strip()
+
+        lokasi_obj = db.session.get(Lokasi, lid) if lid else None
+        lokasi_nama = lokasi_obj.nama if lokasi_obj else lokasi_manual
+
         deskripsi = request.form.get("deskripsi", "").strip()
         kuota = request.form.get("kuota")
         cid = request.form.get("community_id") or None
@@ -64,19 +80,21 @@ def _handle_form(event=None):
         mulai = datetime.strptime(request.form["mulai"], FMT)
         selesai = datetime.strptime(request.form["selesai"], FMT)
 
-        if selesai <= mulai:
+        if not lokasi_nama:
+            flash("Pilih lokasi tersimpan atau isi lokasi manual.", "error")
+        elif selesai <= mulai:
             flash("Waktu selesai harus setelah waktu mulai.", "error")
         elif cid is None and current_user.role != "admin":
             flash("Pilih komunitas untuk event ini.", "error")
         elif cid is not None and cid not in {c.id for c in pilihan}:
             abort(403)
         else:
-            bentrok = cari_bentrok(lokasi, mulai, selesai, event.id if event else None)
+            bentrok = cari_bentrok(lid, lokasi_nama, mulai, selesai, event.id if event else None)
             if bentrok:
                 b = bentrok[0]
                 flash(
                     f"Jadwal bentrok dengan '{b.judul}' "
-                    f"({b.mulai:%d/%m/%Y %H:%M} - {b.selesai:%H:%M}) di {lokasi}.",
+                    f"({b.mulai:%d/%m/%Y %H:%M} - {b.selesai:%H:%M}) di {lokasi_nama}.",
                     "error",
                 )
             else:
@@ -84,9 +102,10 @@ def _handle_form(event=None):
                     event = Event(created_by=current_user.id)
                     db.session.add(event)
                 event.judul = judul
-                event.lokasi = lokasi
+                event.lokasi_id = lid
+                event.lokasi = lokasi_nama
                 event.deskripsi = deskripsi
-                event.kuota = int(kuota) if kuota else None
+                event.kuota = int(kuota) if kuota else (lokasi_obj.kapasitas if lokasi_obj and not kuota else None)
                 event.community_id = cid
                 event.mulai = mulai
                 event.selesai = selesai
@@ -94,7 +113,7 @@ def _handle_form(event=None):
                 flash("Event berhasil disimpan.", "success")
                 return redirect(url_for("events.detail", event_id=event.id))
 
-    return render_template("event_form.html", event=event, komunitas=pilihan)
+    return render_template("event_form.html", event=event, komunitas=pilihan, daftar_lokasi=daftar_lokasi)
 
 
 @bp.route("/")
@@ -107,7 +126,7 @@ def api():
     data = [
         {
             "id": e.id,
-            "title": e.judul,
+            "title": f"{e.judul} ({e.nama_lokasi})" if e.nama_lokasi != "-" else e.judul,
             "start": e.mulai.isoformat(),
             "end": e.selesai.isoformat(),
             "url": url_for("events.detail", event_id=e.id),

@@ -2,7 +2,15 @@
 {% block title %}Pengguna{% endblock %}
 {% block main_class %}max-w-3xl{% endblock %}
 {% block content %}
-<h1 class="text-xl font-bold mb-4">Pengguna</h1>
+<div class="flex justify-between items-center mb-4">
+  <h1 class="text-xl font-bold">Pengguna</h1>
+  <div class="space-x-3 text-sm">
+    <span class="font-semibold text-gray-800">Pengguna</span>
+    <span class="text-gray-400">|</span>
+    <a href="{{ url_for('admin.lokasi') }}" class="text-blue-600">Lokasi & Ruangan</a>
+  </div>
+</div>
+
 <table class="w-full text-sm bg-white rounded shadow">
   <thead class="text-left border-b">
     <tr><th class="p-2">Nama</th><th class="p-2">Email</th><th class="p-2">Role</th><th class="p-2"></th></tr>
