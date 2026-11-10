@@ -2,6 +2,10 @@
 
 _Dibuat otomatis dari git log._
 
+## 2026-11-10
+
+- docs: tambah AGENTS.md, README.md, RENCANA.md untuk konteks agent
+
 ## 2026-10-12
 
 - feat: sesi materi zoom, rekaman, materi, role mentor
