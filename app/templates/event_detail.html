@@ -29,15 +29,23 @@
   {% elif selesai %}
     <span class="text-gray-500">Event sudah selesai.</span>
   {% elif reg and reg.status != 'batal' %}
-    <span class="mr-3 text-green-700">
-      {{ 'Kehadiran tercatat' if reg.status == 'hadir' else 'Kamu sudah terdaftar' }}
-    </span>
-    {% if reg.status != 'hadir' %}
-    <form method="post" action="{{ url_for('events.batal', event_id=event.id) }}" class="inline"
-          onsubmit="return confirm('Batalkan pendaftaran?')">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <button class="text-red-600">Batalkan</button>
-    </form>
+    {% if reg.status == 'hadir' %}
+      <div class="flex items-center gap-3 flex-wrap">
+        <span class="inline-flex items-center gap-1.5 text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-xl">
+          ✓ Kehadiranmu Tercatat
+        </span>
+        <a href="{{ url_for('events.sertifikat', event_id=event.id) }}"
+           class="inline-flex items-center gap-1.5 text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-4 py-2 rounded-xl shadow-sm shadow-amber-500/20 transition">
+          <span>🎓 Unduh / Cetak Sertifikat Kehadiran</span>
+        </a>
+      </div>
+    {% else %}
+      <span class="mr-3 text-emerald-700 font-semibold text-sm">Kamu sudah terdaftar di event ini.</span>
+      <form method="post" action="{{ url_for('events.batal', event_id=event.id) }}" class="inline"
+            onsubmit="return confirm('Batalkan pendaftaran?')">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="text-xs text-red-600 hover:underline font-semibold">Batalkan Pendaftaran</button>
+      </form>
     {% endif %}
   {% elif penuh %}
     <span class="text-red-600">Kuota penuh.</span>
@@ -92,11 +100,20 @@
         <td class="p-2">{{ r.user.nama }}</td>
         <td class="p-2">{{ r.user.no_wa or '-' }}</td>
         <td class="p-2">{{ r.status }}</td>
-        <td class="p-2">
+        <td class="p-2 flex items-center gap-3">
           <form method="post" action="{{ url_for('events.absen', event_id=event.id, user_id=r.user_id) }}">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <button class="text-blue-600">{{ 'Batal hadir' if r.status == 'hadir' else 'Tandai hadir' }}</button>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="text-xs font-semibold {{ 'text-red-600 hover:underline' if r.status == 'hadir' else 'text-emerald-600 hover:underline' }}">
+              {{ 'Batal hadir' if r.status == 'hadir' else 'Tandai hadir' }}
+            </button>
           </form>
+          {% if r.status == 'hadir' %}
+            <span class="text-slate-300">&bull;</span>
+            <a href="{{ url_for('events.sertifikat', event_id=event.id, user_id=r.user_id) }}"
+               target="_blank" class="text-xs text-amber-600 font-bold hover:underline inline-flex items-center gap-1">
+              <span>🎓 Sertifikat</span>
+            </a>
+          {% endif %}
         </td>
       </tr>
       {% endfor %}

@@ -6,6 +6,7 @@ _Dibuat otomatis dari git log._
 
 - fix: resolusi konflik nama endpoint events.list_view dan persiapan database testing
 - feat: perapian desain ui/ux dan implementasi pola warna brand dieng cyber
+- feat: ringkasan sesi zoom otomatis dengan ai dan cetak sertifikat event resmi
 
 ## 2026-11-10
 

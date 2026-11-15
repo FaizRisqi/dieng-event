@@ -42,7 +42,7 @@ User (role: admin / mentor / anggota), Community, CommunityMember (role: penguru
 - Jangan pernah commit `.env`, token, atau API key
 
 ## Status
-Selesai: setup, auth + role, event + kalender + deteksi bentrok, pendaftaran + absensi event, komunitas, calendar notes, sesi Zoom + materi, tugas + penilaian, absensi sesi + rekap peserta, dashboard informatif, profil pengguna, filter & pencarian, halaman error 403/404/413/500, pengumuman (umum dan per komunitas), master lokasi event & deteksi bentrok akurat, pagination & event list view, proteksi CSRF (Flask-WTF), ekspor rekap ke CSV, pengingat WhatsApp (Fonnte/n8n/simulasi), perapian UI/UX dengan pola warna brand resmi Dieng Cyber (hijau, charcoal, merah, amber) & logo terintegrasi.
+Selesai: setup, auth + role, event + kalender + deteksi bentrok, pendaftaran + absensi event, komunitas, calendar notes, sesi Zoom + materi, tugas + penilaian, absensi sesi + rekap peserta, dashboard informatif, profil pengguna, filter & pencarian, halaman error 403/404/413/500, pengumuman (umum dan per komunitas), master lokasi event & deteksi bentrok akurat, pagination & event list view, proteksi CSRF (Flask-WTF), ekspor rekap ke CSV, pengingat WhatsApp (Fonnte/n8n/simulasi), perapian UI/UX dengan pola warna brand resmi Dieng Cyber (hijau, charcoal, merah, amber) & logo terintegrasi, ringkasan Zoom AI (Gemini / smart local summarizer), cetak sertifikat kehadiran event resmi.
 
 Belum:
 - Ringkasan Zoom dengan AI (butuh API key, opsional)

@@ -11,6 +11,7 @@ from app import db
 from app.models import Sesi, SesiFile, SesiAbsensi, Community, CommunityMember, User
 from app.decorators import role_required
 from app.services.whatsapp import send_wa_message
+from app.services.ai_summary import generate_ai_summary
 
 bp = Blueprint("sesi", __name__, url_prefix="/sesi")
 
@@ -325,4 +326,31 @@ def remind_wa(sesi_id):
     if tanpa_wa > 0:
         pesan_flash += f" ({tanpa_wa} anggota belum memiliki nomor WhatsApp di profil)."
     flash(pesan_flash, "success")
+    return redirect(url_for("sesi.detail", sesi_id=s.id))
+
+
+@bp.route("/<int:sesi_id>/generate-ringkasan", methods=["POST"])
+@role_required("admin", "mentor")
+def generate_ringkasan(sesi_id):
+    s = db.get_or_404(Sesi, sesi_id)
+    transkrip = request.form.get("transkrip", "").strip()
+
+    ok, hasil = generate_ai_summary(s.judul, s.deskripsi or "", transkrip)
+    if ok and hasil:
+        s.ringkasan = hasil
+        db.session.commit()
+        flash("✨ Ringkasan sesi berhasil dibuat oleh AI dan disimpan.", "success")
+    else:
+        flash("Gagal membuat ringkasan AI.", "error")
+    return redirect(url_for("sesi.detail", sesi_id=s.id))
+
+
+@bp.route("/<int:sesi_id>/simpan-ringkasan", methods=["POST"])
+@role_required("admin", "mentor")
+def simpan_ringkasan(sesi_id):
+    s = db.get_or_404(Sesi, sesi_id)
+    ringkasan = request.form.get("ringkasan", "").strip()
+    s.ringkasan = ringkasan if ringkasan else None
+    db.session.commit()
+    flash("Ringkasan sesi berhasil disimpan.", "success")
     return redirect(url_for("sesi.detail", sesi_id=s.id))

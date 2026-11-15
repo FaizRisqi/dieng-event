@@ -322,3 +322,33 @@ def remind_wa(event_id):
         pesan_flash += f" ({tanpa_wa} peserta belum mengisi nomor WhatsApp di profil)."
     flash(pesan_flash, "success")
     return redirect(url_for("events.detail", event_id=event.id))
+
+
+@bp.route("/<int:event_id>/sertifikat")
+@login_required
+def sertifikat(event_id):
+    import hashlib
+    event = db.get_or_404(Event, event_id)
+    target_user_id = request.args.get("user_id", type=int)
+
+    if target_user_id and (current_user.role == "admin" or bisa_kelola(event)):
+        peserta = db.get_or_404(User, target_user_id)
+    else:
+        peserta = current_user
+
+    reg = db.session.get(EventRegistration, (event.id, peserta.id))
+    if not reg or reg.status != "hadir":
+        flash("Sertifikat hanya tersedia bagi peserta yang status kehadirannya sudah tercatat 'hadir'.", "error")
+        return redirect(url_for("events.detail", event_id=event.id))
+
+    # Nomor sertifikat unik berbasis hash
+    nomor_unik = hashlib.md5(f"dieng-cert-{event.id}-{peserta.id}".encode()).hexdigest()[:8].upper()
+    nomor_sertifikat = f"DC/CERT/{event.mulai.strftime('%Y%m')}/{event.id:03d}-{peserta.id:03d}/{nomor_unik}"
+
+    return render_template(
+        "sertifikat.html",
+        event=event,
+        peserta=peserta,
+        nomor_sertifikat=nomor_sertifikat,
+        tanggal_terbit=event.selesai.strftime("%d %B %Y"),
+    )

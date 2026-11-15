@@ -45,12 +45,58 @@
     {% endif %}
   </div>
 
-  <div class="mt-8">
-    <h2 class="font-bold mb-2">Ringkasan</h2>
+  <!-- Ringkasan AI & Notulen Sesi -->
+  <div class="mt-8 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 relative overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-emerald-500 to-sky-500"></div>
+    <div class="flex justify-between items-center mb-4">
+      <div class="flex items-center gap-2.5">
+        <span class="text-xl">✨</span>
+        <div>
+          <h2 class="font-extrabold text-slate-900 text-base">Ringkasan Materi &amp; AI Notulen</h2>
+          <p class="text-xs text-slate-500">Intisari materi, poin pembahasan, dan tindak lanjut sesi</p>
+        </div>
+      </div>
+      {% if s.ringkasan %}
+      <button onclick="navigator.clipboard.writeText(document.getElementById('ringkasan-text').innerText); alert('Ringkasan berhasil disalin ke clipboard!')"
+              class="text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg transition flex items-center gap-1">
+        <span>📋 Salin</span>
+      </button>
+      {% endif %}
+    </div>
+
     {% if s.ringkasan %}
-      <div class="bg-white rounded shadow p-4 whitespace-pre-line">{{ s.ringkasan }}</div>
+      <div id="ringkasan-text" class="bg-slate-50 border border-slate-200/80 rounded-xl p-4 text-xs sm:text-sm text-slate-800 leading-relaxed whitespace-pre-line font-normal">
+{{ s.ringkasan }}
+      </div>
     {% else %}
-      <p class="text-sm text-gray-500">Belum ada ringkasan.</p>
+      <div class="bg-slate-50 border border-dashed border-slate-200 rounded-xl p-6 text-center text-xs text-slate-500">
+        <span class="text-2xl block mb-2">🤖</span>
+        Belum ada ringkasan sesi. Mentor atau admin dapat membuat ringkasan terstruktur secara otomatis menggunakan AI dari materi atau transkrip Zoom.
+      </div>
+    {% endif %}
+
+    {% if staff %}
+    <div class="mt-4 pt-4 border-t border-slate-100">
+      <details class="group">
+        <summary class="cursor-pointer text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1.5 select-none">
+          <span>✨ {{ 'Buat Ulang Ringkasan dengan AI' if s.ringkasan else 'Generate Ringkasan Zoom Otomatis (AI)' }}</span>
+          <span class="text-slate-400 text-[10px] group-open:rotate-180 transition">&darr;</span>
+        </summary>
+        <div class="mt-3 bg-emerald-50/50 border border-emerald-100 rounded-xl p-4">
+          <p class="text-xs text-slate-600 mb-2.5">
+            Kamu bisa menempelkan (paste) catatan mentah atau transkrip Zoom di bawah ini. Jika dikosongkan, AI akan menyusun ringkasan dari judul dan deskripsi sesi secara otomatis.
+          </p>
+          <form method="post" action="{{ url_for('sesi.generate_ringkasan', sesi_id=s.id) }}" class="space-y-3">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <textarea name="transkrip" rows="4" placeholder="Tempelkan transkrip / notulen Zoom di sini (opsional)..."
+                      class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"></textarea>
+            <button class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2 rounded-xl shadow-sm transition flex items-center gap-1.5">
+              <span>🤖 Proses Ringkasan dengan AI</span>
+            </button>
+          </form>
+        </div>
+      </details>
+    </div>
     {% endif %}
   </div>
 
