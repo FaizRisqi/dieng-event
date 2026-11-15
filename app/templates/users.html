@@ -1,41 +1,62 @@
 {% extends "base.html" %}
-{% block title %}Pengguna{% endblock %}
-{% block main_class %}max-w-3xl{% endblock %}
+{% block title %}Kelola Pengguna{% endblock %}
+{% block main_class %}max-w-4xl{% endblock %}
 {% block content %}
-<div class="flex justify-between items-center mb-4">
-  <h1 class="text-xl font-bold">Pengguna</h1>
-  <div class="space-x-3 text-sm">
-    <span class="font-semibold text-gray-800">Pengguna</span>
-    <span class="text-gray-400">|</span>
-    <a href="{{ url_for('admin.lokasi') }}" class="text-blue-600">Lokasi & Ruangan</a>
+<div class="flex flex-wrap justify-between items-center gap-3 mb-6">
+  <div>
+    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">Manajemen Pengguna</h1>
+    <p class="text-xs text-slate-500 mt-0.5">Atur hak akses akun (Admin, Mentor, atau Anggota)</p>
+  </div>
+  <div class="text-xs bg-slate-200/80 rounded-xl p-1 flex shadow-inner">
+    <span class="px-3 py-1 bg-white rounded-lg font-bold shadow-sm text-slate-900">👤 Pengguna</span>
+    <a href="{{ url_for('admin.lokasi') }}" class="px-3 py-1 text-slate-600 hover:text-slate-900 font-semibold transition">📍 Lokasi &amp; Ruangan</a>
   </div>
 </div>
 
-<table class="w-full text-sm bg-white rounded shadow">
-  <thead class="text-left border-b">
-    <tr><th class="p-2">Nama</th><th class="p-2">Email</th><th class="p-2">Role</th><th class="p-2"></th></tr>
-  </thead>
-  <tbody>
-    {% for u in daftar %}
-    <tr class="border-b last:border-0">
-      <td class="p-2">{{ u.nama }}</td>
-      <td class="p-2">{{ u.email }}</td>
-      {% if u.role == 'admin' %}
-        <td class="p-2" colspan="2">admin</td>
-      {% else %}
-      <form method="post" action="{{ url_for('admin.ubah_role', user_id=u.id) }}">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <td class="p-2">
-          <select name="role" class="border rounded p-1">
-            <option value="anggota" {% if u.role == 'anggota' %}selected{% endif %}>anggota</option>
-            <option value="mentor" {% if u.role == 'mentor' %}selected{% endif %}>mentor</option>
-          </select>
+<div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+  <table class="w-full text-sm">
+    <thead class="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-600 uppercase tracking-wider text-left">
+      <tr>
+        <th class="py-3 px-4">Nama</th>
+        <th class="py-3 px-4">Email</th>
+        <th class="py-3 px-4">No. WA</th>
+        <th class="py-3 px-4">Role Saat Ini</th>
+        <th class="py-3 px-4 text-right">Ubah Hak Akses</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-100">
+      {% for u in daftar %}
+      <tr class="hover:bg-slate-50/60 transition">
+        <td class="py-3.5 px-4 font-bold text-slate-800">{{ u.nama }}</td>
+        <td class="py-3.5 px-4 text-slate-600 text-xs">{{ u.email }}</td>
+        <td class="py-3.5 px-4 text-slate-500 text-xs">{{ u.no_wa or '-' }}</td>
+        <td class="py-3.5 px-4">
+          <span class="inline-block text-[10px] font-bold uppercase tracking-wider rounded-lg px-2.5 py-1
+            {% if u.role == 'admin' %}bg-red-50 text-red-700 border border-red-200
+            {% elif u.role == 'mentor' %}bg-amber-50 text-amber-800 border border-amber-200
+            {% else %}bg-emerald-50 text-emerald-800 border border-emerald-200{% endif %}">
+            {{ u.role }}
+          </span>
         </td>
-        <td class="p-2"><button class="text-blue-600">Simpan</button></td>
-      </form>
-      {% endif %}
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+        <td class="py-3.5 px-4 text-right">
+          {% if u.role == 'admin' %}
+            <span class="text-xs text-slate-400 italic">Super Admin</span>
+          {% else %}
+          <form method="post" action="{{ url_for('admin.ubah_role', user_id=u.id) }}" class="inline-flex items-center gap-2">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <select name="role" class="bg-slate-50 border border-slate-200 rounded-lg text-xs py-1 px-2 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+              <option value="anggota" {% if u.role == 'anggota' %}selected{% endif %}>Anggota</option>
+              <option value="mentor" {% if u.role == 'mentor' %}selected{% endif %}>Mentor</option>
+            </select>
+            <button class="bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs px-2.5 py-1 rounded-lg transition">
+              Simpan
+            </button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}

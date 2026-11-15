@@ -1,79 +1,89 @@
 {% extends "base.html" %}
 {% block title %}Kelola Lokasi & Ruangan{% endblock %}
-{% block main_class %}max-w-4xl{% endblock %}
+{% block main_class %}max-w-5xl{% endblock %}
 {% block content %}
-<div class="flex justify-between items-center mb-4">
-  <h1 class="text-xl font-bold">Kelola Lokasi & Ruangan</h1>
-  <div class="space-x-3 text-sm">
-    <a href="{{ url_for('admin.users') }}" class="text-blue-600">Pengguna</a>
-    <span class="text-gray-400">|</span>
-    <span class="font-semibold text-gray-800">Lokasi</span>
+<div class="flex flex-wrap justify-between items-center gap-3 mb-6">
+  <div>
+    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">Lokasi &amp; Ruangan Event</h1>
+    <p class="text-xs text-slate-500 mt-0.5">Master data ruangan untuk mencegah bentrok jadwal penggunaan</p>
+  </div>
+  <div class="text-xs bg-slate-200/80 rounded-xl p-1 flex shadow-inner">
+    <a href="{{ url_for('admin.users') }}" class="px-3 py-1 text-slate-600 hover:text-slate-900 font-semibold transition">👤 Pengguna</a>
+    <span class="px-3 py-1 bg-white rounded-lg font-bold shadow-sm text-slate-900">📍 Lokasi &amp; Ruangan</span>
   </div>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
   <!-- Form Tambah Lokasi -->
-  <div class="bg-white rounded shadow p-4 h-fit">
-    <h2 class="font-bold mb-3 text-base">Tambah Lokasi Baru</h2>
-    <form method="post" class="space-y-3">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 h-fit relative overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-1 bg-emerald-500"></div>
+    <h2 class="font-bold text-slate-900 text-base mb-4">Tambah Ruangan Baru</h2>
+    <form method="post" class="space-y-3.5">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div>
-        <label class="block text-xs font-medium text-gray-700 mb-1">Nama Lokasi / Ruangan *</label>
-        <input name="nama" required placeholder="Contoh: Lab Komputer 1" class="w-full border rounded p-2 text-sm">
+        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nama Lokasi / Ruangan *</label>
+        <input name="nama" required placeholder="Contoh: Lab Komputer 1"
+               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
       </div>
       <div>
-        <label class="block text-xs font-medium text-gray-700 mb-1">Alamat / Gedung</label>
-        <input name="alamat" placeholder="Contoh: Gedung A Lt. 2" class="w-full border rounded p-2 text-sm">
+        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Alamat / Lantai</label>
+        <input name="alamat" placeholder="Contoh: Gedung Cyber Lt. 2"
+               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
       </div>
       <div>
-        <label class="block text-xs font-medium text-gray-700 mb-1">Kapasitas Maksimal (orang)</label>
-        <input name="kapasitas" type="number" min="1" placeholder="Contoh: 40" class="w-full border rounded p-2 text-sm">
+        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Kapasitas Maksimal (orang)</label>
+        <input name="kapasitas" type="number" min="1" placeholder="Contoh: 40"
+               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
       </div>
       <div>
-        <label class="block text-xs font-medium text-gray-700 mb-1">Keterangan / Fasilitas</label>
-        <textarea name="keterangan" rows="3" placeholder="Contoh: Proyektor, AC, 30 PC" class="w-full border rounded p-2 text-sm"></textarea>
+        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Fasilitas / Keterangan</label>
+        <textarea name="keterangan" rows="3" placeholder="Contoh: Proyektor, AC, 30 PC Client"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition"></textarea>
       </div>
-      <button class="w-full bg-blue-600 text-white rounded p-2 text-sm font-medium">Simpan Lokasi</button>
+      <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl py-2.5 text-xs shadow-sm shadow-emerald-600/20 transition">
+        Simpan Ruangan
+      </button>
     </form>
   </div>
 
   <!-- Daftar Lokasi -->
-  <div class="md:col-span-2 space-y-3">
+  <div class="lg:col-span-2 space-y-3">
     {% for lok in daftar %}
-    <div class="bg-white rounded shadow p-4">
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 hover:border-emerald-300 hover:shadow-md transition">
       <div class="flex justify-between items-start">
         <div>
-          <h3 class="font-bold text-base text-gray-900">{{ lok.nama }}</h3>
+          <h3 class="font-extrabold text-base text-slate-900">{{ lok.nama }}</h3>
           {% if lok.alamat %}
-            <p class="text-xs text-gray-500 mt-0.5">📍 {{ lok.alamat }}</p>
+            <p class="text-xs text-slate-500 mt-1">📍 {{ lok.alamat }}</p>
           {% endif %}
         </div>
         {% if lok.kapasitas %}
-          <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
+          <span class="bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold px-2.5 py-0.5 rounded-lg">
             Kapasitas: {{ lok.kapasitas }} orang
           </span>
         {% endif %}
       </div>
 
       {% if lok.keterangan %}
-        <p class="text-sm text-gray-600 mt-2 whitespace-pre-line">{{ lok.keterangan }}</p>
+        <p class="text-xs text-slate-600 mt-2.5 whitespace-pre-line leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-100">{{ lok.keterangan }}</p>
       {% endif %}
 
-      <div class="mt-3 pt-3 border-t flex justify-between items-center text-xs text-gray-500">
-        <span>{{ lok.events|length }} event terdaftar di lokasi ini</span>
-        <div class="space-x-3">
-          <a href="{{ url_for('admin.edit_lokasi', lid=lok.id) }}" class="text-yellow-600 hover:underline">Edit</a>
+      <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center text-xs text-slate-400">
+        <span>📅 {{ lok.events|length }} event memakai ruangan ini</span>
+        <div class="flex items-center gap-3">
+          <a href="{{ url_for('admin.edit_lokasi', lid=lok.id) }}" class="text-amber-600 hover:text-amber-700 font-semibold">Edit</a>
+          <span class="text-slate-300">&bull;</span>
           <form method="post" action="{{ url_for('admin.delete_lokasi', lid=lok.id) }}" class="inline"
                 onsubmit="return confirm('Hapus lokasi ini?')">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <button class="text-red-600 hover:underline">Hapus</button>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="text-red-600 hover:text-red-700 font-semibold">Hapus</button>
           </form>
         </div>
       </div>
     </div>
     {% else %}
-    <div class="bg-white rounded shadow p-6 text-center text-gray-500 text-sm">
-      Belum ada data lokasi tersimpan. Tambahkan lokasi pertama lewat formulir di samping.
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-8 text-center text-slate-400 text-xs">
+      Belum ada lokasi tersimpan.
     </div>
     {% endfor %}
   </div>

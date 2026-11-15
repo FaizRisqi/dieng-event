@@ -15,7 +15,7 @@ def index():
 @login_required
 def dashboard():
     from datetime import datetime, timedelta
-    from app.models import Event, EventRegistration, Tugas, Pengumpulan, Sesi, CommunityMember, Pengumuman
+    from app.models import Event, EventRegistration, Tugas, Pengumpulan, Sesi, Community, CommunityMember, Pengumuman
 
     sekarang = datetime.now()
     minggu_depan = sekarang + timedelta(days=7)
@@ -50,11 +50,20 @@ def dashboard():
             db.or_(Pengumuman.community_id.is_(None), Pengumuman.community_id.in_(community_ids))
         ).order_by(Pengumuman.pin.desc(), Pengumuman.created_at.desc()).limit(3).all()
 
+    # Ringkasan statistik
+    stats = {
+        "event_aktif": Event.query.filter(Event.selesai >= sekarang).count(),
+        "total_sesi": Sesi.query.count(),
+        "total_komunitas": Community.query.count(),
+        "total_tugas": Tugas.query.count(),
+    }
+
     return render_template("dashboard.html",
                            upcoming_events=upcoming_events,
                            tugas_mendatang=tugas_mendatang,
                            sesi_mendatang=sesi_mendatang,
                            pengumuman_terbaru=pengumuman_terbaru,
+                           stats=stats,
                            sekarang=sekarang)
 
 

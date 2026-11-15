@@ -1,23 +1,35 @@
 {% extends "base.html" %}
 {% block title %}Rekap Peserta{% endblock %}
-{% block main_class %}max-w-lg{% endblock %}
+{% block main_class %}max-w-2xl{% endblock %}
 {% block content %}
-<h1 class="text-2xl font-bold">Rekap Peserta</h1>
-<p class="mt-1 text-sm text-gray-500">Pilih komunitas untuk melihat rekap kehadiran dan tugas.</p>
+<div class="mb-6">
+  <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">Rekap Kehadiran &amp; Tugas</h1>
+  <p class="text-xs text-slate-500 mt-0.5">Pilih komunitas untuk memantau performa, absensi, dan mengekspor nilai ke CSV</p>
+</div>
 
-<div class="mt-6 space-y-2">
+<div class="space-y-3">
   {% for k in komunitas %}
     <a href="{{ url_for('rekap.komunitas', community_id=k.id) }}"
-       class="block bg-white rounded shadow p-4 hover:bg-gray-50">
-      <span class="font-semibold">{{ k.nama }}</span>
-      <span class="text-sm text-gray-500 block">{{ k.members|length }} anggota</span>
+       class="flex justify-between items-center bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 hover:border-emerald-300 hover:shadow-md transition group">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg font-bold">
+          📊
+        </div>
+        <div>
+          <span class="font-bold text-sm text-slate-900 group-hover:text-emerald-700 transition block">{{ k.nama }}</span>
+          <span class="text-xs text-slate-400 mt-0.5 block">👥 {{ k.members|length }} anggota terdaftar</span>
+        </div>
+      </div>
+      <span class="text-xs font-semibold text-emerald-600 group-hover:translate-x-0.5 transition">Buka Rekap &rarr;</span>
     </a>
   {% else %}
-    <p class="text-gray-500">Tidak ada komunitas yang bisa dikelola.</p>
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-8 text-center text-xs text-slate-400">
+      Tidak ada data komunitas yang dapat ditampilkan.
+    </div>
   {% endfor %}
 </div>
 
 <div class="mt-6">
-  <a href="{{ url_for('main.index') }}" class="text-blue-600">&larr; Beranda</a>
+  <a href="{{ url_for('main.dashboard') }}" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 hover:underline">&larr; Kembali ke Dashboard</a>
 </div>
 {% endblock %}

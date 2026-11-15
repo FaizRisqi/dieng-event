@@ -1,71 +1,109 @@
 {% extends "base.html" %}
-{% block title %}Profil{% endblock %}
-{% block main_class %}max-w-lg{% endblock %}
+{% block title %}Profil Saya{% endblock %}
+{% block main_class %}max-w-2xl{% endblock %}
+
 {% block content %}
-<h1 class="text-2xl font-bold">Profil Saya</h1>
-<p class="text-sm text-gray-500 mt-1">{{ current_user.email }} &bull; {{ current_user.role }}</p>
-
-<div class="mt-6 bg-white rounded shadow p-4">
-  <h2 class="font-bold mb-3">Edit Profil</h2>
-  <form method="post" class="space-y-3">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-    <input type="hidden" name="aksi" value="profil">
-    <div>
-      <label class="block text-sm font-medium mb-1">Nama</label>
-      <input name="nama" value="{{ current_user.nama }}" required class="w-full border rounded p-2">
+<div class="mb-6">
+  <div class="flex items-center gap-3">
+    <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-emerald-400 text-white font-extrabold flex items-center justify-center text-xl shadow-md">
+      {{ current_user.nama[0]|upper }}
     </div>
     <div>
-      <label class="block text-sm font-medium mb-1">No. WhatsApp</label>
-      <input name="no_wa" value="{{ current_user.no_wa or '' }}" placeholder="08xxxxxxxxxx" class="w-full border rounded p-2">
+      <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">{{ current_user.nama }}</h1>
+      <p class="text-xs text-slate-500 mt-0.5">
+        {{ current_user.email }} &bull;
+        <span class="font-bold uppercase
+          {% if current_user.role == 'admin' %}text-red-600
+          {% elif current_user.role == 'mentor' %}text-amber-600
+          {% else %}text-emerald-600{% endif %}">
+          {{ current_user.role }}
+        </span>
+      </p>
     </div>
-    <button class="w-full bg-blue-600 text-white rounded p-2">Simpan Profil</button>
-  </form>
+  </div>
 </div>
 
-<div class="mt-6 bg-white rounded shadow p-4">
-  <h2 class="font-bold mb-3">Ganti Password</h2>
-  <form method="post" class="space-y-3">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-    <input type="hidden" name="aksi" value="password">
-    <div>
-      <label class="block text-sm font-medium mb-1">Password Lama</label>
-      <input type="password" name="password_lama" required class="w-full border rounded p-2">
-    </div>
-    <div>
-      <label class="block text-sm font-medium mb-1">Password Baru</label>
-      <input type="password" name="password_baru" required minlength="6" class="w-full border rounded p-2">
-    </div>
-    <div>
-      <label class="block text-sm font-medium mb-1">Konfirmasi Password Baru</label>
-      <input type="password" name="konfirmasi" required class="w-full border rounded p-2">
-    </div>
-    <button class="w-full bg-gray-800 text-white rounded p-2">Ganti Password</button>
-  </form>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <!-- Card Edit Profil -->
+  <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 relative overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-1 bg-emerald-500"></div>
+    <h2 class="font-bold text-slate-900 text-base mb-4">Informasi Profil</h2>
+    <form method="post" class="space-y-4">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="aksi" value="profil">
+      <div>
+        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nama</label>
+        <input name="nama" value="{{ current_user.nama }}" required
+               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">No. WhatsApp</label>
+        <input name="no_wa" value="{{ current_user.no_wa or '' }}" placeholder="08xxxxxxxxxx"
+               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
+        <span class="text-[10px] text-slate-400 mt-1 block">Untuk menerima broadcast pengingat jadwal event/tugas</span>
+      </div>
+      <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl py-2.5 text-xs shadow-sm shadow-emerald-600/20 transition">
+        Simpan Profil
+      </button>
+    </form>
+  </div>
+
+  <!-- Card Ganti Password -->
+  <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 relative overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-1 bg-slate-700"></div>
+    <h2 class="font-bold text-slate-900 text-base mb-4">Ganti Password</h2>
+    <form method="post" class="space-y-3.5">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="aksi" value="password">
+      <div>
+        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password Lama</label>
+        <input type="password" name="password_lama" required
+               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password Baru</label>
+        <input type="password" name="password_baru" required minlength="6"
+               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Konfirmasi Password Baru</label>
+        <input type="password" name="konfirmasi" required
+               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
+      </div>
+      <button class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl py-2.5 text-xs transition">
+        Perbarui Password
+      </button>
+    </form>
+  </div>
 </div>
 
-<div class="mt-6">
-  <h2 class="font-bold mb-3">Riwayat Event</h2>
+<!-- Riwayat Event -->
+<div class="mt-8 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6">
+  <h2 class="font-bold text-slate-900 text-base mb-4">Riwayat Pendaftaran Event</h2>
   {% if current_user.registrations %}
-    <div class="space-y-2">
+    <div class="space-y-2.5">
       {% for r in current_user.registrations|sort(attribute='event.mulai', reverse=true) %}
         <a href="{{ url_for('events.detail', event_id=r.event.id) }}"
-           class="flex justify-between items-center bg-white rounded shadow p-3 hover:bg-gray-50">
-          <span>{{ r.event.judul }}</span>
-          <span class="text-sm
-            {% if r.status == 'hadir' %}text-green-600
-            {% elif r.status == 'batal' %}text-red-500
-            {% else %}text-gray-500{% endif %}">
-            {{ r.status }}
+           class="flex justify-between items-center p-3.5 rounded-xl border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/30 transition group">
+          <div>
+            <span class="font-bold text-sm text-slate-900 group-hover:text-emerald-700 transition">{{ r.event.judul }}</span>
+            <span class="block text-xs text-slate-400 mt-0.5">{{ r.event.mulai.strftime('%d/%m/%Y %H:%M') }} WIB</span>
+          </div>
+          <span class="text-xs font-bold px-2.5 py-1 rounded-lg
+            {% if r.status == 'hadir' %}bg-emerald-100 text-emerald-800
+            {% elif r.status == 'batal' %}bg-red-100 text-red-700
+            {% else %}bg-slate-100 text-slate-700{% endif %}">
+            {{ r.status|upper }}
           </span>
         </a>
       {% endfor %}
     </div>
   {% else %}
-    <p class="text-sm text-gray-500">Belum pernah mendaftar event.</p>
+    <p class="text-xs text-slate-400 text-center py-6">Belum pernah mendaftar ke event.</p>
   {% endif %}
 </div>
 
 <div class="mt-6">
-  <a href="{{ url_for('main.dashboard') }}" class="text-blue-600">&larr; Dashboard</a>
+  <a href="{{ url_for('main.dashboard') }}" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 hover:underline">&larr; Kembali ke Dashboard</a>
 </div>
 {% endblock %}

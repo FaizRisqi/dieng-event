@@ -1,50 +1,212 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="h-full">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Dieng Cyber Event{% endblock %}</title>
+  <title>{% block title %}Dieng Cyber Event{% endblock %} &bull; Dieng Cyber</title>
+  <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='img/logo-icon.jpg') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            dieng: {
+              green: '#2E9E5B',
+              'green-dark': '#217A44',
+              'green-light': '#E8F5E9',
+              dark: '#1E293B',
+              slate: '#334155',
+              red: '#EF4444',
+              'red-dark': '#DC2626',
+              amber: '#F59E0B',
+              'amber-dark': '#D97706',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
-  <nav class="bg-white shadow px-6 py-3 flex flex-wrap justify-between items-center gap-2">
-    <a href="{{ url_for('main.index') }}" class="font-bold">Dieng Cyber Event</a>
-    <div class="space-x-4">
-      <a href="{{ url_for('events.calendar') }}">Kalender</a>
-      <a href="{{ url_for('sesi.index') }}">Sesi</a>
-      {% if current_user.is_authenticated %}
-        <a href="{{ url_for('tugas.index') }}">Tugas</a>
-      {% endif %}
-      <a href="{{ url_for('communities.index') }}">Komunitas</a>
-      <a href="{{ url_for('notes.index') }}">Catatan</a>
-      <a href="{{ url_for('pengumuman.index') }}">Pengumuman</a>
-      {% if current_user.is_authenticated %}
-        {% if current_user.role in ('admin', 'mentor') %}
-          <a href="{{ url_for('rekap.index') }}">Rekap</a>
-        {% endif %}
-        {% if current_user.role == 'admin' %}
-          <a href="{{ url_for('admin.users') }}">Pengguna</a>
-        {% endif %}
-        <span class="text-sm">{{ current_user.nama }} ({{ current_user.role }})</span>
-        <a href="{{ url_for('profil.index') }}" class="text-sm text-blue-600">Profil</a>
-        <a href="{{ url_for('main.dashboard') }}">Dashboard</a>
-        <a href="{{ url_for('auth.logout') }}" class="text-red-600">Logout</a>
-      {% else %}
-        <a href="{{ url_for('auth.login') }}">Login</a>
-        <a href="{{ url_for('auth.register') }}">Daftar</a>
-      {% endif %}
-    </div>
-  </nav>
+<body class="bg-slate-50 text-slate-800 min-h-full flex flex-col antialiased">
 
-  <main class="{% block main_class %}max-w-md{% endblock %} mx-auto mt-10 px-4">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% for category, message in messages %}
-        <div class="mb-4 p-3 rounded {{ 'bg-red-100 text-red-700' if category == 'error' else 'bg-green-100 text-green-700' }}">
-          {{ message }}
+  <!-- Top Tricolor Brand Accent Line (Red -> Amber -> Green) -->
+  <div class="h-1 w-full bg-gradient-to-r from-red-500 via-amber-400 to-emerald-500"></div>
+
+  <!-- Header / Navbar -->
+  <header class="bg-white border-b border-slate-200/80 sticky top-0 z-40 shadow-sm backdrop-blur-md bg-white/95">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        
+        <!-- Brand Logo -->
+        <div class="flex items-center gap-3">
+          <a href="{{ url_for('main.index') }}" class="flex items-center gap-2.5 group">
+            <img src="{{ url_for('static', filename='img/logo-icon.jpg') }}" alt="Logo" class="w-9 h-9 rounded-lg object-contain shadow-sm border border-slate-200">
+            <div class="flex flex-col">
+              <span class="font-extrabold text-slate-900 tracking-tight text-base leading-none group-hover:text-emerald-600 transition">
+                DIENG <span class="text-emerald-600">CYBER</span>
+              </span>
+              <span class="text-[10px] font-semibold text-slate-400 tracking-wider uppercase mt-0.5">Event & Community</span>
+            </div>
+          </a>
         </div>
-      {% endfor %}
+
+        <!-- Navigation Links -->
+        <nav class="hidden lg:flex items-center gap-1">
+          <a href="{{ url_for('events.calendar') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 text-slate-700">
+            📅 Kalender
+          </a>
+          <a href="{{ url_for('events.list_view') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 text-slate-700">
+            📋 Event
+          </a>
+          <a href="{{ url_for('sesi.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 text-slate-700">
+            💻 Sesi Zoom
+          </a>
+          {% if current_user.is_authenticated %}
+          <a href="{{ url_for('tugas.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 text-slate-700">
+            📝 Tugas
+          </a>
+          {% endif %}
+          <a href="{{ url_for('communities.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 text-slate-700">
+            👥 Komunitas
+          </a>
+          <a href="{{ url_for('pengumuman.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 text-slate-700">
+            📢 Pengumuman
+          </a>
+          <a href="{{ url_for('notes.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 text-slate-700">
+            📌 Catatan
+          </a>
+
+          {% if current_user.is_authenticated and current_user.role in ('admin', 'mentor') %}
+          <div class="h-4 w-px bg-slate-300 mx-1"></div>
+          <a href="{{ url_for('rekap.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition bg-emerald-50 text-emerald-800 hover:bg-emerald-100">
+            📊 Rekap
+          </a>
+          {% endif %}
+
+          {% if current_user.is_authenticated and current_user.role == 'admin' %}
+          <a href="{{ url_for('admin.lokasi') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition bg-slate-100 text-slate-700 hover:bg-slate-200">
+            📍 Lokasi
+          </a>
+          <a href="{{ url_for('admin.users') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition bg-slate-100 text-slate-700 hover:bg-slate-200">
+            👤 User
+          </a>
+          {% endif %}
+        </nav>
+
+        <!-- Right Side: User Profile / Auth Action -->
+        <div class="flex items-center gap-3">
+          {% if current_user.is_authenticated %}
+            <!-- User Pill -->
+            <div class="flex items-center gap-2 pl-3 border-l border-slate-200">
+              <a href="{{ url_for('profil.index') }}" class="flex items-center gap-2 group p-1 rounded-lg hover:bg-slate-100 transition">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-600 to-emerald-400 text-white font-bold flex items-center justify-center text-xs shadow-sm">
+                  {{ current_user.nama[0]|upper }}
+                </div>
+                <div class="hidden sm:flex flex-col text-left">
+                  <span class="text-xs font-bold text-slate-800 group-hover:text-emerald-600 transition leading-tight">
+                    {{ current_user.nama.split()[0] }}
+                  </span>
+                  <span class="text-[10px] font-semibold uppercase tracking-wider
+                    {% if current_user.role == 'admin' %}text-red-600
+                    {% elif current_user.role == 'mentor' %}text-amber-600
+                    {% else %}text-emerald-600{% endif %}">
+                    {{ current_user.role }}
+                  </span>
+                </div>
+              </a>
+
+              <a href="{{ url_for('main.dashboard') }}" title="Dashboard" class="p-1.5 text-slate-600 hover:text-emerald-600 hover:bg-slate-100 rounded-lg transition text-xs font-semibold">
+                🏠
+              </a>
+
+              <a href="{{ url_for('auth.logout') }}" title="Logout" class="px-2.5 py-1 text-xs font-medium text-red-600 hover:bg-red-50 rounded-lg transition border border-red-200/60">
+                Keluar
+              </a>
+            </div>
+          {% else %}
+            <div class="flex items-center gap-2">
+              <a href="{{ url_for('auth.login') }}" class="px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:text-emerald-600 transition">
+                Masuk
+              </a>
+              <a href="{{ url_for('auth.register') }}" class="px-3.5 py-1.5 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-sm transition">
+                Daftar Akun
+              </a>
+            </div>
+          {% endif %}
+        </div>
+
+      </div>
+
+      <!-- Mobile Nav Row -->
+      <div class="flex lg:hidden overflow-x-auto py-2 border-t border-slate-100 gap-1 scrollbar-none text-xs">
+        <a href="{{ url_for('events.calendar') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 hover:bg-slate-100">📅 Kalender</a>
+        <a href="{{ url_for('events.list_view') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 hover:bg-slate-100">📋 Event</a>
+        <a href="{{ url_for('sesi.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 hover:bg-slate-100">💻 Sesi</a>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('tugas.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 hover:bg-slate-100">📝 Tugas</a>
+        {% endif %}
+        <a href="{{ url_for('communities.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 hover:bg-slate-100">👥 Komunitas</a>
+        <a href="{{ url_for('pengumuman.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 hover:bg-slate-100">📢 Pengumuman</a>
+        <a href="{{ url_for('notes.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 hover:bg-slate-100">📌 Catatan</a>
+        {% if current_user.is_authenticated and current_user.role in ('admin', 'mentor') %}
+        <a href="{{ url_for('rekap.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-emerald-800 bg-emerald-50">📊 Rekap</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="flex-1 {% block main_class %}max-w-4xl{% endblock %} w-full mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    
+    <!-- Flash Messages (Styled Alerts) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="space-y-3 mb-6">
+          {% for category, message in messages %}
+            <div class="flex items-center gap-3 p-3.5 rounded-xl text-sm font-medium border shadow-sm transition
+              {% if category == 'error' %}
+                bg-red-50 text-red-800 border-red-200
+              {% elif category == 'info' %}
+                bg-blue-50 text-blue-800 border-blue-200
+              {% else %}
+                bg-emerald-50 text-emerald-800 border-emerald-200
+              {% endif %}">
+              <span class="text-base">
+                {% if category == 'error' %}❌{% elif category == 'info' %}ℹ️{% else %}✅{% endif %}
+              </span>
+              <p class="flex-1">{{ message }}</p>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
     {% endwith %}
+
     {% block content %}{% endblock %}
   </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200/80 py-6 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-slate-800 tracking-tight">DIENG CYBER</span>
+        <span>&bull;</span>
+        <span>Software Developer, Hardware, Networking &amp; Training</span>
+      </div>
+      <div>
+        <span>Wonosobo &bull; Sistem Penjadwalan Event &amp; Komunitas</span>
+      </div>
+    </div>
+  </footer>
+
 </body>
 </html>

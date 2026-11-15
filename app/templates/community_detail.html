@@ -18,7 +18,7 @@
   {% else %}
     <form method="post" action="{{ url_for('communities.gabung', community_id=c.id) }}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <button class="bg-blue-600 text-white rounded px-4 py-2">Gabung</button>
+      <button class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-sm transition px-4 py-2">Gabung</button>
     </form>
   {% endif %}
 

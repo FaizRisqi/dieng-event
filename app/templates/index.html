@@ -1,5 +1,104 @@
 {% extends "base.html" %}
+{% block title %}Beranda{% endblock %}
+{% block main_class %}max-w-5xl{% endblock %}
+
 {% block content %}
-<h1 class="text-2xl font-bold">Dieng Cyber Event</h1>
-<p class="mt-2">Sistem penjadwalan event dan pengelolaan komunitas.</p>
+<div class="py-6 sm:py-12">
+  
+  <!-- Hero Section -->
+  <div class="text-center max-w-3xl mx-auto mb-14">
+    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-bold mb-6">
+      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+      Platform Resmi Dieng Cyber &bull; Wonosobo
+    </div>
+    
+    <div class="flex justify-center mb-6">
+      <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Dieng Cyber" class="h-14 sm:h-16 object-contain">
+    </div>
+
+    <h1 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+      Sistem Penjadwalan Event &amp; <span class="text-emerald-600">Komunitas Teknologi</span>
+    </h1>
+
+    <p class="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto">
+      Pusat kegiatan, sesi mentoring daring, tugas praktikum, dan kalender event terintegrasi untuk seluruh anggota dan mentor Dieng Cyber.
+    </p>
+
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('main.dashboard') }}"
+           class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-emerald-600/25 text-sm transition">
+          Buka Dashboard Saya &rarr;
+        </a>
+        <a href="{{ url_for('events.calendar') }}"
+           class="bg-white hover:bg-slate-50 text-slate-800 font-bold px-6 py-3 rounded-xl border border-slate-200 text-sm shadow-sm transition">
+          Lihat Kalender Event
+        </a>
+      {% else %}
+        <a href="{{ url_for('auth.register') }}"
+           class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-emerald-600/25 text-sm transition">
+          Gabung Sekarang &mdash; Gratis
+        </a>
+        <a href="{{ url_for('auth.login') }}"
+           class="bg-white hover:bg-slate-50 text-slate-800 font-bold px-6 py-3 rounded-xl border border-slate-200 text-sm shadow-sm transition">
+          Masuk ke Akun
+        </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- 4 Feature Cards with Dieng Cyber Pattern -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+    
+    <!-- Card 1: Event & Kalender (Green) -->
+    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm relative overflow-hidden group hover:border-emerald-300 hover:shadow-md transition">
+      <div class="absolute top-0 left-0 right-0 h-1 bg-emerald-500"></div>
+      <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition">
+        📅
+      </div>
+      <h3 class="font-bold text-base text-slate-900 mb-1">Kalender Event</h3>
+      <p class="text-xs text-slate-600 leading-relaxed">
+        Jadwal workshop dan pelatihan dengan deteksi bentrok lokasi dan integrasi kalender interaktif.
+      </p>
+    </div>
+
+    <!-- Card 2: Sesi Zoom & Rekaman (Sky/Blue) -->
+    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm relative overflow-hidden group hover:border-sky-300 hover:shadow-md transition">
+      <div class="absolute top-0 left-0 right-0 h-1 bg-sky-500"></div>
+      <div class="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition">
+        💻
+      </div>
+      <h3 class="font-bold text-base text-slate-900 mb-1">Sesi Zoom &amp; Materi</h3>
+      <p class="text-xs text-slate-600 leading-relaxed">
+        Pembelajaran daring langsung dengan mentor, rekaman video, modul PDF/PPT, dan absensi otomatis.
+      </p>
+    </div>
+
+    <!-- Card 3: Tugas & Penilaian (Amber) -->
+    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm relative overflow-hidden group hover:border-amber-300 hover:shadow-md transition">
+      <div class="absolute top-0 left-0 right-0 h-1 bg-amber-500"></div>
+      <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition">
+        📝
+      </div>
+      <h3 class="font-bold text-base text-slate-900 mb-1">Tugas &amp; Rekap Nilai</h3>
+      <p class="text-xs text-slate-600 leading-relaxed">
+        Kumpulkan tugas berupa link atau berkas, dapatkan umpan balik nilai mentor, dan rekap otomatis.
+      </p>
+    </div>
+
+    <!-- Card 4: Komunitas & WhatsApp (Red/Slate) -->
+    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm relative overflow-hidden group hover:border-red-300 hover:shadow-md transition">
+      <div class="absolute top-0 left-0 right-0 h-1 bg-red-500"></div>
+      <div class="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition">
+        👥
+      </div>
+      <h3 class="font-bold text-base text-slate-900 mb-1">Komunitas &amp; Notifikasi</h3>
+      <p class="text-xs text-slate-600 leading-relaxed">
+        Wadah minat pemrograman, desain, dan jaringan dengan notifikasi pengingat via WhatsApp.
+      </p>
+    </div>
+
+  </div>
+
+</div>
 {% endblock %}

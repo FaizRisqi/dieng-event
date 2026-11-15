@@ -1,38 +1,52 @@
 {% extends "base.html" %}
 {% block title %}Komunitas{% endblock %}
-{% block main_class %}max-w-3xl{% endblock %}
+{% block main_class %}max-w-4xl{% endblock %}
 {% block content %}
-<div class="flex justify-between items-center mb-4">
-  <h1 class="text-xl font-bold">Komunitas</h1>
+<div class="flex justify-between items-center mb-6">
+  <div>
+    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">Daftar Komunitas</h1>
+    <p class="text-xs text-slate-500 mt-0.5">Kelompok minat dan bidang keahlian di Dieng Cyber</p>
+  </div>
   {% if current_user.is_authenticated and current_user.role == 'admin' %}
-    <a href="{{ url_for('communities.new') }}" class="bg-blue-600 text-white rounded px-4 py-2">+ Komunitas</a>
+    <a href="{{ url_for('communities.new') }}"
+       class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-4 py-2 text-xs font-bold shadow-sm shadow-emerald-600/20 transition">
+      + Buat Komunitas
+    </a>
   {% endif %}
 </div>
 
-<form method="get" class="mb-4 flex gap-2">
-  <input name="q" placeholder="Cari komunitas..." value="{{ q or '' }}"
-         class="border rounded p-2 flex-1 text-sm">
-  <button class="bg-gray-800 text-white rounded px-4 py-2 text-sm">Cari</button>
+<form method="get" class="mb-6 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex gap-2.5">
+  <input name="q" placeholder="Cari nama atau deskripsi komunitas..." value="{{ q or '' }}"
+         class="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 flex-1 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
+  <button class="bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl px-5 py-2 text-sm transition">Cari</button>
   {% if q %}
-    <a href="{{ url_for('communities.index') }}" class="bg-gray-200 text-gray-700 rounded px-3 py-2 text-sm">Reset</a>
+    <a href="{{ url_for('communities.index') }}" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl px-4 py-2 text-sm transition flex items-center">Reset</a>
   {% endif %}
 </form>
 
-<div class="space-y-3">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
   {% for c in daftar %}
   <a href="{{ url_for('communities.detail', community_id=c.id) }}"
-     class="block bg-white rounded shadow p-4 hover:bg-gray-50">
-    <div class="flex justify-between items-center">
-      <span class="font-semibold">{{ c.nama }}</span>
+     class="block bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 hover:border-emerald-300 hover:shadow-md transition group">
+    <div class="flex justify-between items-start gap-2 mb-2">
+      <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg font-bold">
+        👥
+      </div>
       {% if c.id in diikuti %}
-        <span class="text-xs bg-green-100 text-green-700 rounded px-2 py-1">Anggota</span>
+        <span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 rounded px-2 py-0.5">Terdaftar</span>
       {% endif %}
     </div>
-    <p class="text-sm text-gray-600 mt-1">{{ c.deskripsi or 'Belum ada deskripsi.' }}</p>
-    <p class="text-xs text-gray-500 mt-2">{{ c.members|length }} anggota</p>
+    <h2 class="font-extrabold text-base text-slate-900 group-hover:text-emerald-700 transition">{{ c.nama }}</h2>
+    <p class="text-xs text-slate-600 mt-1 line-clamp-2 leading-relaxed">{{ c.deskripsi or 'Belum ada deskripsi komunitas.' }}</p>
+    <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+      <span>👥 {{ c.members|length }} anggota</span>
+      <span class="font-semibold text-emerald-600 group-hover:translate-x-0.5 transition">Lihat &rarr;</span>
+    </div>
   </a>
   {% else %}
-  <p class="text-sm text-gray-500">Belum ada komunitas{% if q %} yang cocok dengan pencarian{% endif %}.</p>
+    <div class="col-span-full bg-white rounded-2xl border border-slate-200/80 shadow-sm p-8 text-center text-xs text-slate-400">
+      Belum ada komunitas{% if q %} yang cocok dengan pencarian{% endif %}.
+    </div>
   {% endfor %}
 </div>
 {% endblock %}

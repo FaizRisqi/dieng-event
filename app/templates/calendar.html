@@ -2,27 +2,31 @@
 {% block title %}Kalender{% endblock %}
 {% block main_class %}max-w-5xl{% endblock %}
 {% block content %}
-<div class="flex flex-wrap justify-between items-center gap-3 mb-2">
+<div class="flex flex-wrap justify-between items-center gap-3 mb-4">
   <div class="flex items-center gap-3">
-    <h1 class="text-xl font-bold">Kalender</h1>
-    <div class="text-xs bg-gray-200 rounded p-1 flex">
-      <span class="px-2.5 py-1 bg-white rounded font-medium shadow-sm text-blue-600">📅 Kalender</span>
-      <a href="{{ url_for('events.list_view') }}" class="px-2.5 py-1 text-gray-700 hover:text-black">📋 Daftar Event</a>
+    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">Kalender Terpadu</h1>
+    <div class="text-xs bg-slate-200/80 rounded-xl p-1 flex shadow-inner">
+      <span class="px-3 py-1 bg-white rounded-lg font-bold shadow-sm text-emerald-700">📅 Kalender</span>
+      <a href="{{ url_for('events.list_view') }}" class="px-3 py-1 text-slate-600 hover:text-slate-900 font-semibold transition">📋 Daftar Event</a>
     </div>
   </div>
-  <div class="flex items-center gap-4">
-    <a href="{{ url_for('notes.index') }}" class="text-sm text-blue-600">Semua catatan</a>
+  <div class="flex items-center gap-3">
+    <a href="{{ url_for('notes.index') }}" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 hover:underline">Semua Catatan</a>
     {% if bisa_buat %}
-      <a href="{{ url_for('events.new') }}" class="bg-blue-600 text-white rounded px-4 py-2 text-sm">+ Event</a>
+      <a href="{{ url_for('events.new') }}" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-4 py-2 text-xs font-bold shadow-sm shadow-emerald-600/20 transition">+ Tambah Event</a>
     {% endif %}
   </div>
 </div>
-<p class="text-xs text-gray-500 mb-4">
-  Biru: event &middot; Hijau: sesi Zoom &middot; Merah: tenggat tugas &middot; Oranye: catatan
-  {% if bisa_buat %}&middot; Klik tanggal kosong untuk menambah catatan{% endif %}
-</p>
+<div class="flex items-center gap-3 text-xs text-slate-500 mb-4 bg-white p-3 rounded-xl border border-slate-200/80 shadow-sm flex-wrap">
+  <span class="font-bold text-slate-700">Keterangan:</span>
+  <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span> Event</span>
+  <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> Sesi Zoom</span>
+  <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-red-600"></span> Tenggat Tugas</span>
+  <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Catatan</span>
+  {% if bisa_buat %}<span class="text-slate-400 ml-auto hidden sm:inline">&bull; Klik tanggal kosong untuk membuat catatan</span>{% endif %}
+</div>
 
-<div id="calendar" class="bg-white p-4 rounded shadow"
+<div id="calendar" class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm"
      data-events-url="{{ url_for('events.api') }}"
      data-notes-url="{{ url_for('notes.api') }}"
      data-sesi-url="{{ url_for('sesi.api') }}"

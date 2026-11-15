@@ -26,6 +26,7 @@
 - [x] Pengingat WhatsApp (dukungan Fonnte & webhook n8n dengan tombol broadcast per event/sesi/tugas)
 - [x] Halaman error 500 (Internal Server Error)
 - [x] Setup database lokal (MySQL/MariaDB), migrasi, akun admin default, dan pengujian end-to-end fitur
+- [x] Redesain UI/UX & tema warna resmi Dieng Cyber (hijau candi, charcoal, merah, kuning emas) + logo resmi di navbar & landing page
 
 ## Opsional / Tambahan Masa Depan 🔲
 

@@ -61,7 +61,7 @@
                value="{{ mine.link if mine and mine.link else '' }}" class="w-full border rounded p-2">
         <input type="file" name="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.png,.jpg,.jpeg,.txt" class="text-sm">
         <p class="text-xs text-gray-500">Isi minimal salah satu: teks, link, atau file (maks. 20 MB). Kirim ulang mengganti teks dan link, file lama dipertahankan kecuali kamu unggah file baru.</p>
-        <button class="w-full bg-blue-600 text-white rounded p-2">{{ 'Kirim ulang' if mine else 'Kumpulkan' }}</button>
+        <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-sm transition p-2">{{ 'Kirim ulang' if mine else 'Kumpulkan' }}</button>
       </form>
     {% endif %}
   </div>
