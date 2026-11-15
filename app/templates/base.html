@@ -8,9 +8,20 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Immediate Theme Check (Prevents Flash of Light Mode) -->
+  <script>
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
@@ -35,15 +46,50 @@
   </script>
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    
+    /* Dark Mode Global Element Overrides */
+    .dark body { background-color: #0b1120 !important; color: #f1f5f9 !important; }
+    .dark header, .dark footer { background-color: #111827 !important; border-color: #1f2937 !important; }
+    .dark .bg-white { background-color: #1e293b !important; color: #f1f5f9 !important; }
+    .dark .bg-slate-50 { background-color: #0f172a !important; color: #f1f5f9 !important; }
+    .dark .border-slate-200, .dark .border-slate-200\/80, .dark .border-slate-100 { border-color: #334155 !important; }
+    .dark .text-slate-900 { color: #f8fafc !important; }
+    .dark .text-slate-800 { color: #f1f5f9 !important; }
+    .dark .text-slate-700 { color: #cbd5e1 !important; }
+    .dark .text-slate-600 { color: #94a3b8 !important; }
+    .dark .text-slate-500 { color: #94a3b8 !important; }
+    .dark .text-slate-400 { color: #64748b !important; }
+    
+    .dark input, .dark select, .dark textarea {
+      background-color: #0f172a !important;
+      color: #f8fafc !important;
+      border-color: #334155 !important;
+    }
+    .dark input:focus, .dark select:focus, .dark textarea:focus {
+      background-color: #1e293b !important;
+      border-color: #10b981 !important;
+    }
+    
+    .dark table thead { background-color: #0f172a !important; color: #cbd5e1 !important; border-color: #334155 !important; }
+    .dark table tbody tr { border-color: #334155 !important; }
+    .dark table tbody tr:hover { background-color: #27354a !important; }
+    
+    /* FullCalendar Dark Mode Styling */
+    .dark .fc { color: #f1f5f9 !important; }
+    .dark .fc-theme-standard td, .dark .fc-theme-standard th { border-color: #334155 !important; }
+    .dark .fc .fc-toolbar-title { color: #f8fafc !important; }
+    .dark .fc .fc-button { background-color: #334155 !important; border-color: #475569 !important; color: #f8fafc !important; }
+    .dark .fc .fc-button-active { background-color: #16a34a !important; border-color: #16a34a !important; }
+    .dark .fc-day-today { background-color: rgba(16, 185, 129, 0.08) !important; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-full flex flex-col antialiased">
+<body class="bg-slate-50 text-slate-800 min-h-full flex flex-col antialiased transition-colors duration-200">
 
   <!-- Top Tricolor Brand Accent Line (Red -> Amber -> Green) -->
   <div class="h-1 w-full bg-gradient-to-r from-red-500 via-amber-400 to-emerald-500"></div>
 
   <!-- Header / Navbar -->
-  <header class="bg-white border-b border-slate-200/80 sticky top-0 z-40 shadow-sm backdrop-blur-md bg-white/95">
+  <header class="bg-white border-b border-slate-200/80 sticky top-0 z-40 shadow-sm backdrop-blur-md bg-white/95 transition-colors duration-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-16">
         
@@ -52,10 +98,10 @@
           <a href="{{ url_for('main.index') }}" class="flex items-center gap-2.5 group">
             <img src="{{ url_for('static', filename='img/logo-icon.jpg') }}" alt="Logo" class="w-9 h-9 rounded-lg object-contain shadow-sm border border-slate-200">
             <div class="flex flex-col">
-              <span class="font-extrabold text-slate-900 tracking-tight text-base leading-none group-hover:text-emerald-600 transition">
+              <span class="font-extrabold text-slate-900 tracking-tight text-base leading-none group-hover:text-emerald-500 transition">
                 DIENG <span class="text-emerald-600">CYBER</span>
               </span>
-              <span class="text-[10px] font-semibold text-slate-400 tracking-wider uppercase mt-0.5">Event & Community</span>
+              <span class="text-[10px] font-semibold text-slate-400 tracking-wider uppercase mt-0.5">Event &amp; Community</span>
             </div>
           </a>
         </div>
@@ -103,23 +149,31 @@
           {% endif %}
         </nav>
 
-        <!-- Right Side: User Profile / Auth Action -->
-        <div class="flex items-center gap-3">
+        <!-- Right Side: Dark Mode Toggle & User Profile -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          
+          <!-- Dark Mode Toggle Button -->
+          <button id="theme-toggle" type="button" aria-label="Toggle Dark Mode"
+                  class="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition text-sm leading-none flex items-center justify-center border border-slate-200/80">
+            <span id="theme-toggle-dark-icon" class="hidden">🌙</span>
+            <span id="theme-toggle-light-icon" class="hidden">☀️</span>
+          </button>
+
           {% if current_user.is_authenticated %}
             <!-- User Pill -->
-            <div class="flex items-center gap-2 pl-3 border-l border-slate-200">
+            <div class="flex items-center gap-2 pl-2 sm:pl-3 border-l border-slate-200">
               <a href="{{ url_for('profil.index') }}" class="flex items-center gap-2 group p-1 rounded-lg hover:bg-slate-100 transition">
                 <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-600 to-emerald-400 text-white font-bold flex items-center justify-center text-xs shadow-sm">
                   {{ current_user.nama[0]|upper }}
                 </div>
                 <div class="hidden sm:flex flex-col text-left">
-                  <span class="text-xs font-bold text-slate-800 group-hover:text-emerald-600 transition leading-tight">
+                  <span class="text-xs font-bold text-slate-800 group-hover:text-emerald-500 transition leading-tight">
                     {{ current_user.nama.split()[0] }}
                   </span>
                   <span class="text-[10px] font-semibold uppercase tracking-wider
-                    {% if current_user.role == 'admin' %}text-red-600
-                    {% elif current_user.role == 'mentor' %}text-amber-600
-                    {% else %}text-emerald-600{% endif %}">
+                    {% if current_user.role == 'admin' %}text-red-500
+                    {% elif current_user.role == 'mentor' %}text-amber-500
+                    {% else %}text-emerald-500{% endif %}">
                     {{ current_user.role }}
                   </span>
                 </div>
@@ -195,7 +249,7 @@
   </main>
 
   <!-- Footer -->
-  <footer class="bg-white border-t border-slate-200/80 py-6 mt-auto">
+  <footer class="bg-white border-t border-slate-200/80 py-6 mt-auto transition-colors duration-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
       <div class="flex items-center gap-2">
         <span class="font-bold text-slate-800 tracking-tight">DIENG CYBER</span>
@@ -207,6 +261,37 @@
       </div>
     </div>
   </footer>
+
+  <!-- Theme Toggle Logic Script -->
+  <script>
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const darkIcon = document.getElementById('theme-toggle-dark-icon');
+    const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+    function syncThemeIcons() {
+      if (document.documentElement.classList.contains('dark')) {
+        lightIcon.classList.remove('hidden');
+        darkIcon.classList.add('hidden');
+      } else {
+        darkIcon.classList.remove('hidden');
+        lightIcon.classList.add('hidden');
+      }
+    }
+    syncThemeIcons();
+
+    if (themeToggleBtn) {
+      themeToggleBtn.addEventListener('click', function() {
+        if (document.documentElement.classList.contains('dark')) {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('theme', 'light');
+        } else {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('theme', 'dark');
+        }
+        syncThemeIcons();
+      });
+    }
+  </script>
 
 </body>
 </html>

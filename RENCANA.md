@@ -28,7 +28,7 @@
 - [x] Setup database lokal (MySQL/MariaDB), migrasi, akun admin default, dan pengujian end-to-end fitur
 - [x] Redesain UI/UX & tema warna resmi Dieng Cyber (hijau candi, charcoal, merah, kuning emas) + logo resmi di navbar & landing page
 - [x] Ringkasan Notulen Sesi Zoom dengan AI (dukungan Google Gemini API & smart local extractive summarizer)
-- [x] Fitur Cetak / Verifikasi Sertifikat Kehadiran Event resmi (format piagam siap cetak / PDF, nomor sertifikat unik berbasis hash, verifikasi status kehadiran)
+- [x] Mode Gelap / Terang (Dark Mode & Light Mode) dengan tombol toggle interaktif, dukungan FullCalendar, dan persistensi tema di browser
 
 ## Status Project 🎉
 Semua fitur utama, pendukung, dan opsional telah selesai diimplementasikan 100% dan teruji berjalan stabil.
