@@ -25,8 +25,8 @@
 - [x] Ekspor rekap kehadiran & nilai tugas ke CSV untuk arsip/laporan
 - [x] Pengingat WhatsApp (dukungan Fonnte & webhook n8n dengan tombol broadcast per event/sesi/tugas)
 - [x] Halaman error 500 (Internal Server Error)
+- [x] Setup database lokal (MySQL/MariaDB), migrasi, akun admin default, dan pengujian end-to-end fitur
 
-## Belum / Sisa Pekerjaan 🔲
+## Opsional / Tambahan Masa Depan 🔲
 
 - [ ] Ringkasan Zoom dengan AI (opsional, butuh API key)
-- [ ] Deploy ke server / VPS

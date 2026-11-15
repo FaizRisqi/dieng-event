@@ -123,7 +123,7 @@ def calendar():
 
 
 @bp.route("/daftar")
-def daftar():
+def list_view():
     q = request.args.get("q", "").strip()
     cid = request.args.get("community_id", type=int)
     status = request.args.get("status", "")

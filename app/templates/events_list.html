@@ -34,7 +34,7 @@
   </select>
   <button class="bg-gray-800 text-white rounded px-4 py-2 text-sm">Cari</button>
   {% if q or cid or status %}
-    <a href="{{ url_for('events.daftar') }}" class="bg-gray-200 text-gray-700 rounded px-3 py-2 text-sm">Reset</a>
+    <a href="{{ url_for('events.list_view') }}" class="bg-gray-200 text-gray-700 rounded px-3 py-2 text-sm">Reset</a>
   {% endif %}
 </form>
 
