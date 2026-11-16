@@ -2,6 +2,10 @@
 
 _Dibuat otomatis dari git log._
 
+## 2026-11-16
+
+- fix: optimasi visual dark mode dan peningkatan kecerdasan ringkasan ai
+
 ## 2026-11-15
 
 - fix: resolusi konflik nama endpoint events.list_view dan persiapan database testing

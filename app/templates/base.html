@@ -49,9 +49,17 @@
     
     /* Dark Mode Global Element Overrides */
     .dark body { background-color: #0b1120 !important; color: #f1f5f9 !important; }
-    .dark header, .dark footer { background-color: #111827 !important; border-color: #1f2937 !important; }
+    .dark header, .dark footer { background-color: #0f172a !important; border-color: #1e293b !important; }
     .dark .bg-white { background-color: #1e293b !important; color: #f1f5f9 !important; }
     .dark .bg-slate-50 { background-color: #0f172a !important; color: #f1f5f9 !important; }
+    .dark .bg-slate-100 { background-color: #1e293b !important; color: #cbd5e1 !important; }
+    .dark .bg-slate-200 { background-color: #334155 !important; color: #f8fafc !important; }
+    .dark .hover\:bg-slate-100:hover { background-color: #1e293b !important; color: #34d399 !important; }
+    .dark .hover\:bg-slate-200:hover { background-color: #334155 !important; }
+    .dark .hover\:bg-slate-50:hover { background-color: #1e293b !important; }
+    .dark .bg-emerald-50 { background-color: rgba(6, 78, 59, 0.35) !important; color: #6ee7b7 !important; }
+    .dark .hover\:bg-emerald-100:hover { background-color: rgba(6, 78, 59, 0.6) !important; color: #a7f3d0 !important; }
+    .dark .text-emerald-800 { color: #6ee7b7 !important; }
     .dark .border-slate-200, .dark .border-slate-200\/80, .dark .border-slate-100 { border-color: #334155 !important; }
     .dark .text-slate-900 { color: #f8fafc !important; }
     .dark .text-slate-800 { color: #f1f5f9 !important; }
@@ -81,6 +89,76 @@
     .dark .fc .fc-button { background-color: #334155 !important; border-color: #475569 !important; color: #f8fafc !important; }
     .dark .fc .fc-button-active { background-color: #16a34a !important; border-color: #16a34a !important; }
     .dark .fc-day-today { background-color: rgba(16, 185, 129, 0.08) !important; }
+
+    /* Markdown Content Typography (Light & Dark) */
+    .markdown-content h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-top: 0.25rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+    .dark .markdown-content h3 { color: #f8fafc; }
+    
+    .markdown-content h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-top: 0.75rem;
+      margin-bottom: 0.375rem;
+    }
+    .dark .markdown-content h4 { color: #f1f5f9; }
+    
+    .markdown-content p {
+      margin-bottom: 0.75rem;
+      line-height: 1.65;
+      color: #334155;
+    }
+    .dark .markdown-content p { color: #cbd5e1; }
+    
+    .markdown-content strong {
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .dark .markdown-content strong { color: #f8fafc; }
+    
+    .markdown-content ul {
+      list-style-type: disc;
+      padding-left: 1.25rem;
+      margin-top: 0.375rem;
+      margin-bottom: 0.875rem;
+    }
+    .markdown-content li {
+      margin-bottom: 0.375rem;
+      color: #334155;
+      line-height: 1.55;
+    }
+    .dark .markdown-content li { color: #cbd5e1; }
+    
+    .markdown-content blockquote {
+      border-left: 4px solid #10b981;
+      margin-bottom: 0.875rem;
+      font-style: normal;
+      background-color: rgba(16, 185, 129, 0.08);
+      border-radius: 0 0.75rem 0.75rem 0;
+      padding: 0.625rem 0.875rem;
+      font-size: 0.825rem;
+    }
+    .dark .markdown-content blockquote {
+      background-color: rgba(16, 185, 129, 0.15);
+      border-color: #34d399;
+      color: #d1fae5;
+    }
+    
+    .markdown-content a {
+      color: #059669;
+      text-decoration: underline;
+      font-weight: 600;
+    }
+    .dark .markdown-content a { color: #34d399; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-full flex flex-col antialiased transition-colors duration-200">
@@ -108,42 +186,42 @@
 
         <!-- Navigation Links -->
         <nav class="hidden lg:flex items-center gap-1">
-          <a href="{{ url_for('events.calendar') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 text-slate-700">
+          <a href="{{ url_for('events.calendar') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 dark:hover:bg-slate-800 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-300">
             📅 Kalender
           </a>
-          <a href="{{ url_for('events.list_view') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 text-slate-700">
+          <a href="{{ url_for('events.list_view') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 dark:hover:bg-slate-800 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-300">
             📋 Event
           </a>
-          <a href="{{ url_for('sesi.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 text-slate-700">
+          <a href="{{ url_for('sesi.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 dark:hover:bg-slate-800 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-300">
             💻 Sesi Zoom
           </a>
           {% if current_user.is_authenticated %}
-          <a href="{{ url_for('tugas.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 text-slate-700">
+          <a href="{{ url_for('tugas.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 dark:hover:bg-slate-800 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-300">
             📝 Tugas
           </a>
           {% endif %}
-          <a href="{{ url_for('communities.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 text-slate-700">
+          <a href="{{ url_for('communities.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 dark:hover:bg-slate-800 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-300">
             👥 Komunitas
           </a>
-          <a href="{{ url_for('pengumuman.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 text-slate-700">
+          <a href="{{ url_for('pengumuman.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 dark:hover:bg-slate-800 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-300">
             📢 Pengumuman
           </a>
-          <a href="{{ url_for('notes.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 text-slate-700">
+          <a href="{{ url_for('notes.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 dark:hover:bg-slate-800 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-300">
             📌 Catatan
           </a>
 
           {% if current_user.is_authenticated and current_user.role in ('admin', 'mentor') %}
-          <div class="h-4 w-px bg-slate-300 mx-1"></div>
-          <a href="{{ url_for('rekap.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition bg-emerald-50 text-emerald-800 hover:bg-emerald-100">
+          <div class="h-4 w-px bg-slate-300 dark:bg-slate-700 mx-1"></div>
+          <a href="{{ url_for('rekap.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60">
             📊 Rekap
           </a>
           {% endif %}
 
           {% if current_user.is_authenticated and current_user.role == 'admin' %}
-          <a href="{{ url_for('admin.lokasi') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition bg-slate-100 text-slate-700 hover:bg-slate-200">
+          <a href="{{ url_for('admin.lokasi') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
             📍 Lokasi
           </a>
-          <a href="{{ url_for('admin.users') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition bg-slate-100 text-slate-700 hover:bg-slate-200">
+          <a href="{{ url_for('admin.users') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
             👤 User
           </a>
           {% endif %}
@@ -154,20 +232,20 @@
           
           <!-- Dark Mode Toggle Button -->
           <button id="theme-toggle" type="button" aria-label="Toggle Dark Mode"
-                  class="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition text-sm leading-none flex items-center justify-center border border-slate-200/80">
+                  class="p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition text-sm leading-none flex items-center justify-center border border-slate-200/80 dark:border-slate-700">
             <span id="theme-toggle-dark-icon" class="hidden">🌙</span>
             <span id="theme-toggle-light-icon" class="hidden">☀️</span>
           </button>
 
           {% if current_user.is_authenticated %}
             <!-- User Pill -->
-            <div class="flex items-center gap-2 pl-2 sm:pl-3 border-l border-slate-200">
-              <a href="{{ url_for('profil.index') }}" class="flex items-center gap-2 group p-1 rounded-lg hover:bg-slate-100 transition">
+            <div class="flex items-center gap-2 pl-2 sm:pl-3 border-l border-slate-200 dark:border-slate-700">
+              <a href="{{ url_for('profil.index') }}" class="flex items-center gap-2 group p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">
                 <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-600 to-emerald-400 text-white font-bold flex items-center justify-center text-xs shadow-sm">
                   {{ current_user.nama[0]|upper }}
                 </div>
                 <div class="hidden sm:flex flex-col text-left">
-                  <span class="text-xs font-bold text-slate-800 group-hover:text-emerald-500 transition leading-tight">
+                  <span class="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-500 transition leading-tight">
                     {{ current_user.nama.split()[0] }}
                   </span>
                   <span class="text-[10px] font-semibold uppercase tracking-wider
@@ -179,17 +257,17 @@
                 </div>
               </a>
 
-              <a href="{{ url_for('main.dashboard') }}" title="Dashboard" class="p-1.5 text-slate-600 hover:text-emerald-600 hover:bg-slate-100 rounded-lg transition text-xs font-semibold">
+              <a href="{{ url_for('main.dashboard') }}" title="Dashboard" class="p-1.5 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition text-xs font-semibold">
                 🏠
               </a>
 
-              <a href="{{ url_for('auth.logout') }}" title="Logout" class="px-2.5 py-1 text-xs font-medium text-red-600 hover:bg-red-50 rounded-lg transition border border-red-200/60">
+              <a href="{{ url_for('auth.logout') }}" title="Logout" class="px-2.5 py-1 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg transition border border-red-200/60 dark:border-red-900/60">
                 Keluar
               </a>
             </div>
           {% else %}
             <div class="flex items-center gap-2">
-              <a href="{{ url_for('auth.login') }}" class="px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:text-emerald-600 transition">
+              <a href="{{ url_for('auth.login') }}" class="px-3.5 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition">
                 Masuk
               </a>
               <a href="{{ url_for('auth.register') }}" class="px-3.5 py-1.5 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-sm transition">
@@ -202,18 +280,18 @@
       </div>
 
       <!-- Mobile Nav Row -->
-      <div class="flex lg:hidden overflow-x-auto py-2 border-t border-slate-100 gap-1 scrollbar-none text-xs">
-        <a href="{{ url_for('events.calendar') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 hover:bg-slate-100">📅 Kalender</a>
-        <a href="{{ url_for('events.list_view') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 hover:bg-slate-100">📋 Event</a>
-        <a href="{{ url_for('sesi.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 hover:bg-slate-100">💻 Sesi</a>
+      <div class="flex lg:hidden overflow-x-auto py-2 border-t border-slate-100 dark:border-slate-800 gap-1 scrollbar-none text-xs">
+        <a href="{{ url_for('events.calendar') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📅 Kalender</a>
+        <a href="{{ url_for('events.list_view') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📋 Event</a>
+        <a href="{{ url_for('sesi.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">💻 Sesi</a>
         {% if current_user.is_authenticated %}
-        <a href="{{ url_for('tugas.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 hover:bg-slate-100">📝 Tugas</a>
+        <a href="{{ url_for('tugas.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📝 Tugas</a>
         {% endif %}
-        <a href="{{ url_for('communities.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 hover:bg-slate-100">👥 Komunitas</a>
-        <a href="{{ url_for('pengumuman.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 hover:bg-slate-100">📢 Pengumuman</a>
-        <a href="{{ url_for('notes.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 hover:bg-slate-100">📌 Catatan</a>
+        <a href="{{ url_for('communities.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">👥 Komunitas</a>
+        <a href="{{ url_for('pengumuman.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📢 Pengumuman</a>
+        <a href="{{ url_for('notes.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📌 Catatan</a>
         {% if current_user.is_authenticated and current_user.role in ('admin', 'mentor') %}
-        <a href="{{ url_for('rekap.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-emerald-800 bg-emerald-50">📊 Rekap</a>
+        <a href="{{ url_for('rekap.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60">📊 Rekap</a>
         {% endif %}
       </div>
     </div>

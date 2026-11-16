@@ -16,6 +16,14 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    import markdown as md_lib
+
+    @app.template_filter("markdown")
+    def render_markdown(text):
+        if not text:
+            return ""
+        return md_lib.markdown(text, extensions=["extra", "nl2br"])
+
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)

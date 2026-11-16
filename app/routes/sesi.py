@@ -334,8 +334,15 @@ def remind_wa(sesi_id):
 def generate_ringkasan(sesi_id):
     s = db.get_or_404(Sesi, sesi_id)
     transkrip = request.form.get("transkrip", "").strip()
+    if not transkrip and s.link_rekaman:
+        transkrip = s.link_rekaman
 
-    ok, hasil = generate_ai_summary(s.judul, s.deskripsi or "", transkrip)
+    ok, hasil = generate_ai_summary(
+        judul=s.judul,
+        deskripsi=s.deskripsi or "",
+        transkrip=transkrip,
+        link_rekaman=s.link_rekaman or "",
+    )
     if ok and hasil:
         s.ringkasan = hasil
         db.session.commit()
