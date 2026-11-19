@@ -73,11 +73,100 @@ def extract_youtube_info(text: str) -> dict | None:
     return info
 
 
+def fetch_youtube_transcript(video_id: str) -> tuple[str | None, str | None]:
+    """
+    Ambil subtitle/transkrip video YouTube menggunakan youtube_transcript_api jika tersedia.
+    Mengembalikan (transcript_text, None) atau (None, error_reason).
+    """
+    if not video_id:
+        return None, "ID video tidak valid"
+    try:
+        from youtube_transcript_api import YouTubeTranscriptApi
+        ytt = YouTubeTranscriptApi()
+        try:
+            transcript_list = ytt.list(video_id)
+            t = transcript_list.find_transcript(["id", "en", "id-Latn"])
+            items = t.fetch()
+        except Exception:
+            try:
+                transcript_list = ytt.list(video_id)
+                t = next(iter(transcript_list))
+                items = t.fetch()
+            except Exception:
+                items = ytt.fetch(video_id)
+
+        lines = [item.text.strip() for item in items if item.text.strip()]
+        if not lines:
+            return None, "Transkrip kosong"
+
+        # Gabungkan per 4-5 frasa agar menjadi paragraf kalimat rapi
+        paragraphs = []
+        chunk = []
+        for line in lines:
+            chunk.append(line)
+            if len(chunk) >= 5 or line.endswith((".", "?", "!")):
+                paragraphs.append(" ".join(chunk))
+                chunk = []
+        if chunk:
+            paragraphs.append(" ".join(chunk))
+
+        return "\n".join(paragraphs), None
+    except Exception as e:
+        logger.info(f"Subtitle YouTube tidak dapat diambil untuk video {video_id}: {e}")
+        return None, str(e)
+
+
+def fetch_gdrive_text(url: str) -> tuple[str | None, str | None]:
+    """
+    Ambil teks dari Google Docs publik atau Google Drive file teks publik.
+    Mengembalikan (text, None) atau (None, error_msg).
+    """
+    if not url:
+        return None, "URL kosong"
+
+    m_doc = re.search(r"docs\.google\.com/document/d/([a-zA-Z0-9_-]+)", url)
+    if m_doc:
+        doc_id = m_doc.group(1)
+        export_url = f"https://docs.google.com/document/d/{doc_id}/export?format=txt"
+        try:
+            req = urllib.request.Request(
+                export_url,
+                headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"},
+            )
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                text = resp.read().decode("utf-8", errors="ignore").strip()
+                if text:
+                    return text, None
+                return None, "Dokumen Google Docs kosong"
+        except Exception as e:
+            return None, f"Gagal mengakses Google Docs: {e}"
+
+    m_file = re.search(r"drive\.google\.com/(?:file/d/|open\?id=)([a-zA-Z0-9_-]+)", url)
+    if m_file:
+        file_id = m_file.group(1)
+        export_url = f"https://drive.google.com/uc?export=download&id={file_id}"
+        try:
+            req = urllib.request.Request(
+                export_url,
+                headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"},
+            )
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                text = resp.read().decode("utf-8", errors="ignore").strip()
+                if text:
+                    return text, None
+                return None, "File Google Drive kosong"
+        except Exception as e:
+            return None, f"Gagal mengakses file Google Drive: {e}"
+
+    return None, "Bukan link Google Docs/Drive yang didukung"
+
+
 def _smart_local_summary(
     judul: str,
     deskripsi: str = "",
     transkrip: str = "",
     link_rekaman: str = "",
+    sumber_catatan: str = "",
 ) -> str:
     yt = (
         extract_youtube_info(transkrip)
@@ -96,9 +185,9 @@ def _smart_local_summary(
                 f"> 🎬 **Rekaman Video:** [{yt['title'] or 'Tonton Rekaman'}]({yt['url']})  \n"
                 f"> 👤 **Pemateri / Kanal:** {yt['author'] or '-'} &bull; ⏱️ **Durasi:** {yt['duration_str'] or '-'}\n\n"
                 f"**Catatan:**\n"
-                f"Isi pembahasan belum bisa diringkas karena tidak ada teks transkrip atau catatan sesi yang dilampirkan. "
-                f"Mode lokal tidak memproses audio/video dari link secara langsung. "
-                f"Silakan tempel teks catatan atau notulen untuk membuat ringkasan isi pembahasan.\n\n"
+                f"Isi pembahasan belum bisa diringkas karena tidak ada teks transkrip atau catatan sesi yang dilampirkan, "
+                f"dan link rekaman belum memiliki subtitle/transkrip publik yang dapat diekstrak otomatis. "
+                f"Silakan tempel teks catatan atau notulen sesi untuk membuat ringkasan isi pembahasan.\n\n"
                 f"---\n*Dibuat otomatis (mode: lokal). Periksa sebelum dibagikan.*"
             )
             return res
@@ -143,10 +232,13 @@ def _smart_local_summary(
 
     yt_header = ""
     if yt:
+        sumber_badge = f" &bull; 📝 *{sumber_catatan}*" if sumber_catatan else ""
         yt_header = (
             f"> 🎬 **Rekaman Video:** [{yt['title'] or 'Tonton Rekaman'}]({yt['url']})  \n"
-            f"> 👤 **Pemateri / Kanal:** {yt['author'] or '-'} &bull; ⏱️ **Durasi:** {yt['duration_str'] or '-'}\n\n"
+            f"> 👤 **Pemateri / Kanal:** {yt['author'] or '-'} &bull; ⏱️ **Durasi:** {yt['duration_str'] or '-'}{sumber_badge}\n\n"
         )
+    elif sumber_catatan:
+        yt_header = f"> 📄 **Sumber Dokumen:** {sumber_catatan}\n\n"
 
     ringkasan = f"### 🎯 Ringkasan Sesi: {judul}\n\n{yt_header}"
     if poin_kunci:
@@ -186,6 +278,30 @@ def generate_ai_summary(
         or extract_youtube_info(deskripsi)
     )
 
+    sumber_catatan = ""
+    transkrip_efektif = transkrip.strip()
+
+    # Cek apakah transkrip_efektif hanya URL atau kosong, tapi ada link YouTube / Google Drive
+    teks_murni = re.sub(r"https?://\S+", "", transkrip_efektif).strip()
+    if len(teks_murni) < 20:
+        # 1. Cek YouTube video transcript
+        if yt and yt.get("video_id"):
+            yt_text, _ = fetch_youtube_transcript(yt["video_id"])
+            if yt_text:
+                transkrip_efektif = yt_text
+                sumber_catatan = "Transkrip otomatis dari video YouTube"
+
+        # 2. Cek Google Drive / Docs link jika belum dapat transkrip
+        if not sumber_catatan:
+            candidates = [transkrip.strip(), link_rekaman.strip(), deskripsi.strip()]
+            for cand in candidates:
+                if cand and ("docs.google.com" in cand or "drive.google.com" in cand):
+                    gd_text, _ = fetch_gdrive_text(cand)
+                    if gd_text:
+                        transkrip_efektif = gd_text
+                        sumber_catatan = "Dokumen otomatis dari Google Drive / Docs"
+                        break
+
     reason_failed = None
 
     if gemini_key:
@@ -199,8 +315,10 @@ def generate_ai_summary(
                     f"- Channel/Pemateri: {yt['author']}\n"
                     f"- Durasi: {yt['duration_str']}\n"
                 )
+            if sumber_catatan:
+                context_extra += f"- Sumber Teks: {sumber_catatan}\n"
 
-            sumber_teks = transkrip.strip() or deskripsi.strip() or judul
+            sumber_teks = transkrip_efektif.strip() or deskripsi.strip() or judul
             prompt = (
                 f"Kamu adalah asisten notulis untuk komunitas teknologi 'Dieng Cyber Wonosobo'.\n"
                 f"Buatlah ringkasan terstruktur dari materi berikut berdasarkan teks yang diberikan.\n"
@@ -248,7 +366,8 @@ def generate_ai_summary(
     local_summary = _smart_local_summary(
         judul=judul,
         deskripsi=deskripsi,
-        transkrip=transkrip,
+        transkrip=transkrip_efektif,
         link_rekaman=link_rekaman,
+        sumber_catatan=sumber_catatan,
     )
     return True, local_summary, "lokal", reason_failed

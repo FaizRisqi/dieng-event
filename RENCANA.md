@@ -27,20 +27,20 @@
 - [x] Halaman error 500 (Internal Server Error)
 - [x] Setup database lokal (MySQL/MariaDB), migrasi, akun admin default, dan pengujian end-to-end fitur
 - [x] Redesain UI/UX & tema warna resmi Dieng Cyber (hijau candi, charcoal, merah, kuning emas) + logo resmi di navbar & landing page
-- [x] Ringkasan Notulen Sesi Zoom dengan AI (dukungan Google Gemini API & smart local extractive summarizer)
+- [x] Ringkasan Notulen Sesi Zoom dengan AI (dukungan Google Gemini API & smart local extractive summarizer, serta auto-ekstraksi transkrip link YouTube & Google Docs)
 - [x] Mode Gelap / Terang (Dark Mode & Light Mode) dengan tombol toggle interaktif, dukungan FullCalendar, dan persistensi tema di browser
-- [x] Rangkaian tes otomatis dengan pytest (34 tes, 0 gagal)
+- [x] Rangkaian tes otomatis dengan pytest (36 tes, 0 gagal)
 - [x] Audit keamanan ringan: open redirect, SECRET_KEY prod, debug flag, isolasi sesi komunitas
 
 ## Status Project
 
-**Status pengembangan per 19 November 2026:** Semua fitur utama selesai diimplementasikan dan berjalan di lingkungan lokal (Laragon + MySQL). Rangkaian tes otomatis: **34 passed, 0 failed** (dijalankan dengan SQLite in-memory).
+**Status pengembangan per 19 November 2026:** Semua fitur utama selesai diimplementasikan dan berjalan di lingkungan lokal (Laragon + MySQL). Rangkaian tes otomatis: **36 passed, 0 failed** (dijalankan dengan SQLite in-memory).
 
 > ⚠️ Belum dilakukan UAT formal di lingkungan Dieng Cyber, belum ada uji beban, dan belum ada deployment ke server/VPS publik.
 
 ## Batasan yang Diketahui
 
-1. **Ringkasan AI (mode lokal):** Hanya merangkum teks yang ditempel (transkrip/notulen). Tidak memproses audio/video dari link YouTube secara langsung. Jika hanya link yang diberikan tanpa transkrip, output berupa kartu metadata saja.
+1. **Ringkasan AI:** Mendukung teks transkrip manual serta ekstraksi otomatis dari link video YouTube (berdasarkan subtitle/transkrip publik) dan dokumen Google Docs/Drive publik. Jika link video tidak memiliki subtitle atau dokumen Drive bersifat privat, output menampilkan kartu metadata rekaman dengan anjuran menempelkan catatan teks manual.
 2. **Pengingat WhatsApp:** Manual satu klik per event/sesi/tugas. Tidak terjadwal otomatis. Tanpa token Fonnte/n8n, berjalan di mode simulasi (pesan hanya dicatat di log, tidak benar-benar terkirim).
 3. **Belum UAT di Dieng Cyber:** Pengujian baru dilakukan di mesin pengembang (lokal).
 4. **Belum uji beban:** Tidak diketahui performa saat banyak user concurrent.

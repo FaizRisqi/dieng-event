@@ -47,8 +47,9 @@ User (role: admin / mentor / anggota), Community, CommunityMember (role: penguru
 ## Alur Kerja AI Summary
 - `generate_ai_summary(judul, deskripsi, transkrip, link_rekaman)` → `(ok, text, mode, reason)`
 - `mode`: `"gemini"` atau `"lokal"`; `reason`: alasan gagal jika Gemini error
-- Mode lokal TIDAK menghasilkan poin pembahasan jika tidak ada teks transkrip/catatan
-- Input dipotong 4.000 karakter; peringatan flash muncul jika terpotong
+- Mendukung input transkrip manual atau auto-ekstraksi dari link YouTube (subtitle publik) & Google Docs/Drive
+- Mode lokal TIDAK menghasilkan poin pembahasan jika tidak ada transkrip/catatan (baik manual maupun dari link)
+- Input teks dipotong 4.000 karakter; peringatan flash muncul jika terpotong
 
 ## Alur Kerja WhatsApp
 - `get_wa_mode()` → `"fonnte"` / `"n8n"` / `"simulasi"`
@@ -57,12 +58,12 @@ User (role: admin / mentor / anggota), Community, CommunityMember (role: penguru
 - Mode nyata: flash ringkasan "N berhasil, M gagal, K dilewati"
 
 ## Status
-**Hasil pytest terakhir: 34 passed, 0 failed** (19 Nov 2026, Python 3.13, pytest 9.2)
+**Hasil pytest terakhir: 36 passed, 0 failed** (19 Nov 2026, Python 3.13, pytest 9.2)
 
-Fitur selesai: setup, auth + role, event + kalender + deteksi bentrok, pendaftaran + absensi event, komunitas, calendar notes, sesi Zoom + materi, tugas + penilaian, absensi sesi + rekap peserta, dashboard informatif, profil pengguna, filter & pencarian, halaman error 403/404/413/500, pengumuman (umum dan per komunitas), master lokasi event & deteksi bentrok akurat, pagination & event list view, proteksi CSRF (Flask-WTF), ekspor rekap ke CSV, pengingat WhatsApp (Fonnte/n8n/simulasi + transparansi status), ringkasan Zoom AI (Gemini / smart local summarizer + kejujuran mode lokal), dark mode / light mode toggle, tes otomatis pytest, audit keamanan ringan.
+Fitur selesai: setup, auth + role, event + kalender + deteksi bentrok, pendaftaran + absensi event, komunitas, calendar notes, sesi Zoom + materi, tugas + penilaian, absensi sesi + rekap peserta, dashboard informatif, profil pengguna, filter & pencarian, halaman error 403/404/413/500, pengumuman (umum dan per komunitas), master lokasi event & deteksi bentrok akurat, pagination & event list view, proteksi CSRF (Flask-WTF), ekspor rekap ke CSV, pengingat WhatsApp (Fonnte/n8n/simulasi + transparansi status), ringkasan Zoom AI (Gemini / smart local summarizer + auto-ekstraksi YouTube/Drive), dark mode / light mode toggle, tes otomatis pytest, audit keamanan ringan.
 
 ## Batasan yang Diketahui (Penting untuk Pengembangan)
-1. Ringkasan AI hanya dari teks transkrip/catatan yang ditempel — tidak memproses audio/video
+1. Ringkasan AI dari link YouTube mengandalkan subtitle/transkrip publik; link tanpa subtitle atau Drive privat memerlukan input teks manual
 2. Pengingat WhatsApp manual satu klik, bukan terjadwal otomatis
 3. Belum ada UAT di Dieng Cyber
 4. Belum ada uji beban

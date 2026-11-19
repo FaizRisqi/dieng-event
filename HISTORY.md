@@ -11,6 +11,7 @@ _Dibuat otomatis dari git log._
 - test: tambahkan rangkaian tes otomatis dasar dengan pytest (34 passed)
 - fix: keamanan - validasi open redirect, SECRET_KEY prod, debug flag dari env
 - docs: perbarui dokumentasi jujur - status, batasan, env vars, cara tes
+- feat: dukung ringkasan otomatis dari link youtube dan google drive
 
 ## 2026-11-16
 

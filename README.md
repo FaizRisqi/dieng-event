@@ -59,8 +59,8 @@ Semua variabel diatur di file `.env` (salin dari `.env.example`):
 
 | Mode | Kondisi | Perilaku |
 |---|---|---|
-| `gemini` | `GEMINI_API_KEY` terisi | Ringkasan dibuat oleh Google Gemini (memerlukan internet) |
-| `lokal` | `GEMINI_API_KEY` kosong atau Gemini gagal | Ringkasan berbasis aturan ekstraktif dari teks transkrip/catatan yang ditempel. **Tidak bisa meringkas video**; jika hanya link YouTube yang diberikan, output berupa kartu metadata saja. |
+| `gemini` | `GEMINI_API_KEY` terisi | Ringkasan dibuat oleh Google Gemini. Mendukung input teks transkrip manual atau ekstraksi otomatis transkrip dari link video YouTube & Google Docs. |
+| `lokal` | `GEMINI_API_KEY` kosong atau Gemini gagal | Ringkasan berbasis aturan ekstraktif dari teks transkrip manual atau transkrip otomatis yang ditarik dari link video YouTube / dokumen Google Drive. Jika link video tidak memiliki subtitle publik, output berupa kartu informasi metadata rekaman. |
 
 ## Menjalankan Tes
 
@@ -72,7 +72,7 @@ pip install -r requirements-dev.txt
 python -m pytest tests/ -v
 ```
 
-Hasil terakhir: **34 passed, 0 failed** (Python 3.13, pytest 9.2.0).
+Hasil terakhir: **36 passed, 0 failed** (Python 3.13, pytest 9.2.0).
 
 ## Perintah Berguna
 
