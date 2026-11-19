@@ -6,6 +6,7 @@ _Dibuat otomatis dari git log._
 
 - style: optimasi visual active navbar badge dark mode dan empty states
 - fix: tambahkan markdown ke requirements.txt
+- fix: perbaiki keandalan ringkasan sesi dan kejujuran mode lokal
 
 ## 2026-11-16
 

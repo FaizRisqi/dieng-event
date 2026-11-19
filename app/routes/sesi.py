@@ -333,11 +333,18 @@ def remind_wa(sesi_id):
 @role_required("admin", "mentor")
 def generate_ringkasan(sesi_id):
     s = db.get_or_404(Sesi, sesi_id)
-    transkrip = request.form.get("transkrip", "").strip()
+    transkrip_raw = request.form.get("transkrip", "").strip()
+    was_truncated = False
+    if len(transkrip_raw) > 4000:
+        transkrip = transkrip_raw[:4000]
+        was_truncated = True
+    else:
+        transkrip = transkrip_raw
+
     if not transkrip and s.link_rekaman:
         transkrip = s.link_rekaman
 
-    ok, hasil = generate_ai_summary(
+    ok, hasil, mode, reason = generate_ai_summary(
         judul=s.judul,
         deskripsi=s.deskripsi or "",
         transkrip=transkrip,
@@ -346,9 +353,17 @@ def generate_ringkasan(sesi_id):
     if ok and hasil:
         s.ringkasan = hasil
         db.session.commit()
-        flash("✨ Ringkasan sesi berhasil dibuat oleh AI dan disimpan.", "success")
+        if mode == "gemini":
+            flash("Ringkasan dibuat dengan Gemini.", "success")
+        else:
+            if reason:
+                flash(f"Gagal terhubung ke Gemini ({reason}). Ringkasan dibuat dengan mode lokal (berbasis aturan).", "warning")
+            else:
+                flash("Ringkasan dibuat dengan mode lokal (berbasis aturan).", "info")
+        if was_truncated:
+            flash("Catatan/transkrip yang dimasukkan melebihi 4.000 karakter dan dipotong otomatis.", "warning")
     else:
-        flash("Gagal membuat ringkasan AI.", "error")
+        flash("Gagal membuat ringkasan sesi.", "error")
     return redirect(url_for("sesi.detail", sesi_id=s.id))
 
 

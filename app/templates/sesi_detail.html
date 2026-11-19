@@ -76,10 +76,10 @@
     
     <div class="flex flex-wrap justify-between items-center gap-2 mb-4">
       <div class="flex items-center gap-2.5">
-        <span class="text-2xl">✨</span>
+        <span class="text-2xl">📝</span>
         <div>
-          <h2 class="font-extrabold text-slate-900 dark:text-slate-100 text-base">Ringkasan Materi &amp; AI Notulen</h2>
-          <p class="text-xs text-slate-500 dark:text-slate-400">Intisari rekaman, poin pembahasan penting, dan tindak lanjut sesi</p>
+          <h2 class="font-extrabold text-slate-900 dark:text-slate-100 text-base">Ringkasan Materi &amp; Notulen</h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Intisari catatan, poin pembahasan penting, dan tindak lanjut sesi</p>
         </div>
       </div>
       {% if s.ringkasan %}
@@ -98,8 +98,8 @@
       </div>
     {% else %}
       <div class="bg-slate-50 dark:bg-slate-900/60 border border-dashed border-slate-200 dark:border-slate-700 rounded-xl p-6 text-center text-xs text-slate-500 dark:text-slate-400">
-        <span class="text-2xl block mb-2">🤖</span>
-        Belum ada ringkasan sesi. Mentor atau admin dapat membuat ringkasan cerdas secara otomatis menggunakan AI dari link rekaman YouTube atau catatan transkrip Zoom.
+        <span class="text-2xl block mb-2">📋</span>
+        Belum ada ringkasan sesi. Mentor atau admin dapat membuat ringkasan terstruktur dari teks catatan atau transkrip Zoom.
       </div>
     {% endif %}
 
@@ -107,21 +107,21 @@
     <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700">
       <details class="group">
         <summary class="cursor-pointer text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 flex items-center gap-1.5 select-none transition">
-          <span>✨ {{ 'Buat Ulang / Update Ringkasan dengan AI' if s.ringkasan else 'Generate Ringkasan Zoom Otomatis (AI)' }}</span>
+          <span>✨ {{ 'Perbarui / Buat Ulang Ringkasan' if s.ringkasan else 'Buat Ringkasan Sesi' }}</span>
           <span class="text-slate-400 dark:text-slate-500 text-[10px] group-open:rotate-180 transition">&darr;</span>
         </summary>
         <div class="mt-3 bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-800/60 rounded-xl p-4 transition-colors">
           <p class="text-xs text-slate-700 dark:text-slate-300 mb-2.5 leading-relaxed">
-            Tempelkan link rekaman YouTube (contoh: <code>https://youtu.be/...</code>) atau catatan transkrip materi di bawah ini. AI akan mengekstrak informasi dan menyusun notulen terstruktur secara otomatis.
+            Tempelkan teks catatan atau transkrip materi Zoom di bawah ini (maksimal 4.000 karakter). <b>Perhatian:</b> Yang dirangkum adalah teks transkrip/catatan yang ditempel di sini, bukan memproses langsung isi video dari link.
           </p>
           <form method="post" action="{{ url_for('sesi.generate_ringkasan', sesi_id=s.id) }}" class="space-y-3">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <textarea name="transkrip" rows="3"
-                      placeholder="Tempelkan link YouTube, rekaman Zoom, atau teks notulen di sini (opsional)..."
+            <textarea name="transkrip" rows="4" maxlength="4000"
+                      placeholder="Tempelkan teks transkrip atau notulen Zoom di sini (maks. 4.000 karakter)..."
                       class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500">{{ s.link_rekaman if not s.ringkasan and s.link_rekaman else '' }}</textarea>
             <div class="flex items-center gap-2">
               <button class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-sm transition flex items-center gap-1.5">
-                <span>🤖 Proses Ringkasan dengan AI</span>
+                <span>⚡ Buat Ringkasan Sesi</span>
               </button>
             </div>
           </form>
