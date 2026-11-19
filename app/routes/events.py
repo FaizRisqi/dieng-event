@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import current_user, login_required
 from app import db
 from app.models import Event, EventRegistration, Community, CommunityMember, Lokasi, User
-from app.services.whatsapp import send_wa_message
+from app.services.whatsapp import send_wa_message, get_wa_mode, normalize_wa
 
 bp = Blueprint("events", __name__, url_prefix="/events")
 
@@ -297,12 +297,33 @@ def remind_wa(event_id):
         flash("Belum ada peserta terdaftar untuk dikirimi pengingat.", "error")
         return redirect(url_for("events.detail", event_id=event.id))
 
+    mode = get_wa_mode()
+    if mode == "simulasi":
+        for r in registrasi_aktif:
+            user = r.user
+            if user and user.no_wa:
+                pesan = (
+                    f"Halo {user.nama}! 👋\n\n"
+                    f"Pengingat event Dieng Cyber:\n"
+                    f"📌 *{event.judul}*\n"
+                    f"📅 Tanggal: {event.mulai.strftime('%d/%m/%Y %H:%M')} - {event.selesai.strftime('%H:%M')} WIB\n"
+                    f"📍 Lokasi: {event.nama_lokasi}\n\n"
+                    f"Pastikan hadir tepat waktu ya! Terima kasih."
+                )
+                send_wa_message(user.no_wa, pesan)
+        flash("Mode simulasi: pesan hanya dicatat di log dan tidak dikirim ke WhatsApp.", "warning")
+        return redirect(url_for("events.detail", event_id=event.id))
+
     berhasil = 0
-    tanpa_wa = 0
+    gagal = 0
+    dilewati = 0
+    alasan_gagal_pertama = None
+
     for r in registrasi_aktif:
         user = r.user
-        if not user.no_wa:
-            tanpa_wa += 1
+        norm = normalize_wa(user.no_wa) if user and user.no_wa else ""
+        if not norm or len(norm) < 10:
+            dilewati += 1
             continue
 
         pesan = (
@@ -313,12 +334,20 @@ def remind_wa(event_id):
             f"📍 Lokasi: {event.nama_lokasi}\n\n"
             f"Pastikan hadir tepat waktu ya! Terima kasih."
         )
-        ok, _ = send_wa_message(user.no_wa, pesan)
+        ok, res = send_wa_message(user.no_wa, pesan)
         if ok:
             berhasil += 1
+        else:
+            gagal += 1
+            if not alasan_gagal_pertama:
+                alasan_gagal_pertama = res
 
-    pesan_flash = f"Pengingat WhatsApp terkirim ke {berhasil} peserta."
-    if tanpa_wa > 0:
-        pesan_flash += f" ({tanpa_wa} peserta belum mengisi nomor WhatsApp di profil)."
-    flash(pesan_flash, "success")
+    msg = f"Pengiriman WhatsApp: {berhasil} berhasil, {gagal} gagal."
+    if dilewati > 0:
+        msg += f" ({dilewati} dilewati karena nomor kosong/tidak valid)."
+    if alasan_gagal_pertama:
+        msg += f" Penyebab gagal: {alasan_gagal_pertama}."
+
+    cat = "success" if gagal == 0 else "warning"
+    flash(msg, cat)
     return redirect(url_for("events.detail", event_id=event.id))

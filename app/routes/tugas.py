@@ -10,7 +10,7 @@ from werkzeug.utils import secure_filename
 from app import db
 from app.models import Tugas, Pengumpulan, Sesi, Community, CommunityMember, User
 from app.decorators import role_required
-from app.services.whatsapp import send_wa_message
+from app.services.whatsapp import send_wa_message, get_wa_mode, normalize_wa
 
 bp = Blueprint("tugas", __name__, url_prefix="/tugas")
 
@@ -347,11 +347,30 @@ def remind_wa(tugas_id):
         flash("Semua peserta target sudah mengumpulkan tugas ini.", "info")
         return redirect(url_for("tugas.detail", tugas_id=t.id))
 
+    mode = get_wa_mode()
+    if mode == "simulasi":
+        for user in belum:
+            if user and user.no_wa:
+                pesan = (
+                    f"Halo {user.nama}! 👋\n\n"
+                    f"Pengingat Tugas Dieng Cyber:\n"
+                    f"📝 *{t.judul}*\n"
+                    f"⏰ Tenggat: {t.tenggat.strftime('%d/%m/%Y %H:%M')} WIB\n\n"
+                    f"Tugas ini belum kamu kumpulkan. Segera selesaikan dan kumpulkan melalui aplikasi Dieng Event ya!"
+                )
+                send_wa_message(user.no_wa, pesan)
+        flash("Mode simulasi: pesan hanya dicatat di log dan tidak dikirim ke WhatsApp.", "warning")
+        return redirect(url_for("tugas.detail", tugas_id=t.id))
+
     berhasil = 0
-    tanpa_wa = 0
+    gagal = 0
+    dilewati = 0
+    alasan_gagal_pertama = None
+
     for user in belum:
-        if not user.no_wa:
-            tanpa_wa += 1
+        norm = normalize_wa(user.no_wa) if user and user.no_wa else ""
+        if not norm or len(norm) < 10:
+            dilewati += 1
             continue
 
         pesan = (
@@ -361,12 +380,20 @@ def remind_wa(tugas_id):
             f"⏰ Tenggat: {t.tenggat.strftime('%d/%m/%Y %H:%M')} WIB\n\n"
             f"Tugas ini belum kamu kumpulkan. Segera selesaikan dan kumpulkan melalui aplikasi Dieng Event ya!"
         )
-        ok, _ = send_wa_message(user.no_wa, pesan)
+        ok, res = send_wa_message(user.no_wa, pesan)
         if ok:
             berhasil += 1
+        else:
+            gagal += 1
+            if not alasan_gagal_pertama:
+                alasan_gagal_pertama = res
 
-    pesan_flash = f"Pengingat WhatsApp terkirim ke {berhasil} peserta yang belum mengumpulkan."
-    if tanpa_wa > 0:
-        pesan_flash += f" ({tanpa_wa} peserta belum memiliki nomor WhatsApp di profil)."
-    flash(pesan_flash, "success")
+    msg = f"Pengiriman WhatsApp: {berhasil} berhasil, {gagal} gagal."
+    if dilewati > 0:
+        msg += f" ({dilewati} dilewati karena nomor kosong/tidak valid)."
+    if alasan_gagal_pertama:
+        msg += f" Penyebab gagal: {alasan_gagal_pertama}."
+
+    cat = "success" if gagal == 0 else "warning"
+    flash(msg, cat)
     return redirect(url_for("tugas.detail", tugas_id=t.id))

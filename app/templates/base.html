@@ -342,14 +342,16 @@
           {% for category, message in messages %}
             <div class="flex items-center gap-3 p-3.5 rounded-xl text-sm font-medium border shadow-sm transition
               {% if category == 'error' %}
-                bg-red-50 text-red-800 border-red-200
+                bg-red-50 text-red-800 border-red-200 dark:bg-red-950/50 dark:text-red-200 dark:border-red-800
+              {% elif category == 'warning' %}
+                bg-amber-50 text-amber-900 border-amber-300 dark:bg-amber-950/50 dark:text-amber-200 dark:border-amber-800
               {% elif category == 'info' %}
-                bg-blue-50 text-blue-800 border-blue-200
+                bg-blue-50 text-blue-800 border-blue-200 dark:bg-blue-950/50 dark:text-blue-200 dark:border-blue-800
               {% else %}
-                bg-emerald-50 text-emerald-800 border-emerald-200
+                bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-200 dark:border-emerald-800
               {% endif %}">
               <span class="text-base">
-                {% if category == 'error' %}❌{% elif category == 'info' %}ℹ️{% else %}✅{% endif %}
+                {% if category == 'error' %}❌{% elif category == 'warning' %}⚠️{% elif category == 'info' %}ℹ️{% else %}✅{% endif %}
               </span>
               <p class="flex-1">{{ message }}</p>
             </div>

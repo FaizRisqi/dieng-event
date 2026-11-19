@@ -20,23 +20,42 @@ def normalize_wa(number: str) -> str:
     return cleaned
 
 
+def get_wa_mode() -> str:
+    """Mengembalikan mode aktif: 'fonnte', 'n8n', atau 'simulasi'."""
+    provider = os.getenv("WA_PROVIDER", "").strip().lower()
+    fonnte_token = os.getenv("FONNTE_TOKEN", "").strip()
+    n8n_url = os.getenv("N8N_WEBHOOK_URL", "").strip()
+
+    if provider == "simulasi":
+        return "simulasi"
+    if provider == "fonnte" and fonnte_token:
+        return "fonnte"
+    if provider == "n8n" and n8n_url:
+        return "n8n"
+    if not provider:
+        if fonnte_token:
+            return "fonnte"
+        if n8n_url:
+            return "n8n"
+    return "simulasi"
+
+
 def send_wa_message(target: str, message: str) -> tuple[bool, str]:
     """
-    Kirim pesan WhatsApp menggunakan provider yang dikonfigurasi di .env:
+    Kirim pesan WhatsApp menggunakan provider yang aktif:
     - Fonnte: FONNTE_TOKEN (POST https://api.fonnte.com/send)
     - n8n: N8N_WEBHOOK_URL (POST webhook JSON)
-    - Default/Fallback: Mode simulasi (catat di logger)
+    - Mode simulasi: Catat di logger
     """
     phone = normalize_wa(target)
     if not phone or len(phone) < 10:
         return False, f"Nomor WhatsApp '{target}' tidak valid."
 
-    fonnte_token = os.getenv("FONNTE_TOKEN", "").strip()
-    n8n_url = os.getenv("N8N_WEBHOOK_URL", "").strip()
-    provider = os.getenv("WA_PROVIDER", "").strip().lower()
+    mode = get_wa_mode()
 
     # 1. Integrasi Fonnte
-    if (provider == "fonnte" or fonnte_token) and fonnte_token:
+    if mode == "fonnte":
+        fonnte_token = os.getenv("FONNTE_TOKEN", "").strip()
         try:
             url = "https://api.fonnte.com/send"
             payload = json.dumps({"target": phone, "message": message}).encode("utf-8")
@@ -60,7 +79,8 @@ def send_wa_message(target: str, message: str) -> tuple[bool, str]:
             return False, f"Error koneksi Fonnte: {str(e)}"
 
     # 2. Integrasi n8n Webhook
-    if (provider == "n8n" or n8n_url) and n8n_url:
+    elif mode == "n8n":
+        n8n_url = os.getenv("N8N_WEBHOOK_URL", "").strip()
         try:
             payload = json.dumps({
                 "target": phone,
@@ -83,5 +103,6 @@ def send_wa_message(target: str, message: str) -> tuple[bool, str]:
             return False, f"Error koneksi n8n: {str(e)}"
 
     # 3. Fallback / Mode Simulasi (untuk development & pengujian)
-    logger.info(f"[SIMULASI WA] Ke: {phone} | Pesan: {message}")
-    return True, f"Simulasi: Pesan tersimpan di log (FONNTE_TOKEN / N8N_WEBHOOK_URL belum diset)"
+    else:
+        logger.info(f"[SIMULASI WA] Ke: {phone} | Pesan: {message}")
+        return True, "Simulasi: Pesan tersimpan di log"

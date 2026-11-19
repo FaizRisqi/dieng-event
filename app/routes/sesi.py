@@ -10,7 +10,7 @@ from werkzeug.utils import secure_filename
 from app import db
 from app.models import Sesi, SesiFile, SesiAbsensi, Community, CommunityMember, User
 from app.decorators import role_required
-from app.services.whatsapp import send_wa_message
+from app.services.whatsapp import send_wa_message, get_wa_mode, normalize_wa
 from app.services.ai_summary import generate_ai_summary
 
 bp = Blueprint("sesi", __name__, url_prefix="/sesi")
@@ -302,11 +302,32 @@ def remind_wa(sesi_id):
         flash("Belum ada anggota sasaran untuk dikirimi pengingat.", "error")
         return redirect(url_for("sesi.detail", sesi_id=s.id))
 
+    mode = get_wa_mode()
+    if mode == "simulasi":
+        for user in target:
+            if user and user.no_wa:
+                link_txt = f"\n🔗 Link: {s.link_zoom}" if s.link_zoom else ""
+                pesan = (
+                    f"Halo {user.nama}! 👋\n\n"
+                    f"Pengingat Sesi Materi Dieng Cyber:\n"
+                    f"💻 *{s.judul}*\n"
+                    f"📅 Tanggal: {s.tanggal.strftime('%d/%m/%Y')}\n"
+                    f"⏰ Waktu: {s.jam_mulai.strftime('%H:%M')} - {s.jam_selesai.strftime('%H:%M')} WIB{link_txt}\n\n"
+                    f"Mohon hadir tepat waktu. Terima kasih!"
+                )
+                send_wa_message(user.no_wa, pesan)
+        flash("Mode simulasi: pesan hanya dicatat di log dan tidak dikirim ke WhatsApp.", "warning")
+        return redirect(url_for("sesi.detail", sesi_id=s.id))
+
     berhasil = 0
-    tanpa_wa = 0
+    gagal = 0
+    dilewati = 0
+    alasan_gagal_pertama = None
+
     for user in target:
-        if not user.no_wa:
-            tanpa_wa += 1
+        norm = normalize_wa(user.no_wa) if user and user.no_wa else ""
+        if not norm or len(norm) < 10:
+            dilewati += 1
             continue
 
         link_txt = f"\n🔗 Link: {s.link_zoom}" if s.link_zoom else ""
@@ -318,14 +339,22 @@ def remind_wa(sesi_id):
             f"⏰ Waktu: {s.jam_mulai.strftime('%H:%M')} - {s.jam_selesai.strftime('%H:%M')} WIB{link_txt}\n\n"
             f"Mohon hadir tepat waktu. Terima kasih!"
         )
-        ok, _ = send_wa_message(user.no_wa, pesan)
+        ok, res = send_wa_message(user.no_wa, pesan)
         if ok:
             berhasil += 1
+        else:
+            gagal += 1
+            if not alasan_gagal_pertama:
+                alasan_gagal_pertama = res
 
-    pesan_flash = f"Pengingat WhatsApp terkirim ke {berhasil} anggota."
-    if tanpa_wa > 0:
-        pesan_flash += f" ({tanpa_wa} anggota belum memiliki nomor WhatsApp di profil)."
-    flash(pesan_flash, "success")
+    msg = f"Pengiriman WhatsApp: {berhasil} berhasil, {gagal} gagal."
+    if dilewati > 0:
+        msg += f" ({dilewati} dilewati karena nomor kosong/tidak valid)."
+    if alasan_gagal_pertama:
+        msg += f" Penyebab gagal: {alasan_gagal_pertama}."
+
+    cat = "success" if gagal == 0 else "warning"
+    flash(msg, cat)
     return redirect(url_for("sesi.detail", sesi_id=s.id))
 
 
