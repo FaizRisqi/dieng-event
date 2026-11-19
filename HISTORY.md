@@ -5,6 +5,7 @@ _Dibuat otomatis dari git log._
 ## 2026-11-19
 
 - style: optimasi visual active navbar badge dark mode dan empty states
+- fix: tambahkan markdown ke requirements.txt
 
 ## 2026-11-16
 
