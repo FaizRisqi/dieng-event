@@ -185,6 +185,8 @@ def api():
 @bp.route("/<int:sesi_id>")
 def detail(sesi_id):
     s = db.get_or_404(Sesi, sesi_id)
+    if not bisa_akses(s):
+        abort(403)
     # Hitung peserta target dan absensi
     absensi_map = {a.user_id: a for a in s.absensi}
     target = []

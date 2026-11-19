@@ -8,6 +8,7 @@ _Dibuat otomatis dari git log._
 - fix: tambahkan markdown ke requirements.txt
 - fix: perbaiki keandalan ringkasan sesi dan kejujuran mode lokal
 - fix: perbaiki transparansi pengingat whatsapp dan status simulasi
+- test: tambahkan rangkaian tes otomatis dasar dengan pytest (34 passed)
 
 ## 2026-11-16
 

@@ -12,9 +12,11 @@ login_manager.login_view = "auth.login"
 csrf = CSRFProtect()
 
 
-def create_app():
+def create_app(config_override=None):
     app = Flask(__name__)
     app.config.from_object(Config)
+    if config_override:
+        app.config.update(config_override)
 
     import markdown as md_lib
 
