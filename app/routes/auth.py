@@ -1,9 +1,21 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
+from urllib.parse import urlparse
 from app import db
 from app.models import User
 
 bp = Blueprint("auth", __name__)
+
+
+def _safe_next(next_url):
+    """Pastikan URL redirect tidak keluar dari domain (cegah open redirect)."""
+    if not next_url:
+        return None
+    parsed = urlparse(next_url)
+    # Hanya izinkan relative path (tanpa scheme dan netloc)
+    if parsed.scheme or parsed.netloc:
+        return None
+    return next_url
 
 
 @bp.route("/register", methods=["GET", "POST"])
@@ -44,7 +56,8 @@ def login():
 
         if user and user.check_password(password):
             login_user(user)
-            return redirect(url_for("main.dashboard"))
+            next_url = _safe_next(request.args.get("next"))
+            return redirect(next_url or url_for("main.dashboard"))
         flash("Email atau password salah.", "error")
 
     return render_template("login.html")
