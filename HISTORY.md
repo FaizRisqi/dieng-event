@@ -2,6 +2,10 @@
 
 _Dibuat otomatis dari git log._
 
+## 2026-11-19
+
+- style: optimasi visual active navbar badge dark mode dan empty states
+
 ## 2026-11-16
 
 - fix: optimasi visual dark mode dan peningkatan kecerdasan ringkasan ai

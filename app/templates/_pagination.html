@@ -1,14 +1,14 @@
 {% if pagination and pagination.pages > 1 %}
-<div class="mt-8 flex flex-wrap justify-between items-center gap-3 text-sm text-slate-600 pt-4 border-t border-slate-200">
-  <p class="text-xs text-slate-500">
-    Menampilkan halaman <b class="text-slate-800">{{ pagination.page }}</b> dari <b class="text-slate-800">{{ pagination.pages }}</b> (total {{ pagination.total }} data)
+<div class="mt-8 flex flex-wrap justify-between items-center gap-3 text-sm text-slate-600 dark:text-slate-400 pt-4 border-t border-slate-200 dark:border-slate-700">
+  <p class="text-xs text-slate-500 dark:text-slate-400">
+    Menampilkan halaman <b class="text-slate-800 dark:text-slate-200">{{ pagination.page }}</b> dari <b class="text-slate-800 dark:text-slate-200">{{ pagination.pages }}</b> (total {{ pagination.total }} data)
   </p>
-  <div class="flex items-center gap-1.5">
+  <div class="flex items-center gap-1.5 flex-wrap">
     {% if pagination.has_prev %}
       <a href="{{ url_for(request.endpoint, page=pagination.prev_num, **extra_args) }}"
-         class="px-3 py-1.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition">&larr; Sebelumnya</a>
+         class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold shadow-sm transition">&larr; Sebelumnya</a>
     {% else %}
-      <span class="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-xl text-slate-400 text-xs cursor-not-allowed">&larr; Sebelumnya</span>
+      <span class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/60 rounded-xl text-slate-400 dark:text-slate-600 text-xs cursor-not-allowed">&larr; Sebelumnya</span>
     {% endif %}
 
     {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
@@ -17,18 +17,18 @@
           <span class="px-3 py-1.5 bg-emerald-600 text-white rounded-xl font-bold text-xs shadow-sm shadow-emerald-600/20">{{ p }}</span>
         {% else %}
           <a href="{{ url_for(request.endpoint, page=p, **extra_args) }}"
-             class="px-3 py-1.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition">{{ p }}</a>
+             class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold shadow-sm transition">{{ p }}</a>
         {% endif %}
       {% else %}
-        <span class="px-1 text-slate-400">&hellip;</span>
+        <span class="px-1 text-slate-400 dark:text-slate-600">&hellip;</span>
       {% endif %}
     {% endfor %}
 
     {% if pagination.has_next %}
       <a href="{{ url_for(request.endpoint, page=pagination.next_num, **extra_args) }}"
-         class="px-3 py-1.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition">Selanjutnya &rarr;</a>
+         class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold shadow-sm transition">Selanjutnya &rarr;</a>
     {% else %}
-      <span class="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-xl text-slate-400 text-xs cursor-not-allowed">Selanjutnya &rarr;</span>
+      <span class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/60 rounded-xl text-slate-400 dark:text-slate-600 text-xs cursor-not-allowed">Selanjutnya &rarr;</span>
     {% endif %}
   </div>
 </div>

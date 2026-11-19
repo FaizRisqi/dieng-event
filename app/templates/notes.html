@@ -4,8 +4,8 @@
 {% block content %}
 <div class="flex justify-between items-center mb-6">
   <div>
-    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">Catatan Kegiatan &amp; Dokumentasi</h1>
-    <p class="text-xs text-slate-500 mt-0.5">Catatan harian per tanggal, dokumentasi foto, dan riwayat event</p>
+    <h1 class="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">Catatan Kegiatan &amp; Dokumentasi</h1>
+    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Catatan harian per tanggal, dokumentasi foto, dan riwayat event</p>
   </div>
   {% if bisa_tulis %}
     <a href="{{ url_for('notes.new') }}"
@@ -18,38 +18,51 @@
 <div class="space-y-3">
   {% for n in daftar %}
   <a href="{{ url_for('notes.detail', note_id=n.id) }}"
-     class="flex gap-4 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 hover:border-emerald-300 hover:shadow-md transition group">
+     class="flex gap-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm p-5 hover:border-emerald-300 dark:hover:border-emerald-500 hover:shadow-md transition group">
     {% if n.foto %}
       <img src="{{ url_for('static', filename='uploads/notes/' ~ n.foto) }}"
-           class="w-20 h-20 object-cover rounded-xl border border-slate-100 shrink-0" alt="Foto">
+           class="w-20 h-20 object-cover rounded-xl border border-slate-100 dark:border-slate-700 shrink-0" alt="Foto">
     {% endif %}
     <div class="flex-1">
-      <div class="flex items-center gap-2 text-xs text-slate-400 mb-1">
-        <span class="font-bold text-amber-700 bg-amber-50 rounded-lg px-2 py-0.5 border border-amber-200/80">
+      <div class="flex items-center gap-2 text-xs text-slate-400 dark:text-slate-400 mb-1 flex-wrap">
+        <span class="font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 rounded-lg px-2 py-0.5 border border-amber-200/80 dark:border-amber-800/60">
           📅 {{ n.tanggal.strftime('%d/%m/%Y') }}
         </span>
         {% if n.event %}
           <span>&bull;</span>
-          <span class="font-semibold text-slate-600">Event: {{ n.event.judul }}</span>
+          <span class="font-semibold text-slate-600 dark:text-slate-300">Event: {{ n.event.judul }}</span>
         {% endif %}
         {% if n.community %}
           <span>&bull;</span>
-          <span class="text-slate-500">{{ n.community.nama }}</span>
+          <span class="text-slate-500 dark:text-slate-400">{{ n.community.nama }}</span>
         {% endif %}
       </div>
-      <p class="text-sm text-slate-800 leading-relaxed group-hover:text-emerald-700 transition">{{ n.isi|truncate(180) }}</p>
+      <p class="text-sm text-slate-800 dark:text-slate-200 leading-relaxed group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition">{{ n.isi|truncate(180) }}</p>
     </div>
   </a>
   {% else %}
-    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-8 text-center text-xs text-slate-400">
-      Belum ada catatan kalender yang dibuat.
+  <div class="bg-white dark:bg-slate-800 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 p-10 text-center shadow-sm">
+    <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl font-bold">
+      📌
     </div>
+    <h3 class="font-bold text-slate-900 dark:text-white text-base">Belum Ada Catatan Kegiatan</h3>
+    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
+      Catatan dan dokumentasi harian kegiatan event akan muncul di sini.
+    </p>
+    {% if bisa_tulis %}
+      <a href="{{ url_for('notes.new') }}" class="mt-4 inline-block text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl transition shadow-sm">
+        + Buat Catatan Pertama
+      </a>
+    {% endif %}
+  </div>
   {% endfor %}
 </div>
 
 {% include "_pagination.html" %}
 
 <div class="mt-6">
-  <a href="{{ url_for('events.calendar') }}" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 hover:underline">&larr; Kembali ke Kalender</a>
+  <a href="{{ url_for('events.calendar') }}" class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1">
+    <span>&larr;</span> <span>Kembali ke Kalender</span>
+  </a>
 </div>
 {% endblock %}

@@ -185,43 +185,54 @@
         </div>
 
         <!-- Navigation Links -->
+        {% set ep = request.endpoint or '' %}
         <nav class="hidden lg:flex items-center gap-1">
-          <a href="{{ url_for('events.calendar') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 dark:hover:bg-slate-800 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-300">
+          <a href="{{ url_for('events.calendar') }}"
+             class="px-3 py-1.5 text-xs rounded-lg transition {{ 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200/80 dark:border-emerald-800/60 shadow-xs' if ep == 'events.calendar' else 'text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-emerald-700 dark:hover:text-emerald-400 border border-transparent' }}">
             📅 Kalender
           </a>
-          <a href="{{ url_for('events.list_view') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 dark:hover:bg-slate-800 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-300">
+          <a href="{{ url_for('events.list_view') }}"
+             class="px-3 py-1.5 text-xs rounded-lg transition {{ 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200/80 dark:border-emerald-800/60 shadow-xs' if (ep.startswith('events.') and ep != 'events.calendar') else 'text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-emerald-700 dark:hover:text-emerald-400 border border-transparent' }}">
             📋 Event
           </a>
-          <a href="{{ url_for('sesi.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 dark:hover:bg-slate-800 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-300">
+          <a href="{{ url_for('sesi.index') }}"
+             class="px-3 py-1.5 text-xs rounded-lg transition {{ 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200/80 dark:border-emerald-800/60 shadow-xs' if ep.startswith('sesi.') else 'text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-emerald-700 dark:hover:text-emerald-400 border border-transparent' }}">
             💻 Sesi Zoom
           </a>
           {% if current_user.is_authenticated %}
-          <a href="{{ url_for('tugas.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 dark:hover:bg-slate-800 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-300">
+          <a href="{{ url_for('tugas.index') }}"
+             class="px-3 py-1.5 text-xs rounded-lg transition {{ 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200/80 dark:border-emerald-800/60 shadow-xs' if ep.startswith('tugas.') else 'text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-emerald-700 dark:hover:text-emerald-400 border border-transparent' }}">
             📝 Tugas
           </a>
           {% endif %}
-          <a href="{{ url_for('communities.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 dark:hover:bg-slate-800 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-300">
+          <a href="{{ url_for('communities.index') }}"
+             class="px-3 py-1.5 text-xs rounded-lg transition {{ 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200/80 dark:border-emerald-800/60 shadow-xs' if ep.startswith('communities.') else 'text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-emerald-700 dark:hover:text-emerald-400 border border-transparent' }}">
             👥 Komunitas
           </a>
-          <a href="{{ url_for('pengumuman.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 dark:hover:bg-slate-800 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-300">
+          <a href="{{ url_for('pengumuman.index') }}"
+             class="px-3 py-1.5 text-xs rounded-lg transition {{ 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200/80 dark:border-emerald-800/60 shadow-xs' if ep.startswith('pengumuman.') else 'text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-emerald-700 dark:hover:text-emerald-400 border border-transparent' }}">
             📢 Pengumuman
           </a>
-          <a href="{{ url_for('notes.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition hover:bg-slate-100 hover:text-emerald-700 dark:hover:bg-slate-800 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-300">
+          <a href="{{ url_for('notes.index') }}"
+             class="px-3 py-1.5 text-xs rounded-lg transition {{ 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200/80 dark:border-emerald-800/60 shadow-xs' if ep.startswith('notes.') else 'text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-emerald-700 dark:hover:text-emerald-400 border border-transparent' }}">
             📌 Catatan
           </a>
 
           {% if current_user.is_authenticated and current_user.role in ('admin', 'mentor') %}
           <div class="h-4 w-px bg-slate-300 dark:bg-slate-700 mx-1"></div>
-          <a href="{{ url_for('rekap.index') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60">
+          <a href="{{ url_for('rekap.index') }}"
+             class="px-3 py-1.5 text-xs rounded-lg transition {{ 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-900 dark:text-emerald-200 font-bold border border-emerald-300 dark:border-emerald-700' if ep.startswith('rekap.') else 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 font-semibold hover:bg-emerald-100 dark:hover:bg-emerald-900/60' }}">
             📊 Rekap
           </a>
           {% endif %}
 
           {% if current_user.is_authenticated and current_user.role == 'admin' %}
-          <a href="{{ url_for('admin.lokasi') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
+          <a href="{{ url_for('admin.lokasi') }}"
+             class="px-3 py-1.5 text-xs rounded-lg transition {{ 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold border border-slate-300 dark:border-slate-600' if ep == 'admin.lokasi' else 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-200 dark:hover:bg-slate-700' }}">
             📍 Lokasi
           </a>
-          <a href="{{ url_for('admin.users') }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
+          <a href="{{ url_for('admin.users') }}"
+             class="px-3 py-1.5 text-xs rounded-lg transition {{ 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold border border-slate-300 dark:border-slate-600' if ep == 'admin.users' else 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-200 dark:hover:bg-slate-700' }}">
             👤 User
           </a>
           {% endif %}
@@ -280,18 +291,42 @@
       </div>
 
       <!-- Mobile Nav Row -->
-      <div class="flex lg:hidden overflow-x-auto py-2 border-t border-slate-100 dark:border-slate-800 gap-1 scrollbar-none text-xs">
-        <a href="{{ url_for('events.calendar') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📅 Kalender</a>
-        <a href="{{ url_for('events.list_view') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📋 Event</a>
-        <a href="{{ url_for('sesi.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">💻 Sesi</a>
+      <div class="flex lg:hidden overflow-x-auto py-2 border-t border-slate-100 dark:border-slate-800 gap-1.5 scrollbar-none text-xs">
+        <a href="{{ url_for('events.calendar') }}"
+           class="whitespace-nowrap px-2.5 py-1 rounded-lg transition {{ 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200/80 dark:border-emerald-800/60' if ep == 'events.calendar' else 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+          📅 Kalender
+        </a>
+        <a href="{{ url_for('events.list_view') }}"
+           class="whitespace-nowrap px-2.5 py-1 rounded-lg transition {{ 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200/80 dark:border-emerald-800/60' if (ep.startswith('events.') and ep != 'events.calendar') else 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+          📋 Event
+        </a>
+        <a href="{{ url_for('sesi.index') }}"
+           class="whitespace-nowrap px-2.5 py-1 rounded-lg transition {{ 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200/80 dark:border-emerald-800/60' if ep.startswith('sesi.') else 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+          💻 Sesi
+        </a>
         {% if current_user.is_authenticated %}
-        <a href="{{ url_for('tugas.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📝 Tugas</a>
+        <a href="{{ url_for('tugas.index') }}"
+           class="whitespace-nowrap px-2.5 py-1 rounded-lg transition {{ 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200/80 dark:border-emerald-800/60' if ep.startswith('tugas.') else 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+          📝 Tugas
+        </a>
         {% endif %}
-        <a href="{{ url_for('communities.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">👥 Komunitas</a>
-        <a href="{{ url_for('pengumuman.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📢 Pengumuman</a>
-        <a href="{{ url_for('notes.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📌 Catatan</a>
+        <a href="{{ url_for('communities.index') }}"
+           class="whitespace-nowrap px-2.5 py-1 rounded-lg transition {{ 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200/80 dark:border-emerald-800/60' if ep.startswith('communities.') else 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+          👥 Komunitas
+        </a>
+        <a href="{{ url_for('pengumuman.index') }}"
+           class="whitespace-nowrap px-2.5 py-1 rounded-lg transition {{ 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200/80 dark:border-emerald-800/60' if ep.startswith('pengumuman.') else 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+          📢 Pengumuman
+        </a>
+        <a href="{{ url_for('notes.index') }}"
+           class="whitespace-nowrap px-2.5 py-1 rounded-lg transition {{ 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200/80 dark:border-emerald-800/60' if ep.startswith('notes.') else 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800' }}">
+          📌 Catatan
+        </a>
         {% if current_user.is_authenticated and current_user.role in ('admin', 'mentor') %}
-        <a href="{{ url_for('rekap.index') }}" class="whitespace-nowrap px-2.5 py-1 rounded text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60">📊 Rekap</a>
+        <a href="{{ url_for('rekap.index') }}"
+           class="whitespace-nowrap px-2.5 py-1 rounded-lg transition {{ 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-900 dark:text-emerald-200 font-bold border border-emerald-300 dark:border-emerald-700' if ep.startswith('rekap.') else 'text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60' }}">
+          📊 Rekap
+        </a>
         {% endif %}
       </div>
     </div>

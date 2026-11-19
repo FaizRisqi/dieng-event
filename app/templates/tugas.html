@@ -4,8 +4,8 @@
 {% block content %}
 <div class="flex justify-between items-center mb-6">
   <div>
-    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">Tugas &amp; Praktikum</h1>
-    <p class="text-xs text-slate-500 mt-0.5">Penugasan, pengumpulan berkas, dan penilaian hasil belajar</p>
+    <h1 class="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">Tugas &amp; Praktikum</h1>
+    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Penugasan, pengumpulan berkas, dan penilaian hasil belajar</p>
   </div>
   {% if staff %}
     <a href="{{ url_for('tugas.new') }}"
@@ -15,18 +15,18 @@
   {% endif %}
 </div>
 
-<form method="get" class="mb-6 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-wrap gap-2.5">
+<form method="get" class="mb-6 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-wrap gap-2.5 transition-colors">
   <input name="q" placeholder="Cari judul tugas atau instruksi..." value="{{ q or '' }}"
-         class="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 flex-1 min-w-[12rem] text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
-  <select name="community_id" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
+         class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 flex-1 min-w-[12rem] text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
+  <select name="community_id" class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
     <option value="">Semua Komunitas</option>
     {% for k in komunitas %}
       <option value="{{ k.id }}" {% if cid == k.id %}selected{% endif %}>{{ k.nama }}</option>
     {% endfor %}
   </select>
-  <button class="bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl px-5 py-2 text-sm transition">Cari</button>
+  <button class="bg-slate-900 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-700 text-white font-bold rounded-xl px-5 py-2 text-sm transition">Cari</button>
   {% if q or cid %}
-    <a href="{{ url_for('tugas.index') }}" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl px-4 py-2 text-sm transition flex items-center">Reset</a>
+    <a href="{{ url_for('tugas.index') }}" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold rounded-xl px-4 py-2 text-sm transition flex items-center">Reset</a>
   {% endif %}
 </form>
 
@@ -35,41 +35,41 @@
   {% set p = mine.get(t.id) %}
   {% set lewat = t.tenggat < sekarang %}
   <a href="{{ url_for('tugas.detail', tugas_id=t.id) }}"
-     class="block bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 hover:border-emerald-300 hover:shadow-md transition group border-l-4 {{ 'border-red-400' if (lewat and not p) else ('border-emerald-600' if p else 'border-amber-400') }}">
+     class="block bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm p-5 hover:border-emerald-300 dark:hover:border-emerald-500 hover:shadow-md transition group border-l-4 {{ 'border-l-rose-500' if (lewat and not p) else ('border-l-emerald-600 dark:border-l-emerald-500' if p else 'border-l-amber-500') }}">
     <div class="flex justify-between items-start gap-4">
       <div>
         <div class="flex items-center gap-2 mb-1 flex-wrap">
           {% if t.community %}
-            <span class="text-[10px] font-semibold bg-emerald-50 text-emerald-800 rounded px-2 py-0.5 border border-emerald-100">{{ t.community.nama }}</span>
+            <span class="text-[10px] font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 rounded-lg px-2 py-0.5 border border-emerald-100 dark:border-emerald-800/60">{{ t.community.nama }}</span>
           {% endif %}
           {% if t.sesi %}
-            <span class="text-[10px] font-semibold bg-slate-100 text-slate-700 rounded px-2 py-0.5">Sesi: {{ t.sesi.judul }}</span>
+            <span class="text-[10px] font-semibold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg px-2 py-0.5 border border-slate-200 dark:border-slate-600">Sesi: {{ t.sesi.judul }}</span>
           {% endif %}
         </div>
-        <h2 class="font-bold text-base text-slate-900 group-hover:text-emerald-700 transition mt-1">{{ t.judul }}</h2>
-        <p class="text-xs text-slate-500 mt-1 flex items-center gap-2">
+        <h2 class="font-bold text-base text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition mt-1">{{ t.judul }}</h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-2">
           <span>⏰ Tenggat: {{ t.tenggat.strftime('%d/%m/%Y %H:%M') }} WIB</span>
-          {% if lewat %}<span class="text-red-600 font-bold bg-red-50 px-1.5 py-0.5 rounded text-[10px]">Lewat Tenggat</span>{% endif %}
+          {% if lewat %}<span class="text-rose-600 dark:text-rose-400 font-bold bg-rose-50 dark:bg-rose-950/60 border border-rose-200/60 dark:border-rose-800/60 px-2 py-0.5 rounded-lg text-[10px]">Lewat Tenggat</span>{% endif %}
         </p>
       </div>
 
       <div class="text-right shrink-0">
         {% if staff %}
-          <span class="inline-block bg-slate-100 text-slate-700 font-bold rounded-xl px-3 py-1.5 text-xs">
+          <span class="inline-block bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 font-bold rounded-xl px-3 py-1.5 text-xs">
             {{ jumlah.get(t.id, 0) }} terkumpul
           </span>
         {% elif p %}
           {% if p.nilai is not none %}
-            <span class="inline-block bg-emerald-100 text-emerald-800 font-extrabold rounded-xl px-3 py-1 text-sm shadow-sm">
+            <span class="inline-block bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 font-extrabold rounded-xl px-3 py-1 text-sm shadow-sm">
               Nilai: {{ p.nilai }}
             </span>
           {% else %}
-            <span class="inline-block bg-amber-100 text-amber-800 font-semibold rounded-xl px-3 py-1 text-xs">
+            <span class="inline-block bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 font-semibold rounded-xl px-3 py-1 text-xs">
               Menunggu Nilai
             </span>
           {% endif %}
         {% else %}
-          <span class="inline-block bg-red-100 text-red-700 font-semibold rounded-xl px-3 py-1 text-xs">
+          <span class="inline-block bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-800 font-semibold rounded-xl px-3 py-1 text-xs">
             Belum Kumpul
           </span>
         {% endif %}
@@ -77,9 +77,24 @@
     </div>
   </a>
   {% else %}
-    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-8 text-center text-xs text-slate-400">
-      Belum ada tugas{% if q or cid %} yang cocok dengan pencarian{% endif %}.
+  <div class="bg-white dark:bg-slate-800 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 p-10 text-center shadow-sm">
+    <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl font-bold">
+      📝
     </div>
+    <h3 class="font-bold text-slate-900 dark:text-white text-base">Tidak Ada Tugas Ditemukan</h3>
+    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
+      {% if q or cid %}
+        Tidak ada tugas yang sesuai dengan filter pencarian. Coba ubah kata kunci atau pilih komunitas lain.
+      {% else %}
+        Belum ada penugasan praktikum atau materi yang diberikan saat ini.
+      {% endif %}
+    </p>
+    {% if q or cid %}
+      <a href="{{ url_for('tugas.index') }}" class="mt-4 inline-block text-xs font-bold bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 px-4 py-2 rounded-xl transition">
+        Reset Filter
+      </a>
+    {% endif %}
+  </div>
   {% endfor %}
 </div>
 
