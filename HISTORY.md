@@ -10,6 +10,7 @@ _Dibuat otomatis dari git log._
 - fix: perbaiki transparansi pengingat whatsapp dan status simulasi
 - test: tambahkan rangkaian tes otomatis dasar dengan pytest (34 passed)
 - fix: keamanan - validasi open redirect, SECRET_KEY prod, debug flag dari env
+- docs: perbarui dokumentasi jujur - status, batasan, env vars, cara tes
 
 ## 2026-11-16
 
